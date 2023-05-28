@@ -3,6 +3,7 @@ import React from 'react'
 import { Button, Keyboard, StyleSheet, Text, TextInput, View } from 'react-native'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import CustomButton from '../../Components/TabBar/CustomButton'
 
 
 const sportsData = [
@@ -93,11 +94,10 @@ const NewEvent = () => {
                 style={styles.input}
                 multiline={true} blurOnSubmit={true}
                 onSubmitEditing={() => { Keyboard.dismiss() }}/>
-            <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 30, alignContent: 'space-between' }}>
-                <Button title="Cancelar" />
-                <Button title="Crear" />
+            <View style={styles.buttonContainer}>
+               <CustomButton title={"Cancelar"} color='red'/>
+               <CustomButton title={"Crear"} color='green'/>
             </View>
-
         </View>
     )
 }
@@ -114,4 +114,11 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginTop: 30
     },
+    buttonContainer: {
+        flexDirection: 'row',
+        marginTop: 30,
+        justifyContent: 'space-around',
+        width: '90%',
+        alignSelf: 'center',
+     }
 });
