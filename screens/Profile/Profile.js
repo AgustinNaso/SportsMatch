@@ -17,7 +17,7 @@ const Profile = () => {
                 </View>
             </View>
             <View style={styles.profileBody}>
-                <Text style={styles.bodyText}>Edad: 25 anios</Text>
+                <Text style={styles.bodyText}>Edad: 25 años</Text>
                 <Text style={styles.bodyText}>Telefono: 1121224423</Text>
                 <Text style={styles.bodyText}>Deportes de Interes:</Text>
                 {sports.map(sport =>
