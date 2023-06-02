@@ -1,12 +1,18 @@
-import {React} from 'react'
-import {View, Text, StyleSheet} from 'react-native'
+import React, {useState} from 'react'
+import {Text, StyleSheet, TouchableOpacity} from 'react-native'
 
 
 const Pill = ({props}) => {
+
+    const [selected, setSelected] = React.useState(false);
+
     return (
-    <View style={styles.pill}>
-        <Text>{props.sport}</Text>
-    </View>
+        <TouchableOpacity style={[
+            styles.pill, selected ? styles.selectedPill : null
+        ]}
+        onPress={() => setSelected(!selected)}>
+            <Text style={[ selected ? {color: 'white'}: null]}>{props.sport}</Text>
+        </TouchableOpacity>
     );
 }
 
@@ -21,6 +27,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginHorizontal: 4
+    },
+    selectedPill : {
+        backgroundColor: 'black',
     }
 });
 

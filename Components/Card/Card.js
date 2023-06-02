@@ -1,28 +1,34 @@
 import React from "react"
-import { View , Text, StyleSheet} from "react-native";
+import { View, Text, StyleSheet, Touchable, TouchableOpacity } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 
+const Card = ({ props }) => {
 
-const Card = ({props}) => {
+    const navigation = useNavigation();
+    const handlePress = () => {
+        navigation.navigate("Event");
+    }
+
     return (
-        <View style={styles.card}>
-            <View style={styles.header}>
-            <Text style={styles.cardBigText}>{props.sport}</Text>
-            <Text style={styles.cardBigText}>{props.time}</Text>
-            </View>
-            <View style={styles.header}>
-            <Text style={styles.cardMidText}>Juan</Text>
-            <Text style={styles.cardMidText}>Nuñez</Text>
-            </View>
-            <View style={styles.header}>
-            <Text style={styles.cardSmText}>Intermedio</Text>
-            <Text style={styles.cardSmText}>8/10P</Text>
-            </View>
-        </View>
+        <TouchableOpacity style={styles.card} onPress={handlePress}>
+                <View style={styles.header}>
+                    <Text style={styles.cardBigText}>{props.sport}</Text>
+                    <Text style={styles.cardBigText}>{props.time}</Text>
+                </View>
+                <View style={styles.header}>
+                    <Text style={styles.cardMidText}>Juan</Text>
+                    <Text style={styles.cardMidText}>Nuñez</Text>
+                </View>
+                <View style={styles.header}>
+                    <Text style={styles.cardSmText}>Intermedio</Text>
+                    <Text style={styles.cardSmText}>8/10P</Text>
+                </View>
+        </TouchableOpacity>
     )
 }
 
 const styles = StyleSheet.create({
-    card : {
+    card: {
         flex: 1,
         width: '85%',
         alignSelf: 'center',
@@ -48,7 +54,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 500
     },
-    header : {
+    header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'

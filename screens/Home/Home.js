@@ -40,7 +40,7 @@ const Home = () => {
         <SafeAreaView style={{flex: 1}}>
             <FlatList data={filterData} renderItem={renderItemPill}
              keyExtractor={(item) => {item.key}} horizontal showsHorizontalScrollIndicator={false}
-             style={{flex: 1,paddingTop: 20, maxHeight: 60}}/>
+             style={{flex: 1,paddingTop: 20, paddingBottom: 10, maxHeight: 70}}/>
             <FlatList
                 data={mockData} renderItem={renderItem}
                 style={{ flex: 1, paddingVertical: 20 }} keyExtractor={(item) => {item.key}}>
