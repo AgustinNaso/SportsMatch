@@ -2,16 +2,24 @@ import React, {useState} from 'react'
 import {Text, StyleSheet, TouchableOpacity} from 'react-native'
 
 
-const Pill = ({props}) => {
+const Pill = ({props, handlePress, currentFilter}) => {
 
     const [selected, setSelected] = React.useState(false);
 
+    React.useEffect(() => {
+        setSelected(currentFilter === props.sport)
+    }, [currentFilter])
+
+
     return (
-        <TouchableOpacity style={[
-            styles.pill, selected ? styles.selectedPill : null
-        ]}
-        onPress={() => setSelected(!selected)}>
-            <Text style={[ selected ? {color: 'white'}: null]}>{props.sport}</Text>
+        <TouchableOpacity style = {
+            [ styles.pill, selected ? styles.selectedPill : null]
+        }
+        onPress={() => {
+            handlePress(props.sport)
+            }
+        }>
+            <Text style={[ selected ? {color: 'white'}: null ]}>{props.sport}</Text>
         </TouchableOpacity>
     );
 }
@@ -26,7 +34,7 @@ const styles = StyleSheet.create({
         maxHeight: 40,
         alignItems: 'center',
         justifyContent: 'center',
-        marginHorizontal: 4
+        marginHorizontal: 7
     },
     selectedPill : {
         backgroundColor: 'black',

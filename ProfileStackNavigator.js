@@ -1,21 +1,19 @@
 import React from 'react';
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import Home from './screens/Home/Home';
-import Login from './screens/Login/Login';
-import Event from './screens/Event';
+import Profile from './screens/Profile/Profile';
+import MyEvents from './screens/MyEvents';
 
 const Stack = createNativeStackNavigator();
 
-const StackNavigator = () => {
+const ProfileStackNavigator = () => {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Group>
-                <Stack.Screen name="Home" component={Home}/>
-                <Stack.Screen name="Event" component={Event}/>
-
+                <Stack.Screen name="ProfileScreen" component={Profile}/>
+                <Stack.Screen name="MyEventsScreen" component={MyEvents}/>
             </Stack.Group>
         </Stack.Navigator>
     );
 }
 
-export default StackNavigator;
+export default ProfileStackNavigator;

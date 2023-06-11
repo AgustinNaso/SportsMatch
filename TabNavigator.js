@@ -3,7 +3,8 @@ import Profile from './screens/Profile/Profile';
 import Home from './screens/Home/Home';
 import { Ionicons } from '@expo/vector-icons';
 import NewEvent from './screens/NewEvent/NewEvent';
-import StackNavigator from './StackNavigator';
+import HomeStackNavigator from './HomeStackNavigator';
+import ProfileStackNavigator from './ProfileStackNavigator'
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
@@ -24,9 +25,9 @@ const TabNavigator = () => {
         }
       })}
     >
-      <Tab.Screen name="Home" component={StackNavigator}/>
+      <Tab.Screen name="Home" component={HomeStackNavigator}/>
       <Tab.Screen name="NewEvent" component={NewEvent}/>
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="Profile" component={ProfileStackNavigator} />
     </Tab.Navigator>
   );
 }

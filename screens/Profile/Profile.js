@@ -2,13 +2,19 @@ import React from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 import CustomButton from '../../Components/TabBar/CustomButton';
+import { useNavigation } from '@react-navigation/native';
+
 
 const sports = ['Futbol', 'Basquet', 'Paddle'];
 
 
 const Profile = () => {
+    const navigation = useNavigation();
+    const handlePress = () => {
+        navigation.navigate("MyEvents");
+    }
     return (
-        <View style={{flexDirection: 'column', alignItems: 'center'}}>
+        <View style={{flexDirection: 'column', alignItems: 'center', maxHeight: '100%'}}>
             <View style={styles.profileHeader} >
                 <Ionicons name="person" size={100} />
                 <View style={styles.profileTextContainer}>
@@ -23,8 +29,9 @@ const Profile = () => {
                 {sports.map(sport =>
                     <Text style={styles.itemText}>{`\u26ab ${sport}`}</Text>)}
             </View>
-            <View style={{minWidth: '70%', marginTop: 12}}>
+            <View style={{minWidth: '70%', marginTop: 10, paddingVertical: 2, flexDirection: 'column', justifyContent: 'space-between', minHeight: '14%'}}>
                 <CustomButton title={"Editar"} color='grey' />
+                <CustomButton title={"Mis eventos"} onPress={handlePress} color='green' />
             </View>
         </View>
     );
@@ -62,7 +69,7 @@ const styles = StyleSheet.create({
     profileBody: {
         flexDirection: 'col',
         justifyContent: 'space-evenly',
-        height: '60%',
+        height: '55%',
         width: '90%',
     }
 });
