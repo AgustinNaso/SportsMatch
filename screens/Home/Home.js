@@ -1,5 +1,5 @@
 import React from "react"
-import { FlatList, ScrollView, View, SafeAreaView } from "react-native";
+import { FlatList, SafeAreaView } from "react-native";
 import Card from "../../Components/Card/Card";
 import Pill from "../../Components/Pill";
 

@@ -9,8 +9,8 @@ const ProfileStackNavigator = () => {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Group>
-                <Stack.Screen name="ProfileScreen" component={Profile}/>
-                <Stack.Screen name="MyEventsScreen" component={MyEvents}/>
+                <Stack.Screen name="Profile" component={Profile}/>
+                <Stack.Screen name="MyEvents" component={MyEvents}/>
             </Stack.Group>
         </Stack.Navigator>
     );

@@ -16,7 +16,7 @@ const Card = ({ props }) => {
                     <Text style={styles.cardBigText}>{props.time}</Text>
                 </View>
                 <View style={styles.header}>
-                    <Text style={styles.cardMidText}>Juan</Text>
+                    <Text style={styles.cardMidText}>{props.name}</Text>
                     <Text style={styles.cardMidText}>Nuñez</Text>
                 </View>
                 <View style={styles.header}>

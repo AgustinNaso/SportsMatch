@@ -1,30 +1,62 @@
 import React from 'react';
-import { View, SafeAreaView, FlatList } from 'react-native';
+import { Text, SafeAreaView, FlatList } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import Card from '../Components/Card/Card';
+import MyEventCard from '../Components/MyEventCard';
+
+const renderList = ({ item }) => {
+    return (
+        <>
+        <Text style={{fontSize: 35, fontWeight: 600, marginLeft: 10, marginVertical: 10}}>{item.eventName}</Text>
+        <FlatList
+            data={item.myEvent} renderItem={renderItem}
+            style={{ flex: 1 }} keyExtractor={(item) => { item.key }}>
+        </FlatList>
+        </>
+    )
+}
 
 const renderItem = ({ item }) => {
+    return  <MyEventCard userData={item} />
+
+}
+
+const renderJoinedItem = ({ item }) => {
     return <Card props={item} />
 }
 
-
 const mockData = [
-    { key: 1, cardName: 'Card 1', sport: 'Futbol', time: '20:00hs' },
-    { key: 2, cardName: 'Card 2', sport: 'Futbol', time: '20:00hs' },
-    { key: 3, cardName: 'Card 3', sport: 'Futbol', time: '20:00hs' },
-    { key: 4, cardName: 'Card 4', sport: 'Futbol', time: '20:00hs' },
-    { key: 5, cardName: 'Card 5', sport: 'Futbol', time: '20:00hs' },
-    { key: 6, cardName: 'Card 6', sport: 'Futbol', time: '20:00hs' },
-    { key: 7, cardName: 'Card 6', sport: 'Futbol', time: '20:00hs' },
-    { key: 8, cardName: 'Card 6', sport: 'Futbol', time: '20:00hs' },
-    { key: 9, cardName: 'Card 6', sport: 'Futbol', time: '20:00hs' },
+    { key: 1, name: 'Pedro', sport: 'Futbol', time: '20:00hs' },
+    { key: 2, name: 'Juan', sport: 'Basquet', time: '16:00hs' },
+];
+
+const createdEventMockData = [
+    {
+        myEvent : [
+            { key: 1, name: 'Gaston', sport: 'Futbol', expertise: 'Principiante' },
+            { key: 2, name: 'John', sport: 'Futbol', expertise: 'Intermedio' },
+        ],
+        eventName : "Partido 1",
+        key : 1
+    },
+    {
+        myEvent: 
+            [
+                { key: 1, name: 'Gaston', sport: 'Futbol',expertise: 'Principiante' },
+                { key: 2, name: 'John', sport: 'Futbol',expertise: 'Intermedio' },
+                { key: 3, name: 'Brittany', sport: 'Futbol',expertise: 'Intermedio' },
+                { key: 4, name: 'Agustin', sport: 'Futbol',expertise: 'Avanzado' },
+            ],
+            eventName : "Partido 2",
+            key : 2
+    }
 ];
 
 
 const FirstRoute = () => (
     <SafeAreaView style={{ flex: 1 }}>
         <FlatList
-            data={mockData} renderItem={renderItem}
+            data={createdEventMockData} renderItem={renderList}
             style={{ flex: 1 }} keyExtractor={(item) => { item.key }}>
         </FlatList>
     </SafeAreaView>
@@ -33,7 +65,7 @@ const FirstRoute = () => (
 const SecondRoute = () => (
     <SafeAreaView style={{ flex: 1 }}>
         <FlatList
-            data={mockData} renderItem={renderItem}
+            data={mockData} renderItem={renderJoinedItem}
             style={{ flex: 1 }} keyExtractor={(item) => { item.key }}>
         </FlatList>
     </SafeAreaView>
@@ -48,8 +80,8 @@ const MyEvents = () => {
 
     const [index, setIndex] = React.useState(0);
     const [routes] = React.useState([
-        { key: 'first', title: 'Created' },
-        { key: 'second', title: 'Joined' },
+        { key: 'first', title: 'Creados' },
+        { key: 'second', title: 'Anotado' },
     ]);
 
     return (
@@ -63,4 +95,4 @@ const MyEvents = () => {
     );
 }
 
-export default MyEvents
+export default MyEvents;
