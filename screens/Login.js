@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginTop: 20,
     width: "65%",
+    gap: "5em",
   },
   inputText: {
     ...FONTS.body3,
@@ -78,7 +79,6 @@ const Login = () => {
         paddingBottom: 100,
       }}
     >
-      {/* <Button onPress={() => navigation.navigate("Tabs")} title="Login" /> */}
       <Text
         style={{
           ...FONTS.h1,

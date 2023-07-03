@@ -12,4 +12,8 @@ function isEmpty(input) {
   return input === "";
 }
 
-export { validateEmail, matching, isEmpty };
+function validatePhoneNumber(number) {
+  return /^[0-9]{8}$/.test(number);
+}
+
+export { validateEmail, matching, isEmpty, validatePhoneNumber };

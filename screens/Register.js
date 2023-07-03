@@ -1,16 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   SafeAreaView,
   View,
   Text,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  ScrollView
 } from "react-native";
-import { COLORS, FONTS } from "../constants";
+import { COLORS, FONTS, SIZES } from "../constants";
 import { TextInput } from "react-native-gesture-handler";
-import { validateEmail, isEmpty, matching } from "../utils/validations";
+import { validateEmail, isEmpty, matching, validatePhoneNumber } from "../utils/validations";
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,   
+    alignItems: "center",
+    justifyContent: "center",
+    paddingBottom: 100,
+  },
   input: {
     height: 40,
     paddingLeft: 20,
@@ -23,13 +30,27 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginTop: 20,
     width: "65%",
+    gap: "5em",
   },
   inputText: {
     ...FONTS.body3,
     color: COLORS.primary,
     marginLeft: 10,
   },
+  phoneContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
 
+    code: {
+      color: COLORS.primary,
+      fontSize: 18,
+      marginLeft: 10,
+    },
+    input: {
+      width: "85%",
+    }
+  },
   loginBtn: {
     margin: 10,
     backgroundColor: COLORS.primary,
@@ -51,19 +72,21 @@ const styles = StyleSheet.create({
 });
 
 const Register = ({ navigation }) => {
-  const [name, onChangeName] = React.useState("");
-  const [lastName, onChangeLastName] = React.useState("");
-  const [email, onChangeEmail] = React.useState("");
-  const [password, onChangePassword] = React.useState("");
-  const [confPassword, onChangeConfPassword] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
-  const [emailError, setEmailError] = React.useState(false);
-  const [nameError, setNameError] = React.useState(false);
-  const [lastNameError, setLastNameError] = React.useState(false);
-  const [nonMatchError, setNonMatchError] = React.useState(false);
-  const [error, setError] = React.useState(false);
+  const [name, onChangeName] = useState("");
+  const [lastName, onChangeLastName] = useState("");
+  const [email, onChangeEmail] = useState("");
+  const [phone, onChangePhone] = useState("");
+  const [password, onChangePassword] = useState("");
+  const [confPassword, onChangeConfPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [phoneError, setPhoneError] = useState(false);
+  const [nameError, setNameError] = useState(false);
+  const [lastNameError, setLastNameError] = useState(false);
+  const [nonMatchError, setNonMatchError] = useState(false);
+  const [error, setError] = useState(false);
 
-  const onSignUpPressed = async () => {
+  const onSignUpPressed = () => {
     setEmailError(false);
     setNameError(false);
     setLastNameError(false);
@@ -73,6 +96,11 @@ const Register = ({ navigation }) => {
 
     if (!validateEmail(email)) {
       setEmailError(true);
+      errors = true;
+    }
+
+    if (!validatePhoneNumber(phone)) {
+      setPhoneError(true);
       errors = true;
     }
 
@@ -100,15 +128,14 @@ const Register = ({ navigation }) => {
   return (
     <SafeAreaView
       style={{
-        alignItems: "center",
-        justifyContent: "center",
-        paddingBottom: 100,
+        flex: 1
       }}
     >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Text
         style={{
           ...FONTS.h1,
-          fontSize: 34,
+          fontSize: 40,
           color: COLORS.primary,
           paddingTop: 50,
         }}
@@ -150,6 +177,18 @@ const Register = ({ navigation }) => {
       </View>
       {emailError && <Text style={styles.error}>Please enter a valid email</Text>}
       <View style={styles.inputContainer}>
+        <Text style={styles.inputText}>Phone Number</Text>
+        <View style={styles.phoneContainer}>
+          <Text style={styles.phoneContainer.code}>11</Text>
+          <TextInput
+            style={[styles.input, styles.phoneContainer.input]}
+            onChangeText={onChangePhone}
+            value={phone}
+          />
+        </View>
+      </View>
+      {phoneError && <Text style={styles.error}>Phone number must have 8 digits</Text>}
+      <View style={styles.inputContainer}>
         <Text style={styles.inputText}>Password</Text>
         <TextInput
           style={styles.input}
@@ -184,6 +223,7 @@ const Register = ({ navigation }) => {
       >
         <Text style={styles.referal}>Already have an account? Login</Text>
       </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 };
