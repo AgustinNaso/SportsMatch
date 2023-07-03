@@ -9,7 +9,7 @@ const Login = () => {
   return (
     <SafeAreaView>
       <Text>Login</Text>
-      <Button onPress={()=> navigation.navigate("Home")} title="Login"/>
+      <Button onPress={()=> navigation.navigate("Tabs")} title="Login"/>
 
     </SafeAreaView>
   )

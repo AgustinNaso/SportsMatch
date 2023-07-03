@@ -1,7 +1,7 @@
 import React from "react"
 import { FlatList, SafeAreaView } from "react-native";
-import Card from "../../Components/Card/Card";
-import Pill from "../../Components/Pill";
+import Card from "../components/Card";
+import Pill from "../components/Pill";
 
 
 const mockData = [

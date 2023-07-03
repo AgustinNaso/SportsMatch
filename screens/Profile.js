@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
-import CustomButton from '../../Components/TabBar/CustomButton';
+import CustomButton from '../components/CustomButton';
 import { useNavigation } from '@react-navigation/native';
 
 

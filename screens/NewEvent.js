@@ -3,7 +3,7 @@ import React from 'react'
 import { Button, Keyboard, StyleSheet, Text, TextInput, View } from 'react-native'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import CustomButton from '../../Components/TabBar/CustomButton'
+import CustomButton from '../components/CustomButton'
 
 
 const sportsData = [

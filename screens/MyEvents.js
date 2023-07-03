@@ -1,8 +1,8 @@
 import React from 'react';
 import { Text, SafeAreaView, FlatList } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-import Card from '../Components/Card/Card';
-import MyEventCard from '../Components/MyEventCard';
+import Card from '../components/Card';
+import MyEventCard from '../components/MyEventCard';
 
 const renderList = ({ item }) => {
     return (
