@@ -7,7 +7,7 @@ import HomeStackNavigator from './HomeStackNavigator';
 import ProfileStackNavigator from './ProfileStackNavigator'
 const Tab = createBottomTabNavigator();
 
-const TabNavigator = () => {
+const Tabs = () => {
   return (
     <Tab.Navigator
     screenOptions={({ route }) => ({
@@ -32,4 +32,4 @@ const TabNavigator = () => {
   );
 }
 
-export default TabNavigator;
+export default Tabs;
