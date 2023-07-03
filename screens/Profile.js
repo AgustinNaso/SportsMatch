@@ -4,9 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import CustomButton from '../components/CustomButton';
 import { useNavigation } from '@react-navigation/native';
 
-
 const sports = ['Futbol', 'Basquet', 'Paddle'];
-
 
 const Profile = () => {
     const navigation = useNavigation();

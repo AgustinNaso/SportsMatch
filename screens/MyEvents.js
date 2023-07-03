@@ -77,7 +77,6 @@ const renderScene = SceneMap({
 });
 
 const MyEvents = () => {
-
     const [index, setIndex] = React.useState(0);
     const [routes] = React.useState([
         { key: 'first', title: 'Creados' },
