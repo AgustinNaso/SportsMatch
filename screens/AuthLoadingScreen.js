@@ -1,6 +1,6 @@
 import React from "react";
 import { ActivityIndicator } from "react-native";
-//import { COLORS } from "../constants";
+import { COLORS } from "../constants";
 
 export default function AuthLoadingScreen({ navigation }) {
   // TODO: check if user is logged in
@@ -14,7 +14,7 @@ export default function AuthLoadingScreen({ navigation }) {
   return (
     <ActivityIndicator
       size="large"
-      //color={COLORS.primary}
+      color={COLORS.primary}
       style={{ alignSelf: "center", marginTop: "50%" }}
     />
   );

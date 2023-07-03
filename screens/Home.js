@@ -3,7 +3,6 @@ import { FlatList, SafeAreaView } from "react-native";
 import Card from "../components/Card";
 import Pill from "../components/Pill";
 
-
 const mockData = [
     { key: 1, cardName: 'Card 1', sport: 'Futbol', time: '20:00hs' },
     { key: 2, cardName: 'Card 2', sport: 'Voley', time: '20:00hs' },
