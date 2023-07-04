@@ -5,15 +5,22 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
 } from "react-native";
-import { COLORS, FONTS, SIZES } from "../constants";
+import { COLORS, FONTS } from "../constants";
 import { TextInput } from "react-native-gesture-handler";
-import { validateEmail, isEmpty, matching, validatePhoneNumber } from "../utils/validations";
+import {
+  validateEmail,
+  isEmpty,
+  matching,
+  validatePhoneNumber,
+  validatePassword,
+} from "../utils/validations";
+import { signUp } from "../utils/cognito-pool";
 
 const styles = StyleSheet.create({
   scrollContainer: {
-    flexGrow: 1,   
+    flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
     paddingBottom: 100,
@@ -49,7 +56,7 @@ const styles = StyleSheet.create({
     },
     input: {
       width: "85%",
-    }
+    },
   },
   loginBtn: {
     margin: 10,
@@ -78,20 +85,15 @@ const Register = ({ navigation }) => {
   const [phone, onChangePhone] = useState("");
   const [password, onChangePassword] = useState("");
   const [confPassword, onChangeConfPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
   const [nameError, setNameError] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
+  const [invalidPass, setInvalidPass] = useState(false);
   const [nonMatchError, setNonMatchError] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
 
-  const onSignUpPressed = () => {
-    setEmailError(false);
-    setNameError(false);
-    setLastNameError(false);
-    setNonMatchError(false);
-    setError(false);
+  const validateFields = () => {
     var errors = false;
 
     if (!validateEmail(email)) {
@@ -114,115 +116,152 @@ const Register = ({ navigation }) => {
       errors = true;
     }
 
+    if (!validatePassword(password)) {
+      setInvalidPass(true);
+      errors = true;
+    }
+
     if (!matching(password, confPassword)) {
       setNonMatchError(true);
       errors = true;
     }
 
-    if (errors) {
+    return errors;
+  };
+
+  const onSignUpPressed = async () => {
+    setEmailError(false);
+    setPhoneError(false);
+    setNameError(false);
+    setLastNameError(false);
+    setInvalidPass(false);
+    setNonMatchError(false);
+    setError("");
+
+    if (validateFields()) {
       return;
     }
-    navigation.navigate("Tabs");
+
+    try {
+      await signUp(email, password, name, lastName, phone);
+      navigation.navigate("ConfirmSignUp", { email: email });
+    } catch (err) {
+      switch (err.name) {
+        case "InvalidParameterException":
+          setEmailError(true);
+          break;
+        case "InvalidPasswordException":
+          setInvalidPass(true);
+          break;
+        case "UsernameExistsException":
+          setError("An account with the given email already exists.");
+          break;
+        default:
+          setError("Something went wrong, please try again.");
+          break;
+      }
+    }
   };
 
   return (
     <SafeAreaView
       style={{
-        flex: 1
+        flex: 1,
       }}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <Text
-        style={{
-          ...FONTS.h1,
-          fontSize: 40,
-          color: COLORS.primary,
-          paddingTop: 50,
-        }}
-      >
-        SportsMatch
-      </Text>
-      {error && (
-        <Text style={styles.error}>This email has already been registered</Text>
-      )}
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputText}>Name</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeName}
-          value={name}
-        />
-      </View>
-      {nameError && (
-        <Text style={styles.error}>This field can't be empty</Text>
-      )}
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputText}>Last Name</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeLastName}
-          value={lastName}
-        />
-      </View>
-      {lastNameError && (
-        <Text style={styles.error}>This field can't be empty</Text>
-      )}
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputText}>Email</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeEmail}
-          value={email}
-        />
-      </View>
-      {emailError && <Text style={styles.error}>Please enter a valid email</Text>}
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputText}>Phone Number</Text>
-        <View style={styles.phoneContainer}>
-          <Text style={styles.phoneContainer.code}>11</Text>
+        <Text
+          style={{
+            ...FONTS.h1,
+            fontSize: 40,
+            color: COLORS.primary,
+            paddingTop: 50,
+          }}
+        >
+          SportsMatch
+        </Text>
+        {error && <Text style={styles.error}>{error}</Text>}
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputText}>Name</Text>
           <TextInput
-            style={[styles.input, styles.phoneContainer.input]}
-            onChangeText={onChangePhone}
-            value={phone}
+            style={styles.input}
+            onChangeText={onChangeName}
+            value={name}
           />
         </View>
-      </View>
-      {phoneError && <Text style={styles.error}>Phone number must have 8 digits</Text>}
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputText}>Password</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangePassword}
-          value={password}
-          secureTextEntry={true}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputText}>Confirm password</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeConfPassword}
-          value={confPassword}
-          secureTextEntry={true}
-        />
-      </View>
-      {nonMatchError && (
-        <Text style={styles.error}>Passwords do not match</Text>
-      )}
-      <TouchableOpacity
-        style={styles.loginBtn}
-        onPress={onSignUpPressed}
-        loading={loading}
-      >
-        <Text style={{ ...FONTS.h3, color: COLORS.white }}>Register</Text>
-      </TouchableOpacity>
+        {nameError && (
+          <Text style={styles.error}>This field can't be empty</Text>
+        )}
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputText}>Last Name</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangeLastName}
+            value={lastName}
+          />
+        </View>
+        {lastNameError && (
+          <Text style={styles.error}>This field can't be empty</Text>
+        )}
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputText}>Email</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangeEmail}
+            value={email}
+          />
+        </View>
+        {emailError && (
+          <Text style={styles.error}>Please enter a valid email</Text>
+        )}
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputText}>Phone Number</Text>
+          <View style={styles.phoneContainer}>
+            <Text style={styles.phoneContainer.code}>11</Text>
+            <TextInput
+              style={[styles.input, styles.phoneContainer.input]}
+              onChangeText={onChangePhone}
+              value={phone}
+            />
+          </View>
+        </View>
+        {phoneError && (
+          <Text style={styles.error}>Phone number must have 8 digits</Text>
+        )}
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputText}>Password</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangePassword}
+            value={password}
+            secureTextEntry={true}
+          />
+        </View>
+        {invalidPass && (
+          <Text style={styles.error}>Please enter a valid password</Text>
+        )}
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputText}>Confirm password</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangeConfPassword}
+            value={confPassword}
+            secureTextEntry={true}
+          />
+        </View>
+        {nonMatchError && (
+          <Text style={styles.error}>Passwords do not match</Text>
+        )}
+        <TouchableOpacity style={styles.loginBtn} onPress={onSignUpPressed}>
+          <Text style={{ ...FONTS.h3, color: COLORS.white }}>Register</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={{ marginTop: 10 }}
-        onPress={() => navigation.navigate("Login")}
-      >
-        <Text style={styles.referal}>Already have an account? Login</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={{ marginTop: 10 }}
+          onPress={() => navigation.navigate("Login")}
+        >
+          <Text style={styles.referal}>Already have an account? Login</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );

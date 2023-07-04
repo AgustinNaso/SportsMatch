@@ -1,9 +1,8 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import Tabs from "./navigation/Tabs";
-import { AuthLoadingScreen, Login, Register } from "./screens";
+import { AuthLoadingScreen, Login, Register, ConfirmSignUp } from "./screens";
 
 const Stack = createStackNavigator();
 
@@ -30,6 +29,7 @@ export default function App() {
         <Stack.Screen name="Tabs" component={Tabs} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="ConfirmSignUp" component={ConfirmSignUp} />
       </Stack.Navigator>
     </NavigationContainer>
   );

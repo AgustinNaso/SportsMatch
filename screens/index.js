@@ -6,6 +6,7 @@ import MyEvents from "./MyEvents";
 import NewEvent from "./NewEvent";
 import Profile from "./Profile";
 import Register from "./Register";
+import ConfirmSignUp from "./ConfirmSignUp";
 
 export {
   AuthLoadingScreen,
@@ -16,4 +17,5 @@ export {
   NewEvent,
   Profile,
   Register,
+  ConfirmSignUp,
 };

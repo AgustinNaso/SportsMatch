@@ -16,4 +16,8 @@ function validatePhoneNumber(number) {
   return /^[0-9]{8}$/.test(number);
 }
 
-export { validateEmail, matching, isEmpty, validatePhoneNumber };
+function validatePassword(password) {
+  return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,99}$/.test(password);
+}
+
+export { validateEmail, matching, isEmpty, validatePhoneNumber, validatePassword };
