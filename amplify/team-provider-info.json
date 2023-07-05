@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-sportsmatch-staging-224213-authRole",
+      "UnauthRoleArn": "arn:aws:iam::391648767699:role/amplify-sportsmatch-staging-224213-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::391648767699:role/amplify-sportsmatch-staging-224213-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-sportsmatch-staging-224213-deployment",
+      "UnauthRoleName": "amplify-sportsmatch-staging-224213-unauthRole",
+      "StackName": "amplify-sportsmatch-staging-224213",
+      "StackId": "arn:aws:cloudformation:us-east-1:391648767699:stack/amplify-sportsmatch-staging-224213/05612350-1abc-11ee-a343-0a4269bd10eb",
+      "AmplifyAppId": "dj6eos9edd28o"
+    },
+    "categories": {
+      "auth": {
+        "SportsMatch": {}
+      }
+    }
+  }
+}

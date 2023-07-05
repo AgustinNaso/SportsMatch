@@ -56,11 +56,11 @@ const ConfirmSignUp = ({ navigation }) => {
   const onConfirmPressed = async () => {
     setError("");
 
-    try {
-      await confirmSignUp(email, code);
+    const response = await confirmSignUp(email, code);
+    if (response.error) {
+      setError(response.error.message);
+    } else {
       navigation.navigate("Login");
-    } catch (err) {
-      setError(err.message)
     }
   }
 

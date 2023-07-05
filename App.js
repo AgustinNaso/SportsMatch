@@ -3,10 +3,13 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { useFonts } from "expo-font";
 import Tabs from "./navigation/Tabs";
 import { AuthLoadingScreen, Login, Register, ConfirmSignUp } from "./screens";
+import { Amplify } from "aws-amplify";
+import awsmobile from "./src/aws-exports";
 
 const Stack = createStackNavigator();
+Amplify.configure(awsmobile);
 
-export default function App() {
+function App() {
   const [loaded] = useFonts({
     "Roboto-Black": require("./assets/fonts/Roboto-Black.ttf"),
     "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
@@ -34,3 +37,5 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+export default App;

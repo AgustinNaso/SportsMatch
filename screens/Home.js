@@ -29,7 +29,7 @@ const Home = () => {
     const [selectedFilter, setSelectedFilter] = React.useState("");
 
     React.useEffect(() => {
-        console.log(selectedFilter)
+        console.log("Selected Filter: " + selectedFilter)
     })
 
     const renderItem = ({ item }) => {

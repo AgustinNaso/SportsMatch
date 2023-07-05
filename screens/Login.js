@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   Text,
@@ -10,6 +10,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { COLORS, FONTS } from "../constants";
 import { validateEmail } from "../utils/validations";
+import { signIn } from "../utils/cognito-pool";
 
 const styles = StyleSheet.create({
   input: {
@@ -60,7 +61,7 @@ const Login = () => {
 
   const navigation = useNavigation();
 
-  const onLoginPressed = () => {
+  const onLoginPressed = async () => {
     setEmailError(false);
     setError(false);
 
@@ -68,7 +69,14 @@ const Login = () => {
       setEmailError(true);
       return;
     }
-    navigation.navigate("Tabs");
+
+    const response = await signIn(email, password);
+    if (response.error) {
+      console.log("Error signing in: ", response.error);
+      setError(true);
+    } else {
+      navigation.navigate("Tabs");
+    }
   };
 
   return (
@@ -89,11 +97,7 @@ const Login = () => {
       >
         SportsMatch
       </Text>
-      {error && (
-        <Text style={styles.error}>
-          Couldn't find your account
-        </Text>
-      )}
+      {error && <Text style={styles.error}>Incorrect email or password</Text>}
       <View style={styles.inputContainer}>
         <Text style={styles.inputText}>Email</Text>
         <TextInput
@@ -102,7 +106,9 @@ const Login = () => {
           value={email}
         />
       </View>
-      {emailError && <Text style={styles.error}>Please enter a valid email</Text>}
+      {emailError && (
+        <Text style={styles.error}>Please enter a valid email</Text>
+      )}
       <View style={styles.inputContainer}>
         <Text style={styles.inputText}>Password</Text>
         <TextInput

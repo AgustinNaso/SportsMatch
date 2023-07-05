@@ -142,11 +142,9 @@ const Register = ({ navigation }) => {
       return;
     }
 
-    try {
-      await signUp(email, password, name, lastName, phone);
-      navigation.navigate("ConfirmSignUp", { email: email });
-    } catch (err) {
-      switch (err.name) {
+    const response = await signUp(email, password, name, lastName, phone);
+    if (response.error) {
+      switch (response.error.name) {
         case "InvalidParameterException":
           setEmailError(true);
           break;
@@ -160,6 +158,8 @@ const Register = ({ navigation }) => {
           setError("Something went wrong, please try again.");
           break;
       }
+    } else {
+      navigation.navigate("ConfirmSignUp", { email: email });
     }
   };
 
