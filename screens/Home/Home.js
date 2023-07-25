@@ -5,15 +5,15 @@ import Pill from "../../Components/Pill";
 
 
 const mockData = [
-    { key: 1, cardName: 'Card 1', sport: 'Futbol', time: '20:00hs' },
-    { key: 2, cardName: 'Card 2', sport: 'Voley', time: '20:00hs' },
-    { key: 3, cardName: 'Card 3', sport: 'Tenis', time: '20:00hs' },
-    { key: 4, cardName: 'Card 4', sport: 'Futbol', time: '20:00hs' },
-    { key: 5, cardName: 'Card 5', sport: 'Tenis', time: '20:00hs' },
-    { key: 6, cardName: 'Card 6', sport: 'Futbol', time: '20:00hs' },
-    { key: 7, cardName: 'Card 6', sport: 'Tenis', time: '20:00hs' },
-    { key: 8, cardName: 'Card 6', sport: 'Basquet', time: '21:00hs' },
-    { key: 9, cardName: 'Card 6', sport: 'Basquet', time: '22:00hs' },
+    { key: 1, name: 'Juan', sport: 'Futbol', time: '20:00hs' },
+    { key: 2, name: 'Pedro', sport: 'Voley', time: '21:00hs' },
+    { key: 3, name: 'Gaston', sport: 'Tenis', time: '10:00hs' },
+    { key: 4, name: 'Brittany', sport: 'Futbol', time: '22:00hs' },
+    { key: 5, name: 'Agustin', sport: 'Tenis', time: '08:00hs' },
+    { key: 6, name: 'John', sport: 'Futbol', time: '11:00hs' },
+    { key: 7, name: 'Esteban', sport: 'Tenis', time: '20:00hs' },
+    { key: 8, name: 'Juana', sport: 'Basquet', time: '21:00hs' },
+    { key: 9, name: 'Marta', sport: 'Basquet', time: '22:00hs' },
 ];
 
 const filterData = [

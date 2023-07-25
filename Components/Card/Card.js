@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Touchable, TouchableOpacity } from "react-nativ
 import { useNavigation } from '@react-navigation/native';
 
 const Card = ({ props }) => {
+    console.log(props)
 
     const navigation = useNavigation();
     const handlePress = () => {

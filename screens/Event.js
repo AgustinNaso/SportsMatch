@@ -26,9 +26,11 @@ const Event = () => {
                 <Text style={styles.bodyMidText}>Intermedio</Text>
                 <Text style={styles.bodyMidText}>El Porton de Nuñez</Text>
             </View>
-            <View style={{width: '100%', marginTop: 80,
-             flexDirection: 'row', justifyContent: 'center'}}>
-                <CustomButton title={"Unirse 0/2"} color={"green"}/>
+            <Text style={{fontSize: 20, fontWeight: 700}}>Ya estas anotado al partido!</Text>
+
+            <View style={{width: '50%', marginTop: 50, marginLeft: 30, height: 90,
+             flexDirection: 'column', justifyContent: 'space-between'}}>
+                <CustomButton title={"Desanotarme"} color={"red"}/>
             </View>
         </View>
     )
