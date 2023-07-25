@@ -1,9 +1,7 @@
 import React from "react";
-import {View, Text, StyleSheet, Touchable, TouchableOpacity} from "react-native"
+import { View, Text, StyleSheet } from "react-native"
 import { Ionicons } from '@expo/vector-icons';
-import CustomButton from "../Components/TabBar/CustomButton";
-
-
+import CustomButton from "../components/CustomButton";
 
 const Event = () => {
     return (

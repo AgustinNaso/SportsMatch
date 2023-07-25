@@ -1,8 +1,7 @@
 import React from "react"
 import { FlatList, SafeAreaView } from "react-native";
-import Card from "../../Components/Card/Card";
-import Pill from "../../Components/Pill";
-
+import Card from "../components/Card";
+import Pill from "../components/Pill";
 
 const mockData = [
     { key: 1, name: 'Juan', sport: 'Futbol', time: '20:00hs' },
@@ -30,7 +29,7 @@ const Home = () => {
     const [selectedFilter, setSelectedFilter] = React.useState("");
 
     React.useEffect(() => {
-        console.log(selectedFilter)
+        console.log("Selected Filter: " + selectedFilter)
     })
 
     const renderItem = ({ item }) => {
