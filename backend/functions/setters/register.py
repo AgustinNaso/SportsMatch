@@ -4,22 +4,23 @@ import json
 
 host = "sportsmatch.cluster-creyuppchxcc.us-east-1.rds.amazonaws.com"
 username = "postgres"
-password = "]W-ru-mY$ox]OKNFbM#DbD0YeEsX"
+password = "ij]71&cnljl4Nl|w9Mc&e?QHx|B0"
 database = "SportsMatch"
 
 
 def lambda_handler(event, context):
-    body = event.body
-    
+    body = event["body"]
+
     sql = """
-          INSERT INTO participants(eventId, userId, confirmed)
-          VALUES(%s, %s, %s)
+          INSERT INTO users(firstname, lastname, telephone, email)
+          VALUES(%s, %s, %s, %s)
           """
     
     param_set = (
-        body.eventId,
-        body.userId,
-        False
+        body["firstname"],
+        body["lastname"],
+        body["telephone"],
+        body["email"]
     )
     
     insert(sql, param_set)
@@ -37,7 +38,4 @@ def insert(sql, params):
     conn.commit() # <- We MUST commit to reflect the inserted data
     cur.close()
     conn.close()
-    return {
-        
-    }
     

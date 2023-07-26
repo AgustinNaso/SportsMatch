@@ -5,7 +5,7 @@ CREATE TABLE events (
     sport_id integer REFERENCES sports (id),
     time timestamp,
     location varchar(256),
-    level number,
+    expertise integer,
     CONSTRAINT fk_owner
         FOREIGN KEY(owner_id)
             REFERENCES users(id)

@@ -1,4 +1,4 @@
 CREATE TABLE sports (
     id serial PRIMARY KEY,
-    name varchar(256)
+    name unique varchar(256)
 );
