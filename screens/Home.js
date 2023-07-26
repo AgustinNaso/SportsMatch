@@ -5,12 +5,15 @@ import Pill from "../components/Pill";
 import { fetchNearEvents } from "../services/eventService";
 import { COLORS } from "../constants";
 
+const SPORT = ['Futbol', 'Basquet', 'Paddle', 'Voley', 'Tenis','Ping Pong']
+
+
 const filterData = [
-    { key: 1, cardName: 'Card 1', sport: 'Futbol', time: '20:00hs' },
-    { key: 2, cardName: 'Card 2', sport: 'Tenis', time: '20:00hs' },
-    { key: 3, cardName: 'Card 3', sport: 'Basquet', time: '20:00hs' },
-    { key: 4, cardName: 'Card 4', sport: 'Voley', time: '20:00hs' },
-    { key: 5, cardName: 'Card 5', sport: 'Paddle', time: '20:00hs' },
+    { key: 1, sportId: 1, sport: SPORT[0] },
+    { key: 2, sportId: 2, sport: SPORT[1] },
+    { key: 3, sportId: 3, sport: SPORT[2] },
+    { key: 4, sportId: 4, sport: SPORT[3] },
+    { key: 5, sportId: 5, sport: SPORT[4] },
 
 ];
 
@@ -50,7 +53,9 @@ const Home = () => {
         }
         else {
             setSelectedFilter(sport)
-            setFilteredEventList(eventsList.filter(e => e.sport == sport))
+            console.log(sport)
+            //TODO: FIX esto
+            setFilteredEventList(eventsList.filter(e => SPORT[e.sport_id - 1] == sport))
         }
     }
 

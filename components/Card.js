@@ -16,7 +16,7 @@ const Card = ({ props }) => {
     return (
         <TouchableOpacity style={styles.card} onPress={handlePress}>
                 <View style={styles.header}>
-                    <Text style={styles.cardBigText}>{SPORT[props.sport_id]}</Text>
+                    <Text style={styles.cardBigText}>{SPORT[props.sport_id - 1]}</Text>
                     <Text style={styles.cardBigText}>{time}</Text>
                 </View>
                 <View style={styles.header}>
