@@ -10,6 +10,10 @@ export const fetchEvents = async () => {
     return await fetch(API_URL + '/events');
 }
 
+export const fetchMyEvents = async () => {
+    return await fetch(API_URL + '/events?userId=' + 1);
+}
+
 export const fetchNearEvents = async () => {
     //TODO: filtrar remaining > 0 ?
    return await fetchEvents();
