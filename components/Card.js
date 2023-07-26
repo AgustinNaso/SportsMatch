@@ -3,26 +3,29 @@ import { View, Text, StyleSheet, Touchable, TouchableOpacity } from "react-nativ
 import { useNavigation } from '@react-navigation/native';
 
 const Card = ({ props }) => {
-    console.log(props)
-
     const navigation = useNavigation();
     const handlePress = () => {
         navigation.navigate("Event");
     }
 
+    //TODO: Esto sacarlo de aca y ponerlo en un archivo de constantes
+    const EXPERTISE = ['Principiante', 'Intermedio', 'Avanzado']
+    const SPORT = ['Futbol', 'Basquet', 'Paddle', 'Voley', 'Tenis','Ping Pong']
+    const time = props?.time?.split(" ")[1].split(":")[0] + ":" + props?.time?.split(" ")[1].split(":")[1]
+
     return (
         <TouchableOpacity style={styles.card} onPress={handlePress}>
                 <View style={styles.header}>
-                    <Text style={styles.cardBigText}>{props.sport}</Text>
-                    <Text style={styles.cardBigText}>{props.time}</Text>
+                    <Text style={styles.cardBigText}>{SPORT[props.sport_id]}</Text>
+                    <Text style={styles.cardBigText}>{time}</Text>
                 </View>
                 <View style={styles.header}>
-                    <Text style={styles.cardMidText}>{props.name}</Text>
-                    <Text style={styles.cardMidText}>Nuñez</Text>
+                    <Text style={styles.cardMidText}>{props.owner_firstname}</Text>
+                    <Text style={{maxWidth: '60%', ...styles.cardMidText}}>{props.location}</Text>
                 </View>
                 <View style={styles.header}>
-                    <Text style={styles.cardSmText}>Intermedio</Text>
-                    <Text style={styles.cardSmText}>8/10P</Text>
+                    <Text style={styles.cardSmText}>{EXPERTISE[props.expertise]}</Text>
+                    <Text style={styles.cardSmText}>Falta{props.remaining > 1 ? 'n: ':': '}{props.remaining}</Text>
                 </View>
         </TouchableOpacity>
     )
@@ -49,7 +52,7 @@ const styles = StyleSheet.create({
     },
     cardMidText: {
         fontSize: 20,
-        fontWeight: 500
+        fontWeight: 500,
     },
     cardSmText: {
         fontSize: 14,

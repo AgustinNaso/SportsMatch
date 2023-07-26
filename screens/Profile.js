@@ -1,54 +1,12 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { Text, View, StyleSheet, ScrollView, SafeAreaView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import CustomButton from "../components/CustomButton";
 import { useNavigation } from "@react-navigation/native";
-import { signOut } from "../utils/cognito-pool";
+import { getCurrUserJWT, signOut } from "../services/authService";
 
 const sports = ["Futbol", "Basquet", "Paddle"];
-
-const styles = StyleSheet.create({
-  profileHeader: {
-    flexDirection: "row",
-    padding: 32,
-  },
-  profileTextContainer: {
-    flexDirection: "col",
-    justifyContent: "space-evenly",
-    marginLeft: 20,
-  },
-  profileTextLocation: {
-    fontSize: 20,
-    fontWeight: 400,
-  },
-  profileTextName: {
-    fontSize: 36,
-    fontWeight: 500,
-  },
-  bodyText: {
-    fontSize: 26,
-    fontWeight: 300,
-  },
-  itemText: {
-    fontSize: 20,
-    fontWeight: 300,
-  },
-  profileBody: {
-    flexDirection: "col",
-    justifyContent: "space-evenly",
-    height: "55%",
-    width: "90%",
-  },
-  buttonContainer: {
-    minWidth: "70%",
-    marginTop: 10,
-    paddingVertical: 2,
-    flexDirection: "column",
-    gap: "10em",
-    minHeight: "14%",
-  },
-});
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -56,11 +14,15 @@ const Profile = () => {
   useFocusEffect(
     useCallback(() => {
       async function fetchUser() {
-        //const user = await getCurrentUser();
       }
       fetchUser();
     }, [])
   );
+
+
+  useEffect(() => {
+    console.log(getCurrUserJWT());
+  }, []);
 
   const handlePress = () => {
     navigation.navigate("MyEvents");
@@ -112,5 +74,48 @@ const Profile = () => {
     </SafeAreaView>
   );
 };
+
+
+const styles = StyleSheet.create({
+  profileHeader: {
+    flexDirection: "row",
+    padding: 32,
+  },
+  profileTextContainer: {
+    flexDirection: "col",
+    justifyContent: "space-evenly",
+    marginLeft: 20,
+  },
+  profileTextLocation: {
+    fontSize: 20,
+    fontWeight: 400,
+  },
+  profileTextName: {
+    fontSize: 36,
+    fontWeight: 500,
+  },
+  bodyText: {
+    fontSize: 26,
+    fontWeight: 300,
+  },
+  itemText: {
+    fontSize: 20,
+    fontWeight: 300,
+  },
+  profileBody: {
+    flexDirection: "col",
+    justifyContent: "space-evenly",
+    height: "55%",
+    width: "90%",
+  },
+  buttonContainer: {
+    minWidth: "70%",
+    marginTop: 10,
+    paddingVertical: 2,
+    flexDirection: "column",
+    gap: "10em",
+    minHeight: "14%",
+  },
+});
 
 export default Profile;

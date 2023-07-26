@@ -1,19 +1,9 @@
 import React from "react"
-import { FlatList, SafeAreaView } from "react-native";
+import { ActivityIndicator, FlatList, SafeAreaView } from "react-native";
 import Card from "../components/Card";
 import Pill from "../components/Pill";
-
-const mockData = [
-    { key: 1, name: 'Juan', sport: 'Futbol', time: '20:00hs' },
-    { key: 2, name: 'Pedro', sport: 'Voley', time: '21:00hs' },
-    { key: 3, name: 'Gaston', sport: 'Tenis', time: '10:00hs' },
-    { key: 4, name: 'Brittany', sport: 'Futbol', time: '22:00hs' },
-    { key: 5, name: 'Agustin', sport: 'Tenis', time: '08:00hs' },
-    { key: 6, name: 'John', sport: 'Futbol', time: '11:00hs' },
-    { key: 7, name: 'Esteban', sport: 'Tenis', time: '20:00hs' },
-    { key: 8, name: 'Juana', sport: 'Basquet', time: '21:00hs' },
-    { key: 9, name: 'Marta', sport: 'Basquet', time: '22:00hs' },
-];
+import { fetchNearEvents } from "../services/eventService";
+import { COLORS } from "../constants";
 
 const filterData = [
     { key: 1, cardName: 'Card 1', sport: 'Futbol', time: '20:00hs' },
@@ -25,12 +15,25 @@ const filterData = [
 ];
 
 const Home = () => {
-    const [eventsList, setEventList] = React.useState(mockData)
+    const [eventsList, setEventList] = React.useState(null);
+    const [filteredEventsList, setFilteredEventList] = React.useState(null);
     const [selectedFilter, setSelectedFilter] = React.useState("");
+    const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
-        console.log("Selected Filter: " + selectedFilter)
-    })
+        const getNearEvents = async () => {
+            const mockData = await fetchNearEvents();
+            mockData.json().then(data => {
+                setEventList(data);
+                setFilteredEventList(data);
+                setLoading(false);
+            });
+        }
+        console.log('asda');
+        getNearEvents()
+            .catch(err => console.log(err));
+
+    }, [])
 
     const renderItem = ({ item }) => {
         return <Card props={item} />
@@ -42,13 +45,12 @@ const Home = () => {
 
     const handleFilter = (sport) => {
         if (selectedFilter == sport) {
-            console.log("ACA")
             setSelectedFilter("")
-            setEventList(mockData)
+            setFilteredEventList(eventsList)
         }
         else {
             setSelectedFilter(sport)
-            setEventList(mockData.filter(e => e.sport == sport))
+            setFilteredEventList(eventsList.filter(e => e.sport == sport))
         }
     }
 
@@ -57,10 +59,16 @@ const Home = () => {
             <FlatList data={filterData} renderItem={renderItemPill}
                 keyExtractor={(item) => { item.key }} horizontal showsHorizontalScrollIndicator={false}
                 style={{ flex: 1, paddingTop: 20, paddingBottom: 10, maxHeight: 70 }} />
-            <FlatList
-                data={eventsList} renderItem={renderItem}
-                style={{ flex: 1 }} keyExtractor={(item) => { item.key }}>
-            </FlatList>
+            {loading ? <ActivityIndicator
+                size="large"
+                color={COLORS.primary}
+                style={{ alignSelf: "center", marginTop: "50%" }}
+            /> :
+                <FlatList
+                    data={filteredEventsList} renderItem={renderItem}
+                    style={{ flex: 1 }} keyExtractor={(item) => { item.key }}>
+                </FlatList>
+            }
         </SafeAreaView>
     )
 }

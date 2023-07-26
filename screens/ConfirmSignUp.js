@@ -9,7 +9,7 @@ import {
 import { TextInput } from "react-native-gesture-handler";
 import { useRoute } from "@react-navigation/native";
 import { COLORS, FONTS } from "../constants";
-import { confirmSignUp } from "../utils/cognito-pool";
+import { verifyMail } from "../services/authService";
 
 const styles = StyleSheet.create({
   input: {
@@ -54,14 +54,13 @@ const ConfirmSignUp = ({ navigation }) => {
   const email = route.params?.email;
 
   const onConfirmPressed = async () => {
-    setError("");
-
-    const response = await confirmSignUp(email, code);
-    if (response.error) {
-      setError(response.error.message);
-    } else {
-      navigation.navigate("Login");
-    }
+    verifyMail(email, code).then((response) => {
+      if (response.error) {
+        setError(response.error.message);
+      } else {
+        navigation.navigate("Login");
+      }
+    });
   }
 
   return (
@@ -93,6 +92,7 @@ const ConfirmSignUp = ({ navigation }) => {
           style={styles.input}
           onChangeText={setCode}
           value={code}
+          keyboardType="numeric"
         />
         <Text style={styles.inputText}>Please check your email for the confirmation code.</Text>
       </View>
