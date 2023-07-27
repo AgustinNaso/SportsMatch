@@ -1,11 +1,11 @@
 import React from "react"
-import { ActivityIndicator, FlatList, SafeAreaView } from "react-native";
+import { ActivityIndicator, FlatList, SafeAreaView, RefreshControl } from "react-native";
 import Card from "../components/Card";
 import Pill from "../components/Pill";
 import { fetchNearEvents } from "../services/eventService";
 import { COLORS } from "../constants";
 
-const SPORT = ['Futbol', 'Basquet', 'Paddle', 'Voley', 'Tenis','Ping Pong']
+const SPORT = ['Futbol', 'Basquet', 'Paddle', 'Voley', 'Tenis', 'Ping Pong']
 
 
 const filterData = [
@@ -32,7 +32,6 @@ const Home = () => {
                 setLoading(false);
             });
         }
-        console.log('asda');
         getNearEvents()
             .catch(err => console.log(err));
 
@@ -53,11 +52,22 @@ const Home = () => {
         }
         else {
             setSelectedFilter(sport)
-            console.log(sport)
             //TODO: FIX esto
             setFilteredEventList(eventsList.filter(e => SPORT[e.sport_id - 1] == sport))
         }
     }
+
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        const data = await fetchNearEvents();
+        const jsonData = await data.json();
+        setEventList(jsonData);
+        setFilteredEventList(jsonData);
+        setRefreshing(false);
+    }
+
 
     return (
         <SafeAreaView style={{ flex: 1, maxHeight: '100%' }}>
@@ -71,7 +81,8 @@ const Home = () => {
             /> :
                 <FlatList
                     data={filteredEventsList} renderItem={renderItem}
-                    style={{ flex: 1 }} keyExtractor={(item) => { item.key }}>
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                    style={{ flex: 1 }} keyExtractor={(item) => { item.event_id }}>
                 </FlatList>
             }
         </SafeAreaView>

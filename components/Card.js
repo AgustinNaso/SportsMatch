@@ -1,23 +1,33 @@
 import React from "react"
 import { View, Text, StyleSheet, Touchable, TouchableOpacity } from "react-native";
 import { useNavigation } from '@react-navigation/native';
+import { EXPERTISE, SPORT } from "../constants/data";
 
 const Card = ({ props }) => {
     const navigation = useNavigation();
     const handlePress = () => {
-        navigation.navigate("Event");
+        navigation.navigate("Event", { props: props });
     }
 
-    //TODO: Esto sacarlo de aca y ponerlo en un archivo de constantes
-    const EXPERTISE = ['Principiante', 'Intermedio', 'Avanzado']
-    const SPORT = ['Futbol', 'Basquet', 'Paddle', 'Voley', 'Tenis','Ping Pong']
+    const getDayAndMonth = (date) => {
+        // Convert the input string to a Date object
+        const parsedDate = new Date(date);
+    
+        // Get the day and month
+        const day = parsedDate.getDate();
+        const month = parsedDate.getMonth() + 1; // Months are zero-based, so add 1
+    
+        return { day, month };
+    };
+
     const time = props?.time?.split(" ")[1].split(":")[0] + ":" + props?.time?.split(" ")[1].split(":")[1]
+    const {day, month} = getDayAndMonth(props?.time)
 
     return (
         <TouchableOpacity style={styles.card} onPress={handlePress}>
                 <View style={styles.header}>
                     <Text style={styles.cardBigText}>{SPORT[props.sport_id - 1]}</Text>
-                    <Text style={styles.cardBigText}>{time}</Text>
+                    <Text style={styles.cardBigText}>{`${day}/${month} ${time}`}</Text>
                 </View>
                 <View style={styles.header}>
                     <Text style={styles.cardMidText}>{props.owner_firstname}</Text>
@@ -66,5 +76,3 @@ const styles = StyleSheet.create({
 })
 
 export default Card;
-
-//metano mejora

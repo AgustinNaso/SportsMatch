@@ -5,20 +5,8 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import CustomButton from '../components/CustomButton'
 
 
-const sportsData = [
-    { key: '1', value: 'Futbol' },
-    { key: '2', value: 'Paddle' },
-    { key: '3', value: 'Tennis' },
-    { key: '4', value: 'Basquet' },
-    { key: '5', value: 'Handball' },
-]
-
-const difficultyData = [
-    { key: '1', value: 'Principiante' },
-    { key: '2', value: 'Intermedio' },
-    { key: '3', value: 'Avanzado' },
-    { key: '4', value: 'Profesional' }
-]
+const SPORT = ['Futbol', 'Basquet', 'Paddle', 'Voley', 'Tenis', 'Ping Pong']
+const EXPERTISE = ['Principiante', 'Intermedio', 'Avanzado', 'Profesional']
 
 const locations = [
     { key: 1, value: "Agronomía" },
@@ -39,7 +27,8 @@ const NewEvent = () => {
     const [selectedSport, setSelectedSport] = React.useState("");
     const [selectedDifficulty, setSelectedDifficulty] = React.useState("");
     const [selectedLocation, setSelectedLocation] = React.useState("");
-    const [date, setDate] = React.useState(new Date(1598051730000));
+    const [date, setDate] = React.useState(new Date());
+    const [time, setTime] = React.useState(new Date());
     const [mode, setMode] = React.useState('date');
 
     const onChange = (event, selectedDate) => {
@@ -48,14 +37,55 @@ const NewEvent = () => {
         setDate(currentDate);
     };
 
+    const formatDate = (date, time) => {
+        // Convert the input string to a Date object
+        const parsedDate = new Date(date);
+        const parsedTime = new Date(time);
+
+        // Extract the date components
+        const year = parsedDate.getFullYear();
+        const month = String(parsedDate.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+        const day = String(parsedDate.getDate()).padStart(2, '0');
+        const hours = String(parsedTime.getHours()).padStart(2, '0');
+        const minutes = String(parsedTime.getMinutes()).padStart(2, '0');
+        const seconds = String(parsedTime.getSeconds()).padStart(2, '0');
+
+        // Construct the desired format "YYYY-MM-DD HH:mm:ss"
+        const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+        return formattedDate;
+    };
+
+    const updateDate = e => {
+        setDate(e.nativeEvent.timestamp)
+    }
+
+    const updateTime = e => {
+        setTime(e.nativeEvent.timestamp)
+    }
+    const createEvent = () => {
+        console.log("Sport: " + `${SPORT.indexOf(selectedSport) + 1}`)
+        console.log("Difficulty: " + `${EXPERTISE.indexOf(selectedDifficulty) + 1}`)
+        console.log("Location: " + selectedLocation)
+        console.log("Date: " + formatDate(date, time));
+        const data = {
+            sportId: `${SPORT.indexOf(selectedSport) + 1}`,
+            expertise: `${EXPERTISE.indexOf(selectedDifficulty) + 1}`,
+            location: selectedLocation,
+            time: formatDate(date, time),
+            description: `Partido de ${SPORT[selectedSport]} en ${selectedLocation} a las ${time.getHours()}:${time.getMinutes()}`
+        }
+        
+    }
+
 
     return (
-        <View style={{flexDirection: 'col', justifyContent: 'space-evenly'}}>
+        <View style={{ flexDirection: 'col', justifyContent: 'space-evenly' }}>
             <View style={{ padding: 10 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <SelectList
                         setSelected={(val) => setSelectedSport(val)}
-                        data={sportsData}
+                        data={SPORT}
                         save="value"
                         maxHeight={200}
                         placeholder='Elija el deporte'
@@ -66,7 +96,7 @@ const NewEvent = () => {
                     />
                     <SelectList
                         setSelected={(val) => setSelectedDifficulty(val)}
-                        data={difficultyData}
+                        data={EXPERTISE}
                         save="value"
                         maxHeight={200}
                         placeholder='Elija la dificultad'
@@ -86,16 +116,16 @@ const NewEvent = () => {
                 />
             </View>
             <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 10 }}>
-                <RNDateTimePicker mode="date" value={new Date()} minimumDate={new Date()} />
-                <RNDateTimePicker mode="time" value={new Date()} minimumDate={new Date()} />
+                <RNDateTimePicker mode="date" value={new Date(date)} minimumDate={new Date()} onChange={updateDate} />
+                <RNDateTimePicker mode="time" value={new Date(time)} minimumDate={new Date()} onChange={updateTime} />
             </View>
-            <TextInput 
+            <TextInput
                 style={styles.input}
                 multiline={true} blurOnSubmit={true}
-                onSubmitEditing={() => { Keyboard.dismiss() }}/>
+                onSubmitEditing={() => { Keyboard.dismiss() }} />
             <View style={styles.buttonContainer}>
-               <CustomButton title={"Cancelar"} color='red'/>
-               <CustomButton title={"Crear"} color='green'/>
+                <CustomButton title={"Cancelar"} color='red' />
+                <CustomButton title={"Crear"} color='green' onPress={createEvent} />
             </View>
         </View>
     )
@@ -119,5 +149,5 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         width: '90%',
         alignSelf: 'center',
-     }
+    }
 });

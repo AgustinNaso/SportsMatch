@@ -4,11 +4,12 @@ import { Ionicons } from '@expo/vector-icons';
 
 
 const MyEventCard = ({userData}) => {
+    console.log(userData);
     return (
         <View style={styles.card}>
             <View style={styles.textContainer}>
                 <Text style={styles.userText}>{userData.name}</Text>
-                <Text>{userData.expertise}</Text>
+                <Text> {userData.expertise}</Text>
             </View>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity>

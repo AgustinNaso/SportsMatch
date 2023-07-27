@@ -1,27 +1,41 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { Text, View, StyleSheet, ScrollView, SafeAreaView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import CustomButton from "../components/CustomButton";
 import { useNavigation } from "@react-navigation/native";
-import { getCurrUserJWT, signOut } from "../services/authService";
+import { getCurrUserJWT, getCurrentUserData, signOut } from "../services/authService";
 
 const sports = ["Futbol", "Basquet", "Paddle"];
 
 const Profile = () => {
+
+  const [currUser, setCurrUser ] = useState();
   const navigation = useNavigation();
 
-  useFocusEffect(
-    useCallback(() => {
-      async function fetchUser() {
-      }
-      fetchUser();
-    }, [])
-  );
+
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     async function fetchUser() {
+  //     }
+  //     fetchUser();
+  //   }, [])
+  // );
+
+  const formatPhoneNumber = (phoneNumberString) => {
+    if(!phoneNumberString) return;
+    let formatted = phoneNumberString.replace(/(\d{2})(\d{2})(\d{4})/, "$1 $2 $3");
+    return formatted;
+  }
 
 
   useEffect(() => {
-    console.log(getCurrUserJWT());
+    getCurrentUserData().then((data) => {
+      console.log("DATA: "+data);
+      setCurrUser(JSON.parse(data));
+      console.log(JSON.parse(data).given_name)
+    });
+    // console.log(getCurrUserJWT());
   }, []);
 
   const handlePress = () => {
@@ -47,7 +61,7 @@ const Profile = () => {
         <View style={styles.profileHeader}>
           <Ionicons name="person" size={100} />
           <View style={styles.profileTextContainer}>
-            <Text style={styles.profileTextName}>John Doe</Text>
+            <Text style={styles.profileTextName}>{currUser?.given_name} {currUser?.family_name}</Text>
             <Text style={styles.profileTextLocation}>
               Barracas, Buenos Aires
             </Text>
@@ -55,7 +69,7 @@ const Profile = () => {
         </View>
         <View style={styles.profileBody}>
           <Text style={styles.bodyText}>Edad: 25 años</Text>
-          <Text style={styles.bodyText}>Telefono: 1121224423</Text>
+          <Text style={styles.bodyText}>Telefono: {formatPhoneNumber(currUser?.phone_number)}</Text>
           <Text style={styles.bodyText}>Deportes de Interes:</Text>
           {sports.map((sport) => (
             <Text style={styles.itemText}>{`\u26ab ${sport}`}</Text>

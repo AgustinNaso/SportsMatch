@@ -25,7 +25,6 @@ function App() {
         }}
         initialRouteName={"Login"}
       >
-        <Stack.Screen name="AuthLoadingScreen" component={AuthLoadingScreen} />
         <Stack.Screen name="Tabs" component={Tabs} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />

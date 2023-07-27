@@ -6,6 +6,7 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
@@ -27,27 +28,31 @@ const Login = () => {
 
 
   const onSubmit = (data) => {
-    console.log(data);
+    setLoading(true);
     const user = new CognitoUser({
       Username: data.email,
       Pool: UserPool
     })
 
     const authDetails = new AuthenticationDetails({
-      Username: data.email,
+      Username: data.email.toLowerCase(),
       Password: data.password
     });
 
     user.authenticateUser(authDetails, {
       onSuccess: (data) => {
         saveUserData(data);
+        setLoading(false);
         navigation.navigate("Tabs");
       },
       onFailure: (err) => {
         console.error("On Failure: ", err);
+        setError(true);
+        setLoading(false);
       },
       newPasswordRequired: (data) => {
         console.log("newPasswordRequired: ", data);
+        setLoading(false);
       }
     })
   }
@@ -61,13 +66,7 @@ const Login = () => {
       return;
     }
 
-    // const response = await signIn(email, password);
     navigation.navigate("Tabs");
-    // if (response.error) {
-    //   console.log("Error signing in: ", response.error);
-    //   setError(true);
-    // } else {
-    // }
   };
 
   return (
@@ -78,70 +77,76 @@ const Login = () => {
         paddingBottom: 100,
       }}
     >
-      <Text
-        style={{
-          ...FONTS.h1,
-          fontSize: 40,
-          color: COLORS.primary,
-          paddingTop: 50,
-        }}
-      >
-        SportsMatch
-      </Text>
-      {errors.email && <Text style={styles.error}>Incorrect email or password</Text>}
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputText}>Email</Text>
-        <Controller control={control}
-          rules={{
-            required: true,
+      {loading ? <ActivityIndicator
+        size="large"
+        color={COLORS.primary}
+        style={{ alignSelf: "center", marginTop: "50%" }}
+      /> : <>
+        <Text
+          style={{
+            ...FONTS.h1,
+            fontSize: 40,
+            color: COLORS.primary,
+            paddingTop: 50,
           }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={styles.input}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-            />)}
-          name="email"
-        />
-      </View>
-      {errors.email && (
-        <Text style={styles.error}>Please enter a valid email</Text>
-      )}
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputText}>Password</Text>
-        <Controller control={control}
-          rules={{
-            minLength: 8,
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={styles.input}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              secureTextEntry={true}
-            />)}
-          name="password"
-        />
-      </View>
-      {errors.password && (
-        <Text style={styles.error}>Please enter a valid password</Text>
-      )}
-      <TouchableOpacity
-        style={styles.loginBtn}
-        onPress={handleSubmit(onSubmit)}
-        loading={loading}
-      >
-        <Text style={{ ...FONTS.h3, color: COLORS.white }}>Login</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{ marginTop: 10 }}
-        onPress={() => navigation.navigate("Register")}
-      >
-        <Text style={styles.referal}>Don't have an account yet? Register</Text>
-      </TouchableOpacity>
+        >
+          SportsMatch
+        </Text>
+        {errors.email && <Text style={styles.error}>Incorrect email or password</Text>}
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputText}>Email</Text>
+          <Controller control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />)}
+            name="email"
+          />
+        </View>
+        {errors.email && (
+          <Text style={styles.error}>Please enter a valid email</Text>
+        )}
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputText}>Password</Text>
+          <Controller control={control}
+            rules={{
+              minLength: 8,
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                secureTextEntry={true}
+              />)}
+            name="password"
+          />
+        </View>
+        {errors.password && (
+          <Text style={styles.error}>Please enter a valid password</Text>
+        )}
+        <TouchableOpacity
+          style={styles.loginBtn}
+          onPress={handleSubmit(onSubmit)}
+          loading={loading}
+        >
+          <Text style={{ ...FONTS.h3, color: COLORS.white }}>Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ marginTop: 10 }}
+          onPress={() => navigation.navigate("Register")}
+        >
+          <Text style={styles.referal}>Don't have an account yet? Register</Text>
+        </TouchableOpacity>
+      </>}
     </SafeAreaView>
   );
 };
