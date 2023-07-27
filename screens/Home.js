@@ -72,7 +72,7 @@ const Home = () => {
     return (
         <SafeAreaView style={{ flex: 1, maxHeight: '100%' }}>
             <FlatList data={filterData} renderItem={renderItemPill}
-                keyExtractor={(item) => { item.key }} horizontal showsHorizontalScrollIndicator={false}
+                keyExtractor={(item) => {return item.key.toString() }} horizontal showsHorizontalScrollIndicator={false}
                 style={{ flex: 1, paddingTop: 20, paddingBottom: 10, maxHeight: 70 }} />
             {loading ? <ActivityIndicator
                 size="large"
@@ -82,7 +82,7 @@ const Home = () => {
                 <FlatList
                     data={filteredEventsList} renderItem={renderItem}
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                    style={{ flex: 1 }} keyExtractor={(item) => { item.event_id }}>
+                    style={{ flex: 1 }} keyExtractor={(item) => { return item.event_id.toString() }}>
                 </FlatList>
             }
         </SafeAreaView>

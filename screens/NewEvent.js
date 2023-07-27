@@ -1,8 +1,10 @@
 import RNDateTimePicker from '@react-native-community/datetimepicker'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Keyboard, StyleSheet, TextInput, View } from 'react-native'
 import { SelectList } from 'react-native-dropdown-select-list'
 import CustomButton from '../components/CustomButton'
+import { getCurrUserJWT, getCurrentUserData } from '../services/authService'
+import { publishEvent } from '../services/eventService'
 
 
 const SPORT = ['Futbol', 'Basquet', 'Paddle', 'Voley', 'Tenis', 'Ping Pong']
@@ -30,12 +32,20 @@ const NewEvent = () => {
     const [date, setDate] = React.useState(new Date());
     const [time, setTime] = React.useState(new Date());
     const [mode, setMode] = React.useState('date');
+    const [user, setUser] = React.useState(null);
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate;
         setShow(false);
         setDate(currentDate);
     };
+
+    useEffect(() => {
+        getCurrentUserData().then((data) => {
+            console.log("DATA: " + JSON.parse(data));
+            setUser(JSON.parse(data));
+        });
+    }, []);
 
     const formatDate = (date, time) => {
         // Convert the input string to a Date object
@@ -68,14 +78,22 @@ const NewEvent = () => {
         console.log("Difficulty: " + `${EXPERTISE.indexOf(selectedDifficulty) + 1}`)
         console.log("Location: " + selectedLocation)
         console.log("Date: " + formatDate(date, time));
+        console.log("USE aR" + JSON.stringify(user));
         const data = {
             sportId: `${SPORT.indexOf(selectedSport) + 1}`,
             expertise: `${EXPERTISE.indexOf(selectedDifficulty) + 1}`,
             location: selectedLocation,
             time: formatDate(date, time),
-            description: `Partido de ${SPORT[selectedSport]} en ${selectedLocation} a las ${time.getHours()}:${time.getMinutes()}`
+            description: `Partido de ${selectedLocation}`,
+            userId: user.uid,
+            remaining: 4
         }
-        
+        publishEvent(data).then((data) => {
+            data.json().then(data => {
+                console.log(data);
+            }
+            )
+        }).catch(err => console.log(err));
     }
 
 

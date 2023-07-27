@@ -61,7 +61,6 @@ const FirstRoute = () => (
         <FlatList
             data={createdEventMockData} renderItem={renderList}
             style={{ flex: 1 }} keyExtractor={(item) => { 
-                console.log(item.key);
                 return item.key }}>
         </FlatList>
     </SafeAreaView>
@@ -71,7 +70,7 @@ const SecondRoute = (myEvents) => (
     <SafeAreaView style={{ flex: 1 }}>
         <FlatList
             data={myEvents} renderItem={renderJoinedItem}
-            style={{ flex: 1 }} keyExtractor={(item) => { item.event_id }}>
+            style={{ flex: 1 }} keyExtractor={(item) => { return item.event_id }}>
         </FlatList>
     </SafeAreaView>
 );

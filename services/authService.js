@@ -4,6 +4,7 @@ import {
 } from "amazon-cognito-identity-js"
 
 import * as SecureStore from 'expo-secure-store';
+import { fecthUserId } from "./eventService";
 
 
 const UserPool = new CognitoUserPool({
@@ -61,11 +62,14 @@ export const signOut = () => {
     SecureStore.deleteItemAsync('userPayload');
 }
 
-export const saveUserData = data => {
-    console.log(data);
+export const saveUserData = async data => {
     const userData =  JSON.parse(JSON.stringify(data));
     const userJWT = userData.idToken.jwtToken;
     const userPayload = userData.idToken.payload;
+    console.log(userPayload.email)
+    const userInfo = await fecthUserId(userPayload.email.toLowerCase(), userJWT);
+    userPayload.uid = userInfo.id;
+    console.log('Payload: ' + userPayload.uid);
     save('userToken', userJWT);
     save('userPayload', JSON.stringify(userPayload));
 } 
