@@ -59,18 +59,23 @@ const Home = () => {
 
     const onRefresh = async () => {
         setRefreshing(true);
-        const jsonData = await fetchNearEvents();
-        setEventList(jsonData);
-        setFilteredEventList(jsonData);
+        try {
+            const jsonData = await fetchNearEvents();
+            console.log("FecthedL " + jsonData)
+            setEventList(jsonData);
+            setFilteredEventList(jsonData);
+        } catch (error) {
+            console.error(error);
+        }
         setRefreshing(false);
     }
 
 
     return (
         <SafeAreaView style={{ flex: 1, maxHeight: '100%' }}>
-            <StatusBar/>
+            <StatusBar />
             <FlatList data={filterData} renderItem={renderItemPill}
-                keyExtractor={(item) => {return item.key.toString() }} horizontal showsHorizontalScrollIndicator={false}
+                keyExtractor={(item) => { return item.key.toString() }} horizontal showsHorizontalScrollIndicator={false}
                 style={{ flex: 1, paddingTop: 20, paddingBottom: 10, maxHeight: 70 }} />
             {loading ? <ActivityIndicator
                 size="large"

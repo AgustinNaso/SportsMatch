@@ -33,18 +33,6 @@ const Login = () => {
     setLoading(false);
 
   }
-  //TODO: validate email in the form
-  // const onLoginPressed = async () => {
-  //   setEmailError(false);
-  //   setError(false);
-
-  //   if (!validateEmail(email)) {
-  //     setEmailError(true);
-  //     return;
-  //   }
-
-  // navigation.navigate("Tabs");
-// };
 
 return (
   <SafeAreaView
@@ -75,6 +63,9 @@ return (
         <Controller control={control}
           rules={{
             required: true,
+            validate: {
+              matchPattern: v => validateEmail(v),
+            }
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
