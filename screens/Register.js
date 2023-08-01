@@ -22,33 +22,7 @@ const Register = ({ navigation }) => {
 
   const submit = data => {
     console.log(data)
-    const attributeList = [
-      new CognitoUserAttribute({
-        Name: 'custom:location', // Use "custom:" prefix for custom attributes
-        Value: data.location
-      }),
-      new CognitoUserAttribute({
-        Name: 'family_name',
-        Value: data.lastName
-      }),
-      new CognitoUserAttribute({
-        Name: 'given_name',
-        Value: data.name
-      }),
-      new CognitoUserAttribute({
-        Name: 'phone_number',
-        Value: '+5411' + data.phone
-      }),
-    ];
-    UserPool.signUp(data.email, data.password, attributeList, null, (err, result) => {
-      if (err) {
-        console.error("Error signing up:", err);
-      }
-      else {
-        console.log("Sign up successful. User:", result.user);
-        navigation.navigate("ConfirmSignUp", { email: data.email });
-      }
-    });
+    //TODO: Register user using authService
   };
 
   const onSignUpPressed = async () => {
@@ -270,7 +244,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginTop: 20,
     width: "65%",
-    gap: "5em",
+    gap: 5,
   },
   inputText: {
     ...FONTS.body3,

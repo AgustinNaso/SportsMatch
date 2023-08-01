@@ -3,13 +3,15 @@ import { Text, View, StyleSheet, ScrollView, SafeAreaView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import CustomButton from "../components/CustomButton";
 import { useNavigation } from "@react-navigation/native";
-import { getCurrUserJWT, getCurrentUserData, signOut } from "../services/authService";
+import { getCurrUserJWT, getCurrentUserData } from "../services/authService";
+import { AuthContext } from "../App";
 
 const sports = ["Futbol", "Basquet", "Paddle"];
 
 const Profile = () => {
 
   const [currUser, setCurrUser ] = useState();
+  const {signOut} = React.useContext(AuthContext);
   const navigation = useNavigation();
 
 
@@ -43,10 +45,6 @@ const Profile = () => {
 
   const handleLogout = () => {
     signOut();
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Login" }],
-    });
   };
 
   return (
