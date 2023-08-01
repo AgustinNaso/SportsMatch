@@ -1,25 +1,46 @@
 import React from "react"
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { Ionicons } from '@expo/vector-icons';
+import { acceptParticipant } from "../services/eventService";
 
 
-const MyEventCard = ({userData}) => {
-    console.log(userData);
+const MyEventCard = ({ userData }) => {
+
+    const [userAccepted, setUserAccepted] = React.useState(userData.status == "true");
+
+    const acceptUser = () => {
+        acceptParticipant(userData.event_id, userData.userid).then((data) => {
+            data.json().then((data) => {
+                console.log(data);
+                setUserAccepted(true)
+            })
+        }
+        )
+    }
+
+    const sendMessage = () => {
+        console.log(JSON.stringify(userData))
+        Linking.openURL(`whatsapp://send?phone=${userData.telephone}&text=Hola ${userData.firstname}. Nos vemos en el partido!'`);
+    }
+
+
     return (
         <View style={styles.card}>
             <View style={styles.textContainer}>
-                <Text style={styles.userText}>{userData.name}</Text>
+                <Text style={styles.userText}>{userData.firstname}</Text>
                 <Text> {userData.expertise}</Text>
             </View>
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity>
-                    <Ionicons name="close" size={40} color="red" />
-                </TouchableOpacity>
-                <TouchableOpacity>
-                    <Ionicons name="checkmark" size={40} color="green" />
-                </TouchableOpacity>
-
-            </View>
+            {!userAccepted ?
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity>
+                        <Ionicons name="close" size={40} color="red" />
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <Ionicons name="checkmark" size={40} color="green" onPress={acceptUser} />
+                    </TouchableOpacity>
+                </View>
+                : <TouchableOpacity onPress={sendMessage}><Text>Contactar</Text></TouchableOpacity>
+            }
         </View>
     );
 }

@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginTop: 20,
     width: "65%",
-    gap: "5em",
+    gap: 5,
   },
   inputText: {
     ...FONTS.body3,

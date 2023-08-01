@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet, ScrollView, SafeAreaView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import CustomButton from "../components/CustomButton";
@@ -96,7 +95,7 @@ const styles = StyleSheet.create({
     padding: 32,
   },
   profileTextContainer: {
-    flexDirection: "col",
+    flexDirection: "column",
     justifyContent: "space-evenly",
     marginLeft: 20,
   },
@@ -117,7 +116,7 @@ const styles = StyleSheet.create({
     fontWeight: 300,
   },
   profileBody: {
-    flexDirection: "col",
+    flexDirection: "column",
     justifyContent: "space-evenly",
     height: "55%",
     width: "90%",
@@ -127,7 +126,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingVertical: 2,
     flexDirection: "column",
-    gap: "10em",
+    gap: 10,
     minHeight: "14%",
   },
 });

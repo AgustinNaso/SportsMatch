@@ -4,7 +4,6 @@ import { Keyboard, StyleSheet, TextInput, View } from 'react-native'
 import { SelectList } from 'react-native-dropdown-select-list'
 import CustomButton from '../components/CustomButton'
 import { getCurrUserJWT, getCurrentUserData } from '../services/authService'
-import { publishEvent } from '../services/eventService'
 
 
 const SPORT = ['Futbol', 'Basquet', 'Paddle', 'Voley', 'Tenis', 'Ping Pong']
@@ -23,22 +22,17 @@ const locations = [
     { key: 10, value: "Colegiales" },
 ];
 
-
 const NewEvent = () => {
 
+    //TODO: migrate to react-hook-form
     const [selectedSport, setSelectedSport] = React.useState("");
     const [selectedDifficulty, setSelectedDifficulty] = React.useState("");
     const [selectedLocation, setSelectedLocation] = React.useState("");
     const [date, setDate] = React.useState(new Date());
     const [time, setTime] = React.useState(new Date());
-    const [mode, setMode] = React.useState('date');
     const [user, setUser] = React.useState(null);
-
-    const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate;
-        setShow(false);
-        setDate(currentDate);
-    };
+    const [description, setDescription] = React.useState("");
+    const [isLoading, setIsLoading] = React.useState(false);
 
     useEffect(() => {
         getCurrentUserData().then((data) => {
@@ -47,6 +41,7 @@ const NewEvent = () => {
         });
     }, []);
 
+    //TODO: move to utils
     const formatDate = (date, time) => {
         // Convert the input string to a Date object
         const parsedDate = new Date(date);
@@ -66,6 +61,7 @@ const NewEvent = () => {
         return formattedDate;
     };
 
+    //TODO: this should be deprecated when using react-hook-form
     const updateDate = e => {
         setDate(e.nativeEvent.timestamp)
     }
@@ -73,32 +69,38 @@ const NewEvent = () => {
     const updateTime = e => {
         setTime(e.nativeEvent.timestamp)
     }
+
+    const setText = e => {
+        setDescription(e.nativeEvent.text);
+
+    }
     const createEvent = () => {
-        console.log("Sport: " + `${SPORT.indexOf(selectedSport) + 1}`)
-        console.log("Difficulty: " + `${EXPERTISE.indexOf(selectedDifficulty) + 1}`)
-        console.log("Location: " + selectedLocation)
-        console.log("Date: " + formatDate(date, time));
-        console.log("USE aR" + JSON.stringify(user));
-        const data = {
-            sportId: `${SPORT.indexOf(selectedSport) + 1}`,
-            expertise: `${EXPERTISE.indexOf(selectedDifficulty) + 1}`,
-            location: selectedLocation,
-            time: formatDate(date, time),
-            description: `Partido de ${selectedLocation}`,
-            userId: user.uid,
-            remaining: 4
-        }
-        publishEvent(data).then((data) => {
-            data.json().then(data => {
-                console.log(data);
-            }
-            )
-        }).catch(err => console.log(err));
+        setIsLoading(!isLoading);
+        // console.log("Sport: " + `${SPORT.indexOf(selectedSport) + 1}`)
+        // console.log("Difficulty: " + `${EXPERTISE.indexOf(selectedDifficulty) + 1}`)
+        // console.log("Location: " + selectedLocation)
+        // console.log("Date: " + formatDate(date, time));
+        // console.log("USE aR" + JSON.stringify(user));
+        // const data = {
+        //     sportId: `${SPORT.indexOf(selectedSport) + 1}`,
+        //     expertise: `${EXPERTISE.indexOf(selectedDifficulty) + 1}`,
+        //     location: selectedLocation,
+        //     time: formatDate(date, time),
+        //     description: description,
+        //     userId: user.uid,
+        //     remaining: 4
+        // }
+        // publishEvent(data).then((data) => {
+        //     data.json().then(data => {
+        //         console.log(data);
+        //     }
+        //     )
+        // }).catch(err => console.log(err));
     }
 
 
     return (
-        <View style={{ flexDirection: 'col', justifyContent: 'space-evenly' }}>
+        <View style={{ flexDirection: 'column', justifyContent: 'space-evenly' }}>
             <View style={{ padding: 10 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <SelectList
@@ -140,10 +142,11 @@ const NewEvent = () => {
             <TextInput
                 style={styles.input}
                 multiline={true} blurOnSubmit={true}
-                onSubmitEditing={() => { Keyboard.dismiss() }} />
+                onSubmitEditing={() => { Keyboard.dismiss() }}
+                onChange={setText} />
             <View style={styles.buttonContainer}>
                 <CustomButton title={"Cancelar"} color='red' />
-                <CustomButton title={"Crear"} color='green' onPress={createEvent} />
+                <CustomButton title={isLoading? "Creando" :"Crear"} color='green' isLoading={isLoading} onPress={createEvent} />
             </View>
         </View>
     )

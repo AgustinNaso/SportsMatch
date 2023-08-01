@@ -17,13 +17,14 @@ const save = async (key, value) => {
     await SecureStore.setItemAsync(key, value);
   }
   
-  async function getValueFor(key) {
+const getValueFor = async  key =>  {
     let result = await SecureStore.getItemAsync(key);
     if (result) {
-      console.log("🔐 Here's your value 🔐 \n" + result);
+      console.info("Value: " + result)
       return result;
     } else {
-      alert('No values stored under that key.');
+      console.log("No values stored under that key.");
+      return null;
     }
   }
   
@@ -38,7 +39,7 @@ export const getCognitoUser = (email) => {
 }
 
 export const getCurrentUserData = async ()=> {
-    return  await getValueFor('userPayload');
+    return await getValueFor('userPayload');
 }
 
 export const getCurrUserJWT = async () => {

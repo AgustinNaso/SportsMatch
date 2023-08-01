@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 
-const CustomButton = ({ title, onPress, color }) => {
+const CustomButton = ({ title, onPress, color, isLoading = false }) => {
+  console.log(isLoading);
   return (
     <TouchableOpacity onPress={onPress} style={[styles.button, {backgroundColor: color}]}>
+      {isLoading && <ActivityIndicator size="small" color="white" style={{paddingRight: 10}} />}
       <Text style={styles.buttonText}>{title}</Text>
     </TouchableOpacity>
   );

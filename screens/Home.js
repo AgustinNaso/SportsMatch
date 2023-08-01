@@ -4,8 +4,8 @@ import Card from "../components/Card";
 import Pill from "../components/Pill";
 import { fetchNearEvents } from "../services/eventService";
 import { COLORS } from "../constants";
-
-const SPORT = ['Futbol', 'Basquet', 'Paddle', 'Voley', 'Tenis', 'Ping Pong']
+import { StatusBar } from "expo-status-bar";
+import { SPORT } from "../constants/data";
 
 
 const filterData = [
@@ -26,11 +26,9 @@ const Home = () => {
     React.useEffect(() => {
         const getNearEvents = async () => {
             const mockData = await fetchNearEvents();
-            mockData.json().then(data => {
-                setEventList(data);
-                setFilteredEventList(data);
-                setLoading(false);
-            });
+            setEventList(mockData);
+            setFilteredEventList(mockData);
+            setLoading(false);
         }
         getNearEvents()
             .catch(err => console.log(err));
@@ -52,7 +50,7 @@ const Home = () => {
         }
         else {
             setSelectedFilter(sport)
-            //TODO: FIX esto
+            //TODO: FIX this should be done in the backend
             setFilteredEventList(eventsList.filter(e => SPORT[e.sport_id - 1] == sport))
         }
     }
@@ -61,8 +59,7 @@ const Home = () => {
 
     const onRefresh = async () => {
         setRefreshing(true);
-        const data = await fetchNearEvents();
-        const jsonData = await data.json();
+        const jsonData = await fetchNearEvents();
         setEventList(jsonData);
         setFilteredEventList(jsonData);
         setRefreshing(false);
@@ -71,6 +68,7 @@ const Home = () => {
 
     return (
         <SafeAreaView style={{ flex: 1, maxHeight: '100%' }}>
+            <StatusBar/>
             <FlatList data={filterData} renderItem={renderItemPill}
                 keyExtractor={(item) => {return item.key.toString() }} horizontal showsHorizontalScrollIndicator={false}
                 style={{ flex: 1, paddingTop: 20, paddingBottom: 10, maxHeight: 70 }} />

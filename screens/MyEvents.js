@@ -4,21 +4,29 @@ import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import Card from '../components/Card';
 import MyEventCard from '../components/MyEventCard';
 import { fetchJoinedEvents, fetchMyEvents, fetchNearEvents } from '../services/eventService';
+import { getCurrentUserData } from '../services/authService';
 
 const renderList = ({ item }) => {
+
+    //Adding event id for using it inside MyEventCard api call
+    for( let i = 0 ; i < item.participants.length; i++)
+        item.participants[i].event_id = item.event_id;
+    
     return (
         <>
-            <Text style={{ fontSize: 35, fontWeight: 600, marginLeft: 10, marginVertical: 10 }}>{item.eventName}</Text>
+            <Text style={{ fontSize: 35, fontWeight: 600, marginLeft: 10, marginVertical: 10 }}>Partido {item.event_id} {item.location}</Text>
             <FlatList
-                data={item.myEvent} renderItem={renderItem}
-                style={{ flex: 1 }} keyExtractor={(item) => item.key.toString()}>
+                data={item.participants} renderItem={renderItem}
+                style={{ flex: 1 }} keyExtractor={(item, index) => {return `${item.userid} + ${index} + ${item.event_id}}`}}
+                ListEmptyComponent={<Text style={{fontSize: 20, alignSelf: 'center'}}>Aún no hay participantes</Text>}
+                >
             </FlatList>
         </>
     )
 }
 
 const renderItem = ({ item }) => {
-    return <MyEventCard userData={item} />
+    return <MyEventCard userData={item}/>
 
 }
 
@@ -26,51 +34,22 @@ const renderJoinedItem = ({ item }) => {
     return <Card props={item} />
 }
 
-const mockData = [
-    { key: 1, name: 'Pedro', sport: 'Futbol', time: "12 20:00hs" },
-    { key: 2, name: 'Juan', sport: 'Basquet', time: "12 16:00hs" },
-];
-
-const createdEventMockData = [
-    {
-        myEvent: [
-            { key: 1, name: 'Gaston', sport: 'Futbol', expertise: 'Principiante', time: '20:00hs' },
-            { key: 2, name: 'John', sport: 'Futbol', expertise: 'Intermedio', time: '20:00hs' },
-        ],
-        eventName: "Partido 1",
-        key: 1,
-        time: '20:00hs'
-    },
-    {
-        myEvent:
-            [
-                { key: 1, name: 'Gaston', sport: 'Futbol', expertise: 'Principiante', time: '20:00hs' },
-                { key: 2, name: 'John', sport: 'Futbol', expertise: 'Intermedio', time: '20:00hs' },
-                { key: 3, name: 'Brittany', sport: 'Futbol', expertise: 'Intermedio', time: '20:00hs' },
-                { key: 4, name: 'Agustin', sport: 'Futbol', expertise: 'Avanzado', time: '20:00hs' },
-            ],
-        eventName: "Partido 2",
-        key: 2,
-        time: '20:00hs'
-    }
-];
-
-
-const FirstRoute = () => (
+const FirstRoute = (myEvents) => (
     <SafeAreaView style={{ flex: 1 }}>
         <FlatList
-            data={createdEventMockData} renderItem={renderList}
-            style={{ flex: 1 }} keyExtractor={(item) => { 
-                return item.key }}>
+            data={myEvents} renderItem={renderList}
+            style={{ flex: 1 }} keyExtractor={(item, index) => {
+                return `${index}`
+            }}>
         </FlatList>
     </SafeAreaView>
 );
 
-const SecondRoute = (myEvents) => (
+const SecondRoute = (joinedEvents) => (
     <SafeAreaView style={{ flex: 1 }}>
         <FlatList
-            data={myEvents} renderItem={renderJoinedItem}
-            style={{ flex: 1 }} keyExtractor={(item) => { return item.event_id }}>
+            data={joinedEvents} renderItem={renderJoinedItem}
+            style={{ flex: 1 }} keyExtractor={(item, index) => `${item.event_id}-${index}`}>
         </FlatList>
     </SafeAreaView>
 );
@@ -84,29 +63,45 @@ const MyEvents = () => {
         { key: 'second', title: 'Anotado' },
     ]);
     const [myEvents, setMyEvents] = React.useState([]);
+    const [joinedEvents, setJoinedEvents] = React.useState([]);
+
+    const [user, setUser] = React.useState(null);
 
     const renderScene = ({ route }) => {
         switch (route.key) {
-          case 'first':
-            return FirstRoute();
-          case 'second':
-            return myEvents.length > 0 ? SecondRoute(myEvents) : null
-          default:
-            return null;
+            case 'first':
+                return  myEvents.length > 0 ?  FirstRoute(myEvents) : null
+            case 'second':
+                return joinedEvents.length > 0 ? SecondRoute(joinedEvents) : null
+            default:
+                return null;
         }
-      };
+    };
 
     useEffect(() => {
+        getCurrentUserData().then((data) => {
+            setUser(JSON.parse(data));
+        });
+
+    }, [])
+
+    useEffect(() => {
+        const getMyEvents = async () => {
+            const data = await fetchMyEvents(user.uid);
+            setMyEvents(data)
+        }
+        getMyEvents().catch(err => console.log(err));
+
         const getNearEvents = async () => {
-            const mockData = await fetchMyEvents();
+            const mockData = await fetchJoinedEvents(user.uid);
             mockData.json().then(data => {
-                console.log(data);
-                setMyEvents(data);
+                console.log('JOINED ' + JSON.stringify(data))
+                setJoinedEvents(data);
             });
         }
         getNearEvents()
             .catch(err => console.log(err));
-    }, [])
+    }, [user])
 
     return (
         <TabView
