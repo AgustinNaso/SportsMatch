@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   SafeAreaView,
@@ -12,10 +12,9 @@ import {
 import { COLORS, FONTS } from "../constants";
 import { TextInput } from "react-native-gesture-handler";
 import {
-  getEmailValidator,
+  getEmailValidator, validateEmail,
 } from "../utils/validations";
-import { CognitoUserAttribute } from "amazon-cognito-identity-js";
-import UserPool from "../services/authService";
+
 
 const Register = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors }, watch } = useForm();
@@ -24,34 +23,6 @@ const Register = ({ navigation }) => {
     console.log(data)
     //TODO: Register user using authService
   };
-
-  const onSignUpPressed = async () => {
-
-    if (validateFields()) {
-      return;
-    }
-
-    // const response = await signUp(email, password, name, lastName, phone);
-    // navigation.navigate("ConfirmSignUp", { email: email });
-    // if (response.error) {
-    //   switch (response.error.name) {
-    //     case "InvalidParameterException":
-    //       setEmailError(true);
-    //       break;
-    //     case "InvalidPasswordException":
-    //       setInvalidPass(true);
-    //       break;
-    //     case "UsernameExistsException":
-    //       setError("An account with the given email already exists.");
-    //       break;
-    //     default:
-    //       setError("Something went wrong, please try again.");
-    //       break;
-    //   }
-    // } else {
-    // }
-  };
-
   return (
     <SafeAreaView
       style={{
@@ -119,7 +90,7 @@ const Register = ({ navigation }) => {
               rules={{
                 required: true,
                 pattern: {
-                  value: getEmailValidator(),
+                  matchPattern: mail => validateEmail(mail),
                   message: 'Invalid email address'
                 }
               }}

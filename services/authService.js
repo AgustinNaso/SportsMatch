@@ -44,7 +44,11 @@ export const login = async data => {
         user.authenticateUser(authDetails, {
             onSuccess: async (data) => {
                 console.log("On Success: ", data);
-                resolve(data);
+                resolve({
+                    acessToken: {
+                        jwtToken: 'token=random'
+                    }
+                });
             },
             onFailure: (err) => {
                 console.error("On Failure: ", err);

@@ -1,33 +1,43 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Profile from '../screens/Profile';
-import Home from '../screens/Home';
 import { Ionicons } from '@expo/vector-icons';
-import NewEvent from '../screens/NewEvent';
 import HomeStackNavigator from './HomeStackNavigator';
 import ProfileStackNavigator from './ProfileStackNavigator'
+import { COLORS } from '../constants';
+import { MyEvents } from '../screens';
+import { useNavigation } from '@react-navigation/native';
 const Tab = createBottomTabNavigator();
 
+
 const Tabs = () => {
+  const navigator = useNavigation();
   return (
     <Tab.Navigator
-    screenOptions={({ route }) => ({
+      screenOptions={({ route }) => ({
+        tabBarActiveTintColor: COLORS.primary,
+        tabBarInactiveTintColor: 'gray',
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
-          if (route.name === 'Home') {
+          if (route.name === 'Inicio') {
             iconName = 'home';
-          } else if (route.name === 'Profile') {
+          } else if (route.name === 'Perfil') {
             iconName = 'person';
-          } else if (route.name === 'New Event') {
-            iconName = 'add-circle-outline'
+          } else if (route.name === 'Mis Eventos') {
+            iconName = 'calendar'
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         }
       })}
     >
-      <Tab.Screen name="Home"      component={HomeStackNavigator}/>
-      <Tab.Screen name="New Event" component={NewEvent}/>
-      <Tab.Screen name="Profile"   component={ProfileStackNavigator} />
+      <Tab.Screen
+
+        options={{
+          headerRight: () => 
+          <Ionicons name='add' style={{borderRadius: '50%'}} size={30} color={COLORS.primary} onPress={() => navigator.navigate("Perfil")}/>
+        }}
+        name="Inicio" component={HomeStackNavigator} />
+      <Tab.Screen name="Mis Eventos" component={MyEvents} />
+      <Tab.Screen name="Perfil" component={ProfileStackNavigator} />
     </Tab.Navigator>
   );
 }

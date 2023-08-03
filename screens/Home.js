@@ -7,7 +7,6 @@ import { COLORS } from "../constants";
 import { StatusBar } from "expo-status-bar";
 import { SPORT } from "../constants/data";
 
-
 const filterData = [
     { key: 1, sportId: 1, sport: SPORT[0] },
     { key: 2, sportId: 2, sport: SPORT[1] },

@@ -21,102 +21,92 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     setLoading(true);
-    try {
-      await signIn(data);
-
-    }
-    catch (err) {
-      console.log(err);
-    }
-
-    //TODO: test if conditional routing destroy the screen
-    setLoading(false);
-
+    signIn(data).catch(err => console.error(err));
   }
 
-return (
-  <SafeAreaView
-    style={{
-      alignItems: "center",
-      justifyContent: "center",
-      paddingBottom: 100,
-    }}
-  >
-    {loading ? <ActivityIndicator
-      size="large"
-      color={COLORS.primary}
-      style={{ alignSelf: "center", marginTop: "50%" }}
-    /> : <>
-      <Text
-        style={{
-          ...FONTS.h1,
-          fontSize: 40,
-          color: COLORS.primary,
-          paddingTop: 50,
-        }}
-      >
-        SportsMatch
-      </Text>
-      {errors.email && <Text style={styles.error}>Incorrect email or password</Text>}
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputText}>Email</Text>
-        <Controller control={control}
-          rules={{
-            required: true,
-            validate: {
-              matchPattern: v => validateEmail(v),
-            }
+  return (
+    <SafeAreaView
+      style={{
+        alignItems: "center",
+        justifyContent: "center",
+        paddingBottom: 100,
+      }}
+    >
+      {loading ? <ActivityIndicator
+        size="large"
+        color={COLORS.primary}
+        style={{ alignSelf: "center", marginTop: "50%" }}
+      /> : <>
+        <Text
+          style={{
+            ...FONTS.h1,
+            fontSize: 40,
+            color: COLORS.primary,
+            paddingTop: 50,
           }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={styles.input}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-            />)}
-          name="email"
-        />
-      </View>
-      {errors.email && (
-        <Text style={styles.error}>Please enter a valid email</Text>
-      )}
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputText}>Password</Text>
-        <Controller control={control}
-          rules={{
-            minLength: 8,
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={styles.input}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              secureTextEntry={true}
-            />)}
-          name="password"
-        />
-      </View>
-      {errors.password && (
-        <Text style={styles.error}>Please enter a valid password</Text>
-      )}
-      <TouchableOpacity
-        style={styles.loginBtn}
-        onPress={handleSubmit(onSubmit)}
-        loading={loading}
-      >
-        <Text style={{ ...FONTS.h3, color: COLORS.white }}>Login</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{ marginTop: 10 }}
-        onPress={() => navigation.navigate("Register")}
-      >
-        <Text style={styles.referal}>Don't have an account yet? Register</Text>
-      </TouchableOpacity>
-    </>}
-  </SafeAreaView>
-);
+        >
+          SportsMatch
+        </Text>
+        {errors.email && <Text style={styles.error}>Incorrect email or password</Text>}
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputText}>Email</Text>
+          <Controller control={control}
+            rules={{
+              required: true,
+              validate: {
+                matchPattern: v => validateEmail(v),
+              }
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />)}
+            name="email"
+          />
+        </View>
+        {errors.email && (
+          <Text style={styles.error}>Please enter a valid email</Text>
+        )}
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputText}>Password</Text>
+          <Controller control={control}
+            rules={{
+              minLength: 8,
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                secureTextEntry={true}
+              />)}
+            name="password"
+          />
+        </View>
+        {errors.password && (
+          <Text style={styles.error}>Please enter a valid password</Text>
+        )}
+        <TouchableOpacity
+          style={styles.loginBtn}
+          onPress={handleSubmit(onSubmit)}
+          loading={loading}
+        >
+          <Text style={{ ...FONTS.h3, color: COLORS.white }}>Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ marginTop: 10 }}
+          onPress={() => navigation.navigate("Register")}
+        >
+          <Text style={styles.referal}>Don't have an account yet? Register</Text>
+        </TouchableOpacity>
+      </>}
+    </SafeAreaView>
+  );
 };
 
 const styles = StyleSheet.create({

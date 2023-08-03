@@ -28,6 +28,9 @@ export const fetchMyEvents = async (uid) => {
 }
 
 export const fetchNearEvents = async () => {
+    return [{name: 'Gaston', sport: 'Futbol', time: '2021-05-20 20:00', location: 'Calle 123', remaining: 5, sport_id: 1, event_id: 1}, 
+    {name: 'Juan', sport: 'Futbol', time: '2021-05-20 20:00', location: 'Calle 123', remaining: 5, sport_id: 1, event_id: 2}, {name: 'Gaston', sport: 'Futbol', time: '2021-05-20 20:00', location: 'Calle 123', remaining: 5, sport_id: 1, event_id: 3},
+    {name: 'Pedro', sport: 'Basquet', time: '2021-05-20 20:00', location: 'Calle 123', remaining: 5, sport_id: 2, event_id: 4}, {name: 'Gaston', sport: 'Basquet', time: '2021-05-20 20:00', location: 'Calle 123', remaining: 5, sport_id: 2, event_id: 5}]
     //TODO: filtrar remaining > 0 ?
    const response = await fetchEvents();
    return await response.json();

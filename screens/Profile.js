@@ -5,6 +5,7 @@ import CustomButton from "../components/CustomButton";
 import { useNavigation } from "@react-navigation/native";
 import { getCurrUserJWT, getCurrentUserData } from "../services/authService";
 import { AuthContext } from "../App";
+import { COLORS } from "../constants";
 
 const sports = ["Futbol", "Basquet", "Paddle"];
 
@@ -13,15 +14,6 @@ const Profile = () => {
   const [currUser, setCurrUser ] = useState();
   const {signOut} = React.useContext(AuthContext);
   const navigation = useNavigation();
-
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     async function fetchUser() {
-  //     }
-  //     fetchUser();
-  //   }, [])
-  // );
 
   const formatPhoneNumber = (phoneNumberString) => {
     if(!phoneNumberString) return;
@@ -73,12 +65,7 @@ const Profile = () => {
           ))}
         </View>
         <View style={styles.buttonContainer}>
-          <CustomButton title={"Edit"} color="grey" />
-          <CustomButton
-            title={"My events"}
-            onPress={handlePress}
-            color="green"
-          />
+          <CustomButton title={"Edit"} color={COLORS.primary} />
           <CustomButton title={"Logout"} onPress={handleLogout} color="#F00" />
         </View>
       </ScrollView>

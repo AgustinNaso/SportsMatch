@@ -8,6 +8,7 @@ const Card = ({ props }) => {
     const handlePress = () => {
         navigation.navigate("Event", { props: props });
     }
+    console.log(props)
 
     const getDayAndMonth = (date) => {
         // Convert the input string to a Date object

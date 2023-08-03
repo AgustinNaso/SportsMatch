@@ -53,9 +53,8 @@ const App = () => {
   const authContext = useMemo(
     () => ({
       signIn: async data => {
-        const res = await login(data);
-        console.log("LOGIN!!");
-        dispatch({ type: 'SIGN_IN', token: res.accessToken.jwtToken })
+        const res = await login(data)
+        dispatch({ type: 'SIGN_IN', token: "token" })
       },
       signOut: () => dispatch({ type: 'SIGN_OUT' }),
     }), []
