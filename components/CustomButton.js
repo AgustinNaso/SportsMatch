@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'rea
 const CustomButton = ({ title, onPress, color, isLoading = false }) => {
   console.log(isLoading);
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.button, {backgroundColor: color}]}>
+    <TouchableOpacity onPress={onPress} style={[styles.button, {backgroundColor: color}]} disabled={isLoading}>
       {isLoading && <ActivityIndicator size="small" color="white" style={{paddingRight: 10}} />}
       <Text style={styles.buttonText}>{title}</Text>
     </TouchableOpacity>

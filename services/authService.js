@@ -31,34 +31,39 @@ const getValueFor = async key => {
 
 export const login = async data => {
     return new Promise((resolve, reject) => {
-        const user = new CognitoUser({
-            Username: data.email,
-            Pool: UserPool
-        })
+        resolve({accessToken: {
+            jwtToken: 'token'
+        }})
+    })
+    // return new Promise((resolve, reject) => {
+    //     const user = new CognitoUser({
+    //         Username: data.email,
+    //         Pool: UserPool
+    //     })
 
-        const authDetails = new AuthenticationDetails({
-            Username: data.email.toLowerCase(),
-            Password: data.password
-        });
+    //     const authDetails = new AuthenticationDetails({
+    //         Username: data.email.toLowerCase(),
+    //         Password: data.password
+    //     });
 
-        user.authenticateUser(authDetails, {
-            onSuccess: async (data) => {
-                console.log("On Success: ", data);
-                resolve({
-                    acessToken: {
-                        jwtToken: 'token=random'
-                    }
-                });
-            },
-            onFailure: (err) => {
-                console.error("On Failure: ", err);
-                reject(err);
-            },
-            newPasswordRequired: (data) => {
-                console.log("newPasswordRequired: ", data);
-            }
-        })
-    });
+    //     user.authenticateUser(authDetails, {
+    //         onSuccess: async (data) => {
+    //             console.log("On Success: ", data);
+    //             resolve({
+    //                 acessToken: {
+    //                     jwtToken: 'token=random'
+    //                 }
+    //             });
+    //         },
+    //         onFailure: (err) => {
+    //             console.error("On Failure: ", err);
+    //             reject(err);
+    //         },
+    //         newPasswordRequired: (data) => {
+    //             console.log("newPasswordRequired: ", data);
+    //         }
+    //     })
+    // });
 }
 
 

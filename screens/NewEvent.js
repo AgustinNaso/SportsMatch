@@ -4,11 +4,11 @@ import { Keyboard, StyleSheet, TextInput, Text, TouchableOpacity, View } from 'r
 import { SelectList } from 'react-native-dropdown-select-list'
 import CustomButton from '../components/CustomButton'
 import { getCurrUserJWT, getCurrentUserData } from '../services/authService'
+import { Controller, useForm } from 'react-hook-form'
+import { EXPERTISE, SPORT } from '../constants/data'
+import { COLORS } from '../constants'
 
-
-const SPORT = ['Futbol', 'Basquet', 'Paddle', 'Voley', 'Tenis', 'Ping Pong']
-const EXPERTISE = ['Principiante', 'Intermedio', 'Avanzado', 'Profesional']
-
+//TODO: move to constants
 const locations = [
     { key: 1, value: "Agronomía" },
     { key: 2, value: "Almagro" },
@@ -25,14 +25,13 @@ const locations = [
 const NewEvent = () => {
 
     //TODO: migrate to react-hook-form
-    const [selectedSport, setSelectedSport] = React.useState("");
-    const [selectedDifficulty, setSelectedDifficulty] = React.useState("");
-    const [selectedLocation, setSelectedLocation] = React.useState("");
     const [date, setDate] = React.useState(new Date());
     const [time, setTime] = React.useState(new Date());
     const [user, setUser] = React.useState(null);
-    const [description, setDescription] = React.useState("");
     const [isLoading, setIsLoading] = React.useState(false);
+    const { control, handleSubmit, formState: { errors }, watch } = useForm();
+
+
 
     useEffect(() => {
         getCurrentUserData().then((data) => {
@@ -83,21 +82,9 @@ const NewEvent = () => {
         return formattedDate;
     };
 
-    //TODO: this should be deprecated when using react-hook-form
-    const updateDate = e => {
-        setDate(e.nativeEvent.timestamp)
-    }
-
-    const updateTime = e => {
-        setTime(e.nativeEvent.timestamp)
-    }
-
-    const setText = e => {
-        setDescription(e.nativeEvent.text);
-
-    }
-    const createEvent = () => {
-        setIsLoading(!isLoading);
+    const onSubmit = (data) => {
+        console.log('AAA ' + JSON.stringify(data));
+        // setIsLoading(!isLoading);
         // console.log("Sport: " + `${SPORT.indexOf(selectedSport) + 1}`)
         // console.log("Difficulty: " + `${EXPERTISE.indexOf(selectedDifficulty) + 1}`)
         // console.log("Location: " + selectedLocation)
@@ -125,53 +112,96 @@ const NewEvent = () => {
         <View style={{ flexDirection: 'column', justifyContent: 'space-evenly' }}>
             <View style={{ padding: 10 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <SelectList
-                        setSelected={(val) => setSelectedSport(val)}
-                        data={SPORT}
-                        save="value"
-                        maxHeight={200}
-                        placeholder='Elija el deporte'
-                        boxStyles={{ marginVertical: 10 }}
-                        dropdownStyles={{ minWidth: '35%' }}
-                        inputStyles={{ minWidth: '35%' }}
-                        search={false}
-                    />
-                    <SelectList
-                        setSelected={(val) => setSelectedDifficulty(val)}
-                        data={EXPERTISE}
-                        save="value"
-                        maxHeight={200}
-                        placeholder='Elija la dificultad'
-                        boxStyles={{ marginVertical: 10 }}
-                        dropdownStyles={{ minWidth: '35%' }}
-                        inputStyles={{ minWidth: '35%' }}
-                        search={false}
-                    />
+                    <Controller control={control} rules={{ required: true }} render={({ field }) => (
+                        <SelectList
+                            setSelected={field.onChange}
+                            data={SPORT}
+                            save="value"
+                            maxHeight={200}
+                            placeholder='Elija el deporte'
+                            boxStyles={{ marginVertical: 10 }}
+                            dropdownStyles={{ minWidth: '35%' }}
+                            inputStyles={{ minWidth: '35%' }}
+                            search={false}
+                        />)}
+                        name="sport" />
+                    <Controller control={control} rules={{ required: true }} render={({ field }) => (
+                        <SelectList
+                            setSelected={field.onChange}
+                            data={EXPERTISE}
+                            save="value"
+                            maxHeight={200}
+                            placeholder='Elija la dificultad'
+                            boxStyles={{ marginVertical: 10 }}
+                            dropdownStyles={{ minWidth: '35%' }}
+                            inputStyles={{ minWidth: '35%' }}
+                            search={false}
+                        />)}
+                        name="difficulty" />
                 </View>
-                <SelectList
-                    setSelected={(val) => setSelectedLocation(val)}
-                    data={locations}
-                    save="value"
-                    maxHeight={200}
-                    placeholder='Elija el lugar'
-                    boxStyles={{ marginVertical: 10 }}
+                <Controller control={control} rules={{ required: true }} render={({ field }) => (
+                    <SelectList
+                        setSelected={field.onChange}
+                        data={locations}
+                        save="value"
+                        maxHeight={200}
+                        placeholder='Elija el lugar'
+                        boxStyles={{ marginVertical: 10 }}
+                    />)}
+                    name="location" />
+            </View>
+            <View style={styles.dateSectionContainer}>
+                <View style={styles.dateTimeLabelContainer}>
+                    <Text style={styles.label}>Fecha</Text>
+                    <TouchableOpacity onPress={showDatepicker} style={styles.dateTimeContainer}>
+                        <Text>{date.toLocaleString().split(' ')[0].slice(0, -1)}</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.dateTimeLabelContainer}>
+                    <Text style={styles.label}>Hora</Text>
+                    <TouchableOpacity onPress={showTimepicker} style={styles.dateTimeContainer}>
+                        <Text>{date.toLocaleString().split(' ')[1]}</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            <View style={styles.qtyInputContainer}>
+                <Text style={styles.label}>Faltan</Text>
+                <Controller
+                    control={control}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                            style={styles.numberInput}
+                            keyboardType="numeric"
+                            placeholder="Enter the quantity of players"
+                            onChangeText={onChange}
+                            value={value}
+                        />
+                    )}
+                    name="players"
+                    defaultValue=""
+                    rules={{
+                        required: 'Quantity of players is required',
+                        pattern: {
+                            value: /^\d+$/,
+                            message: 'Please enter a valid number',
+                        },
+                    }}
                 />
+                <Text style={styles.errorText}>{errors.players?.message}</Text>
             </View>
-            <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 10 }}>
-                <TouchableOpacity onPress={showDatepicker}>
-                    <Text>{date.toLocaleString()}</Text>
-                </TouchableOpacity>
-                {/* <RNDateTimePicker mode="date" value={new Date(date)} minimumDate={new Date()} onChange={updateDate} />
-                <RNDateTimePicker mode="time" value={new Date(time)} minimumDate={new Date()} onChange={updateTime} /> */}
-            </View>
-            <TextInput
-                style={styles.input}
-                multiline={true} blurOnSubmit={true}
-                onSubmitEditing={() => { Keyboard.dismiss() }}
-                onChange={setText} />
+            <Controller control={control} rules={{ required: true }} render={({ field }) => (
+                <TextInput
+                    placeholder='Comentarios adicionales...'
+                    value={field.value}
+                    style={styles.input}
+                    multiline={true} blurOnSubmit={true}
+                    onSubmitEditing={() => { Keyboard.dismiss() }}
+                    onChangeText={field.onChange} />
+            )}
+                name="description" />
             <View style={styles.buttonContainer}>
                 <CustomButton title={"Cancelar"} color='red' />
-                <CustomButton title={isLoading ? "Creando" : "Crear"} color='green' isLoading={isLoading} onPress={createEvent} />
+                <CustomButton title={isLoading ? "Creando" : "Crear"} color='green' isLoading={isLoading} onPress={handleSubmit(onSubmit)} />
             </View>
         </View>
     )
@@ -181,13 +211,13 @@ export default NewEvent
 
 const styles = StyleSheet.create({
     input: {
-        height: '45%',
+        height: '25%',
         margin: 12,
         borderWidth: 1,
         padding: 20,
         borderRadius: 4,
         fontSize: 20,
-        marginTop: 30
+        marginTop: 10
     },
     buttonContainer: {
         flexDirection: 'row',
@@ -195,5 +225,47 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         width: '90%',
         alignSelf: 'center',
-    }
+    },
+    dateTimeContainer: {
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingVertical: 8,
+        paddingHorizontal: 15,
+        minWidth: 140
+    },
+    dateSectionContainer: {
+        flexDirection: 'row',
+        width: '90%',
+        minHeight: 28,
+        alignSelf: 'center',
+        justifyContent: 'space-evenly',
+        marginTop: 10,
+    },
+    dateTimeLabelContainer: {
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    label: {
+        marginRight: 10,
+        marginBottom: 5,
+        fontSize: 18,
+        color: COLORS.primary,
+        fontWeight: 600
+    },
+    qtyInputContainer: {
+        marginBottom: 10,
+        width: '90%', // Set the width of the input container
+        alignSelf: 'center', // Center the input container horizontally
+        padding: 10,
+        alignItems: 'center'
+    },
+    numberInput: {
+        height: 40,
+        maxWidth: 120,
+        borderWidth: 1,
+        borderRadius: 4,
+        padding: 10,
+        fontSize: 16,
+        marginTop: 5, // Add some space between the label and the input
+    },
 });
