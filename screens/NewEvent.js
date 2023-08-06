@@ -1,6 +1,6 @@
-import RNDateTimePicker from '@react-native-community/datetimepicker'
+import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import React, { useEffect } from 'react'
-import { Keyboard, StyleSheet, TextInput, View } from 'react-native'
+import { Keyboard, StyleSheet, TextInput, Text, TouchableOpacity, View } from 'react-native'
 import { SelectList } from 'react-native-dropdown-select-list'
 import CustomButton from '../components/CustomButton'
 import { getCurrUserJWT, getCurrentUserData } from '../services/authService'
@@ -40,6 +40,28 @@ const NewEvent = () => {
             setUser(JSON.parse(data));
         });
     }, []);
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate;
+        setDate(currentDate);
+    };
+
+    const showMode = (currentMode) => {
+        DateTimePickerAndroid.open({
+            value: date,
+            onChange,
+            mode: currentMode,
+            is24Hour: true,
+        });
+    };
+
+    const showDatepicker = () => {
+        showMode('date');
+    };
+
+    const showTimepicker = () => {
+        showMode('time');
+    };
 
     //TODO: move to utils
     const formatDate = (date, time) => {
@@ -136,8 +158,11 @@ const NewEvent = () => {
                 />
             </View>
             <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 10 }}>
-                <RNDateTimePicker mode="date" value={new Date(date)} minimumDate={new Date()} onChange={updateDate} />
-                <RNDateTimePicker mode="time" value={new Date(time)} minimumDate={new Date()} onChange={updateTime} />
+                <TouchableOpacity onPress={showDatepicker}>
+                    <Text>{date.toLocaleString()}</Text>
+                </TouchableOpacity>
+                {/* <RNDateTimePicker mode="date" value={new Date(date)} minimumDate={new Date()} onChange={updateDate} />
+                <RNDateTimePicker mode="time" value={new Date(time)} minimumDate={new Date()} onChange={updateTime} /> */}
             </View>
             <TextInput
                 style={styles.input}
@@ -146,7 +171,7 @@ const NewEvent = () => {
                 onChange={setText} />
             <View style={styles.buttonContainer}>
                 <CustomButton title={"Cancelar"} color='red' />
-                <CustomButton title={isLoading? "Creando" :"Crear"} color='green' isLoading={isLoading} onPress={createEvent} />
+                <CustomButton title={isLoading ? "Creando" : "Crear"} color='green' isLoading={isLoading} onPress={createEvent} />
             </View>
         </View>
     )

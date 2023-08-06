@@ -1,20 +1,25 @@
 import React from 'react';
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import Home from '../screens/Home';
-import Event from '../screens/Event';
-import { Text } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { COLORS } from '../constants';
+import { useNavigation } from '@react-navigation/native';
+import { NewEvent, Home, Event } from '../screens';
+
 const Stack = createNativeStackNavigator();
 
 const HomeStackNavigator = () => {
+    const navigator = useNavigation();
     return (
         <Stack.Navigator
-            screenOptions={{ headerShown: false }}>
+            screenOptions={{ headerShown: true }}>
             <Stack.Group>
                 <Stack.Screen
                     options={{
-                        headerRight: () => <Text style={{color: 'red'}}>+</Text>}}
-                name="HomeScreen" component={Home}/>
-                <Stack.Screen name="Event" component={Event} />
+                        headerRight: () => <Ionicons name='add' style={{ borderRadius: 50 }} size={30} color={COLORS.primary} onPress={() => navigator.navigate("Nuevo Evento")} />
+                    }}
+                    name="Inicio" component={Home} />
+                <Stack.Screen name="Evento" component={Event} />
+                <Stack.Screen name="Nuevo Evento" component={NewEvent}/>
             </Stack.Group>
         </Stack.Navigator>
     );

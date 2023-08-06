@@ -18,7 +18,7 @@ const Tabs = () => {
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
-          if (route.name === 'Inicio') {
+          if (route.name === 'HomeNavigator') {
             iconName = 'home';
           } else if (route.name === 'Perfil') {
             iconName = 'person';
@@ -30,12 +30,11 @@ const Tabs = () => {
       })}
     >
       <Tab.Screen
-
         options={{
-          headerRight: () => 
-          <Ionicons name='add' style={{borderRadius: '50%'}} size={30} color={COLORS.primary} onPress={() => navigator.navigate("Perfil")}/>
+          headerShown: false,
+          title: 'Inicio'
         }}
-        name="Inicio" component={HomeStackNavigator} />
+        name="HomeNavigator" component={HomeStackNavigator} />
       <Tab.Screen name="Mis Eventos" component={MyEvents} />
       <Tab.Screen name="Perfil" component={ProfileStackNavigator} />
     </Tab.Navigator>

@@ -6,7 +6,7 @@ import { EXPERTISE, SPORT } from "../constants/data";
 const Card = ({ props }) => {
     const navigation = useNavigation();
     const handlePress = () => {
-        navigation.navigate("Event", { props: props });
+        navigation.navigate("Evento", { props: props });
     }
     console.log(props)
 
