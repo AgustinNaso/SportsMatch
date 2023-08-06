@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import {Text, StyleSheet, TouchableOpacity} from 'react-native'
+import { COLORS } from '../constants';
 
 
 const Pill = ({props, handlePress, currentFilter}) => {
@@ -19,7 +20,7 @@ const Pill = ({props, handlePress, currentFilter}) => {
             handlePress(props.sport)
             }
         }>
-            <Text style={[ selected ? {color: 'white'}: null ]}>{props.sport}</Text>
+            <Text style={[ selected ? {color: 'white', fontWeight: '700'}: null ]}>{props.sport}</Text>
         </TouchableOpacity>
     );
 }
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 7
     },
     selectedPill : {
-        backgroundColor: 'black',
+        backgroundColor: COLORS.primary
     }
 });
 

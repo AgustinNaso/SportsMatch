@@ -5,6 +5,7 @@ import Card from '../components/Card';
 import MyEventCard from '../components/MyEventCard';
 import { fetchJoinedEvents, fetchMyEvents, fetchNearEvents } from '../services/eventService';
 import { getCurrentUserData } from '../services/authService';
+import { COLORS } from '../constants';
 
 const renderList = ({ item }) => {
 
@@ -105,7 +106,7 @@ const MyEvents = () => {
 
     return (
         <TabView
-            renderTabBar={(props) => <TabBar {...props} style={{ backgroundColor: 'grey' }} />}
+            renderTabBar={(props) => <TabBar {...props} style={{ backgroundColor: COLORS.primary }} indicatorStyle={{ backgroundColor: COLORS.secondary}} />}
             navigationState={{ index, routes }}
             renderScene={renderScene}
             onIndexChange={setIndex}

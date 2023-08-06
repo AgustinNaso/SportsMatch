@@ -2,6 +2,7 @@ import React from "react"
 import { View, Text, StyleSheet, Touchable, TouchableOpacity } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { EXPERTISE, SPORT } from "../constants/data";
+import { COLORS } from "../constants";
 
 const Card = ({ props }) => {
     const navigation = useNavigation();
@@ -51,15 +52,16 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         flexDirection: 'column',
         padding: 15,
-        borderWidth: 1,
-        borderColor: 'black',
+        borderWidth: 2,
+        borderColor: COLORS.primary,
         height: 130,
         justifyContent: 'space-between'
     },
 
     cardBigText: {
         fontSize: 24,
-        fontWeight: 700
+        fontWeight: 700,
+        color: COLORS.primary
     },
     cardMidText: {
         fontSize: 20,
