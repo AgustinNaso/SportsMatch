@@ -1,64 +1,27 @@
-import React, { useReducer, useMemo } from "react";
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useFonts } from "expo-font";
 import Tabs from "./navigation/Tabs";
 import { Login, Register, ConfirmSignUp } from "./screens";
 import { useEffect } from "react";
-import { getCurrentUserData, login, signUp } from "./services/authService";
+import { getCurrentUserData } from "./services/authService";
+import { useAuthContext, AuthContext } from "./contexts/authContext";
 
 const Stack = createStackNavigator();
 
-export const AuthContext = React.createContext();
-
 const App = () => {
-  //TODO: move this to other file?
-  const [state, dispatch] = useReducer(
-    (prevState, action) => {
-      switch (action.type) {
-        case 'RESTORE_TOKEN':
-          return {
-            ...prevState,
-            userToken: action.token,
-            isLoading: false,
-          };
-        case 'SIGN_IN':
-          return {
-            ...prevState,
-            isSignout: false,
-            userToken: action.token,
-          };
-        case 'SIGN_OUT':
-          return {
-            ...prevState,
-            isSignout: true,
-            userToken: null,
-          };
-      }
-    },
-    {
-      isLoading: true,
-      isSignout: false,
-      userToken: null,
-    }
-  );
+
+  const authContext = useAuthContext();
 
   useEffect(() => {
     getCurrentUserData().then((data) => {
-      dispatch({ type: 'RESTORE_TOKEN', token: data.token })
+      console.log("DATA: " + data);
+      // authContext.restoreToken("");
     })
       .catch(err => console.error(err));
   }, []);
 
-  const authContext = useMemo(
-    () => ({
-      signIn: async data => {
-        const res = await login(data)
-        dispatch({ type: 'SIGN_IN', token: "token" })
-      },
-      signOut: () => dispatch({ type: 'SIGN_OUT' }),
-    }), []
-  );
   const [loaded] = useFonts({
     "Roboto-Black": require("./assets/fonts/Roboto-Black.ttf"),
     "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
@@ -76,7 +39,7 @@ const App = () => {
           screenOptions={{
             headerShown: false
           }}>
-          {state.userToken ? (
+          {authContext.state.userToken  ? (
             <Stack.Screen name="Tabs" component={Tabs} />
           ) : (
             <>

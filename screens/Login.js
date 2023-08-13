@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   SafeAreaView,
@@ -11,17 +11,16 @@ import {
 import { TextInput } from "react-native-gesture-handler";
 import { COLORS, FONTS } from "../constants";
 import { validateEmail } from "../utils/validations";
-import { AuthContext } from "../App";
-
+import { AuthContext } from "../contexts/authContext";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
-  const { signIn } = React.useContext(AuthContext);
+  const authContext =  useContext(AuthContext)
   const { control, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = async (data) => {
     setLoading(true);
-    signIn(data).catch(err => console.error(err));
+    authContext.signIn(data).catch(err => console.error("Err " + err));
   }
 
   return (
