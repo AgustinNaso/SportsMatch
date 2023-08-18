@@ -39,7 +39,7 @@ const Profile = () => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
         contentContainerStyle={styles.mainContainer}
       >
@@ -62,7 +62,7 @@ const Profile = () => {
         <View style={styles.profileBody}>
           <View style={styles.bodySectionContainer}>
             <Text style={styles.bodyText}>Mis Datos</Text>
-            <Divider width={3} style={{width: '100%', marginBottom: 8}}/>
+            <Divider width={3} style={{ width: '100%', marginBottom: 8 }} />
             <View style={styles.userDataContainer}>
               <Image source={require('../assets/pin-48-blue.png')} style={{ width: 23, height: 23 }} />
               <View style={styles.userDataDisplay}>
@@ -84,7 +84,7 @@ const Profile = () => {
           </View>
           <View style={styles.bodySectionContainer}>
             <Text style={styles.bodyText}>Mis Deportes</Text>
-            <Divider width={3} style={{width: '100%', marginBottom: 8}}/>
+            <Divider width={3} style={{ width: '100%', marginBottom: 8 }} />
             <View style={styles.chipContainer}>
               {sports.map((sport, idx) => (
                 <Chip title={sport} key={idx} color={COLORS.primary} />
@@ -93,7 +93,7 @@ const Profile = () => {
           </View>
           <View style={styles.bodySectionContainer}>
             <Text style={styles.bodyText}>Mis Ubicaciones</Text>
-            <Divider width={3} style={{width: '100%', marginBottom: 8}}/>
+            <Divider width={3} style={{ width: '100%', marginBottom: 8 }} />
             <View style={styles.chipContainer}>
               {locations.map((sport, idx) => (
                 <Chip title={sport} key={idx} color={COLORS.primary} />
@@ -123,9 +123,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     borderRadius: 22,
     width: "90%",
-    height: "22%",
+    height: "24%",
     justifyContent: "space-evenly",
     alignItems: "center",
+    marginBottom: 8,
   },
   profileTextContainer: {
     flexDirection: "column",
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 600,
     color: COLORS.primary,
-    marginBottom: 10,
+    marginBottom: 8,
     marginRight: 'auto',
   },
   itemText: {
@@ -166,21 +167,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     width: "90%",
-    },
+  },
   chipContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
     alignItems: "center",
-    gap: 12,
+    gap: 8,
     paddingHorizontal: 16
   },
   bodySectionContainer: {
     width: "100%",
     flexDirection: "column",
     alignItems: "flex-start",
-    padding: 8,
-    marginTop: 6
+    paddingTop: 8,
+    paddingHorizontal: 8,
+    marginTop: 8,
   },
   userDataContainer: {
     width: "100%",
@@ -193,7 +195,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-start",
     width: "100%",
-    marginLeft: 10,
+    marginLeft: 8,
   }
 });
 
