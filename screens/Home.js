@@ -16,6 +16,14 @@ const filterData = [
 
 ];
 
+const FilterModal = () => {
+    return (
+        <View>
+
+        </View>
+    )
+}
+
 const Home = () => {
     const [eventsList, setEventList] = React.useState(null);
     const [filteredEventsList, setFilteredEventList] = React.useState(null);

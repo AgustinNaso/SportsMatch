@@ -1,12 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Text, View, StyleSheet, ScrollView, SafeAreaView } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Text, View, StyleSheet, ScrollView, SafeAreaView, Image } from "react-native";
 import { getCurrUserJWT, getCurrentUserData } from "../services/authService";
 import { COLORS } from "../constants";
 import { AuthContext } from "../contexts/authContext"
-import CustomButton from "../components/CustomButton";
+import { Avatar, Chip, Divider } from '@rneui/themed';
+import { Ionicons } from '@expo/vector-icons';
 
-const sports = ["Futbol", "Basquet", "Paddle"];
+
+const sports = ["Futbol", "Basquet", "Paddle", "Tenis", "Voley"];
+const locations = ["Palermo", "Belgrano", "Nuñez", "Villa Crespo"]
+const image_url = 'https://randomuser.me/api/portraits/men/36.jpg'
 
 const Profile = () => {
 
@@ -36,38 +39,69 @@ const Profile = () => {
   };
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
+    <SafeAreaView style={{flex: 1}}>
       <ScrollView
-        contentContainerStyle={{
-          flexDirection: "column",
-          alignItems: "center",
-        }}
+        contentContainerStyle={styles.mainContainer}
       >
-
         <View style={styles.profileHeader}>
-          <Ionicons name="person" size={100} style={{ borderColor: 'white', borderWidth: 2, borderRadius: 100, padding: 10 }} />
+          <Avatar
+            size={108}
+            rounded
+            source={image_url ? { uri: image_url } : {}}
+          />
           <View style={styles.profileTextContainer}>
-            <Text style={styles.profileTextName}>Agustin Naso</Text>
+            <Text style={styles.profileTextName}>John Doe</Text>
             {/* <Text style={styles.profileTextName}>{currUser?.given_name} {currUser?.family_name}</Text> */}
-            <Text style={styles.profileTextAge}>25 años      1121576283</Text>
-            <Text style={styles.profileTextLocation}>
-              Barracas, Buenos Aires
-            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginVertical: 5 }}>
+              <Ionicons name="star" size={18} color={COLORS.secondary} />
+              <Text style={styles.profileTextAge}>  4.2 / 5</Text>
+            </View>
+            <Text style={styles.profileTextLocation}>38 partidos</Text>
           </View>
         </View>
         <View style={styles.profileBody}>
-          <Text style={styles.bodyText}>Telefono: {formatPhoneNumber(currUser?.phone_number)}</Text>
-          <Text style={styles.bodyText}>Deportes de Interes:</Text>
-          {sports.map((sport) => (
-            <Text style={styles.itemText}>{`\u26ab ${sport}`}</Text>
-          ))}
+          <View style={styles.bodySectionContainer}>
+            <Text style={styles.bodyText}>Mis Datos</Text>
+            <Divider width={3} style={{width: '100%', marginBottom: 8}}/>
+            <View style={styles.userDataContainer}>
+              <Image source={require('../assets/pin-48-blue.png')} style={{ width: 23, height: 23 }} />
+              <View style={styles.userDataDisplay}>
+                <Text style={styles.itemText}>Barracas, Buenos Aires</Text>
+              </View>
+            </View>
+            <View style={styles.userDataContainer}>
+              <Ionicons name="call" size={24} color={COLORS.primary} />
+              <View style={styles.userDataDisplay}>
+                <Text style={styles.itemText}>1121576283</Text>
+              </View>
+            </View>
+            <View style={styles.userDataContainer}>
+              <Ionicons name="calendar" size={24} color={COLORS.primary} />
+              <View style={styles.userDataDisplay}>
+                <Text style={styles.itemText}>04/07/1998</Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.bodySectionContainer}>
+            <Text style={styles.bodyText}>Mis Deportes</Text>
+            <Divider width={3} style={{width: '100%', marginBottom: 8}}/>
+            <View style={styles.chipContainer}>
+              {sports.map((sport, idx) => (
+                <Chip title={sport} key={idx} color={COLORS.primary} />
+              ))}
+            </View>
+          </View>
+          <View style={styles.bodySectionContainer}>
+            <Text style={styles.bodyText}>Mis Ubicaciones</Text>
+            <Divider width={3} style={{width: '100%', marginBottom: 8}}/>
+            <View style={styles.chipContainer}>
+              {locations.map((sport, idx) => (
+                <Chip title={sport} key={idx} color={COLORS.primary} />
+              ))}
+            </View>
+          </View>
         </View>
-        <CustomButton title={"Logout"} onPress={handleLogout} color="#F00" />
-
-        {/* <View style={styles.buttonContainer}>
-          <CustomButton title={"Edit"} color={'rgba(19, 20, 100, 0.7)'} />
-          <CustomButton title={"Logout"} onPress={handleLogout} color="#F00" />
-        </View> */}
+        {/* <CustomButton title={"Logout"} onPress={handleLogout} color="#F00" /> */}
       </ScrollView>
     </SafeAreaView>
   );
@@ -78,46 +112,50 @@ const styles = StyleSheet.create({
 
   mainContainer: {
     display: "flex",
-    height: "100%",
-    backgroundColor: 'grey',
+    flexDirection: "column",
     alignItems: 'center',
-
+    justifyContent: 'space-evenly',
+    paddingVertical: 24,
   },
 
   profileHeader: {
     flexDirection: "row",
-    paddingVertical: 20,
-    paddingLeft: 15,
-    backgroundColor: 'rgba(19, 20, 100, 0.7)',
-    borderRadius: 30,
-    marginTop: 10,
-    width: '99%'
+    backgroundColor: COLORS.primary,
+    borderRadius: 22,
+    width: "90%",
+    height: "22%",
+    justifyContent: "space-evenly",
+    alignItems: "center",
   },
   profileTextContainer: {
     flexDirection: "column",
     justifyContent: "space-evenly",
     marginLeft: 20,
+    maxWidth: "60%",
+    minWidth: "42%",
   },
   profileTextLocation: {
-    fontSize: 20,
+    fontSize: 14,
     fontWeight: 400,
     color: COLORS.white
 
   },
   profileTextName: {
-    fontSize: 36,
+    fontSize: 28,
     fontWeight: 500,
     color: COLORS.mediumGray
   },
 
   profileTextAge: {
-    fontSize: 20,
+    fontSize: 14,
     color: COLORS.white
   },
   bodyText: {
     fontSize: 26,
-    fontWeight: 400,
-    color: COLORS.primary
+    fontWeight: 600,
+    color: COLORS.primary,
+    marginBottom: 10,
+    marginRight: 'auto',
   },
   itemText: {
     fontSize: 20,
@@ -125,20 +163,38 @@ const styles = StyleSheet.create({
   },
   profileBody: {
     flexDirection: "column",
-    justifyContent: "space-evenly",
-    height: "55%",
+    alignItems: "center",
+    flex: 1,
     width: "90%",
-    backgroundColor: 'red'
+    },
+  chipContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 12,
+    paddingHorizontal: 16
   },
-  buttonContainer: {
-    minWidth: "70%",
-    marginTop: 10,
-    paddingVertical: 2,
+  bodySectionContainer: {
+    width: "100%",
     flexDirection: "column",
-    gap: 10,
-    minHeight: 250,
-    backgroundColor: 'grey'
+    alignItems: "flex-start",
+    padding: 8,
+    marginTop: 6
   },
+  userDataContainer: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 8,
+  },
+  userDataDisplay: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+    width: "100%",
+    marginLeft: 10,
+  }
 });
 
 export default Profile;

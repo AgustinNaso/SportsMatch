@@ -39,7 +39,7 @@ const App = () => {
           screenOptions={{
             headerShown: false
           }}>
-          {authContext.state.userToken  ? (
+          {true  ? (
             <Stack.Screen name="Tabs" component={Tabs} />
           ) : (
             <>
