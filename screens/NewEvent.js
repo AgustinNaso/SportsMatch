@@ -1,12 +1,14 @@
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import React, { useEffect } from 'react'
-import { Keyboard, StyleSheet, TextInput, Text, TouchableOpacity, View } from 'react-native'
+import { Keyboard, StyleSheet, TextInput, Text, TouchableOpacity, View, Platform } from 'react-native'
 import { SelectList } from 'react-native-dropdown-select-list'
 import CustomButton from '../components/CustomButton'
 import { getCurrUserJWT, getCurrentUserData } from '../services/authService'
 import { Controller, useForm } from 'react-hook-form'
 import { EXPERTISE, SPORT } from '../constants/data'
 import { COLORS } from '../constants'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import RNDateTimePicker from '@react-native-community/datetimepicker'
 
 //TODO: move to constants
 const locations = [
@@ -45,21 +47,21 @@ const NewEvent = () => {
         setDate(currentDate);
     };
 
-    const showMode = (currentMode) => {
+    const showMode = (currentMode, field) => {
         DateTimePickerAndroid.open({
             value: date,
-            onChange,
+            onChange: (e) => field.onChange(e.getTime()),
             mode: currentMode,
             is24Hour: true,
         });
     };
 
-    const showDatepicker = () => {
-        showMode('date');
+    const showDatepicker = (field) => {
+        showMode('date', field);
     };
 
-    const showTimepicker = () => {
-        showMode('time');
+    const showTimepicker = (field) => {
+        showMode('time', field);
     };
 
     //TODO: move to utils
@@ -109,7 +111,7 @@ const NewEvent = () => {
 
 
     return (
-        <View style={{ flexDirection: 'column', justifyContent: 'space-evenly' }}>
+        <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1 }}>
             <View style={{ padding: 10 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Controller control={control} rules={{ required: true }} render={({ field }) => (
@@ -153,15 +155,26 @@ const NewEvent = () => {
             <View style={styles.dateSectionContainer}>
                 <View style={styles.dateTimeLabelContainer}>
                     <Text style={styles.label}>Fecha</Text>
-                    <TouchableOpacity onPress={showDatepicker} style={styles.dateTimeContainer}>
-                        <Text>{date.toLocaleString().split(' ')[0].slice(0, -1)}</Text>
-                    </TouchableOpacity>
+                    {Platform.OS !== 'ios' ? (
+                        <TouchableOpacity onPress={showDatepicker} style={styles.dateTimeContainer}>
+                            <Text>{date.toLocaleString().split(' ')[0].slice(0, -1)}</Text>
+                        </TouchableOpacity>
+                    )
+                        :
+                        <RNDateTimePicker value={date} mode="date" onChange={onChange} minimumDate={new Date()}/>
+                    }
                 </View>
                 <View style={styles.dateTimeLabelContainer}>
                     <Text style={styles.label}>Hora</Text>
-                    <TouchableOpacity onPress={showTimepicker} style={styles.dateTimeContainer}>
-                        <Text>{date.toLocaleString().split(' ')[1]}</Text>
-                    </TouchableOpacity>
+                    <Controller control={control} rules={{ required: true }} render={({ field }) => (
+                    Platform.OS !== 'ios' ? (
+                        <TouchableOpacity onPress={showTimepicker(field)} style={styles.dateTimeContainer}>
+                            <Text>{date.toLocaleString().split(' ')[1]}</Text>
+                        </TouchableOpacity>
+                    ) :
+                        <RNDateTimePicker value={date} mode="time" onChange={field.onChange}  minimumDate={new Date()} />
+                    
+                    )} name="time" />
                 </View>
             </View>
             <View style={styles.qtyInputContainer}>
@@ -189,7 +202,7 @@ const NewEvent = () => {
                 />
                 <Text style={styles.errorText}>{errors.players?.message}</Text>
             </View>
-            <Controller control={control} rules={{ required: true }} render={({ field }) => (
+            <Controller control={control} rules={{ required: false }} render={({ field }) => (
                 <TextInput
                     placeholder='Comentarios adicionales...'
                     value={field.value}
@@ -203,7 +216,7 @@ const NewEvent = () => {
                 <CustomButton title={"Cancelar"} color='red' />
                 <CustomButton title={isLoading ? "Creando" : "Crear"} color='green' isLoading={isLoading} onPress={handleSubmit(onSubmit)} />
             </View>
-        </View>
+        </SafeAreaView>
     )
 }
 
