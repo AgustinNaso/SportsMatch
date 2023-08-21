@@ -9,7 +9,7 @@ import { EXPERTISE, SPORT } from '../constants/data'
 import { COLORS } from '../constants'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import RNDateTimePicker from '@react-native-community/datetimepicker'
-
+import { formatDate, formatTime, showDatepicker, showTimepicker } from '../utils/datetime'
 //TODO: move to constants
 const locations = [
     { key: 1, value: "Agronomía" },
@@ -25,7 +25,6 @@ const locations = [
 ];
 
 const NewEvent = () => {
-    const currentDate = new Date();
     const [user, setUser] = React.useState(null);
     const [isLoading, setIsLoading] = React.useState(false);
     const { control, handleSubmit, formState: { errors }, watch } = useForm();
@@ -38,41 +37,6 @@ const NewEvent = () => {
             setUser(JSON.parse(data));
         });
     }, []);
-
-    //DATETIME PICKER UTILS
-    const formatTime = (date) => {
-        console.log(date.getHours() + ":" + date.getMinutes())
-        return date.getHours() + ":" +String(date.getMinutes()).padStart(2,"0");
-    }
-
-    const formatDate = (date) => {
-        return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
-    };
-
-    const showMode = (currentMode, field) => {
-        DateTimePickerAndroid.open({
-            value: field.value !== undefined ? field.value : currentDate,
-            onChange: (event, selectedDate) => {
-                field.onChange(selectedDate)
-            },
-            mode: currentMode,
-            is24Hour: true,
-            minuteInterval: 15,
-            minimumDate: currentDate,
-            display: currentMode === 'date' ? 'calendar' : 'spinner',
-
-        });
-    };
-
-    const showDatepicker = (field) => {
-        showMode('date', field);
-    };
-
-    const showTimepicker = (field) => {
-        showMode('time', field);
-    };
-
-    ///////////////////
 
 
     const onSubmit = (data) => {

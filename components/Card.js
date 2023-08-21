@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     },
 
     cardBigText: {
-        fontSize: '28',
+        fontSize: 28,
         fontWeight: 700,
         color: COLORS.primary
     },
