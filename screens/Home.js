@@ -1,5 +1,5 @@
 import React from "react"
-import { ActivityIndicator, FlatList, SafeAreaView, RefreshControl } from "react-native";
+import { ActivityIndicator, FlatList, SafeAreaView, RefreshControl, Modal, View, Text, Pressable } from "react-native";
 import Card from "../components/Card";
 import Pill from "../components/Pill";
 import { fetchNearEvents } from "../services/eventService";
@@ -24,11 +24,12 @@ const FilterModal = () => {
     )
 }
 
-const Home = () => {
+const Home = ({navigation, route}) => {
     const [eventsList, setEventList] = React.useState(null);
     const [filteredEventsList, setFilteredEventList] = React.useState(null);
     const [selectedFilter, setSelectedFilter] = React.useState("");
     const [loading, setLoading] = React.useState(true);
+    const [showFilters, setShowFilters] = React.useState(false);
 
     React.useEffect(() => {
         const getNearEvents = async () => {
@@ -41,6 +42,7 @@ const Home = () => {
             .catch(err => console.log(err));
 
     }, [])
+
 
     const renderItem = ({ item }) => {
         return <Card props={item} />
@@ -77,10 +79,34 @@ const Home = () => {
         setRefreshing(false);
     }
 
+    const filterModal = () => {
+        // route.params.showFilters(true);
+        console.log("PROPS   :" + JSON.stringify(route))
+        return (
+            <Modal
+                animationType="slide"
+                transparent={false}
+                visible={showFilters}
+                onRequestClose={() => {
+                    setShowFilters(!showFilters);
+                }}
+            >
+                <View style={{ backgroundColor: 'red', height: '90%' }}>
+                    <Text>Filter</Text>
+                    <Pressable
+                        onPress={() => setShowFilters(false)}>
+                        <Text>Show Modal</Text>
+                    </Pressable>
+                </View>
+            </Modal>
+        )
+    }
+
 
     return (
         <SafeAreaView style={{ flex: 1, maxHeight: '100%' }}>
             <StatusBar />
+            {filterModal()}
             <FlatList data={filterData} renderItem={renderItemPill}
                 keyExtractor={(item) => { return item.key.toString() }} horizontal showsHorizontalScrollIndicator={false}
                 style={{ flex: 1, paddingTop: 20, paddingBottom: 10, maxHeight: 70 }} />

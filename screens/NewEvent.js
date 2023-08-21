@@ -25,10 +25,7 @@ const locations = [
 ];
 
 const NewEvent = () => {
-
-    //TODO: migrate to react-hook-form
-    const [date, setDate] = React.useState(new Date());
-    const [time, setTime] = React.useState(new Date());
+    const currentDate = new Date();
     const [user, setUser] = React.useState(null);
     const [isLoading, setIsLoading] = React.useState(false);
     const { control, handleSubmit, formState: { errors }, watch } = useForm();
@@ -42,17 +39,28 @@ const NewEvent = () => {
         });
     }, []);
 
-    const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate;
-        setDate(currentDate);
+    //DATETIME PICKER UTILS
+    const formatTime = (date) => {
+        console.log(date.getHours() + ":" + date.getMinutes())
+        return date.getHours() + ":" +String(date.getMinutes()).padStart(2,"0");
+    }
+
+    const formatDate = (date) => {
+        return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
     };
 
     const showMode = (currentMode, field) => {
         DateTimePickerAndroid.open({
-            value: date,
-            onChange: (e) => field.onChange(e.getTime()),
+            value: field.value !== undefined ? field.value : currentDate,
+            onChange: (event, selectedDate) => {
+                field.onChange(selectedDate)
+            },
             mode: currentMode,
             is24Hour: true,
+            minuteInterval: 15,
+            minimumDate: currentDate,
+            display: currentMode === 'date' ? 'calendar' : 'spinner',
+
         });
     };
 
@@ -64,25 +72,8 @@ const NewEvent = () => {
         showMode('time', field);
     };
 
-    //TODO: move to utils
-    const formatDate = (date, time) => {
-        // Convert the input string to a Date object
-        const parsedDate = new Date(date);
-        const parsedTime = new Date(time);
+    ///////////////////
 
-        // Extract the date components
-        const year = parsedDate.getFullYear();
-        const month = String(parsedDate.getMonth() + 1).padStart(2, '0'); // Month is zero-based
-        const day = String(parsedDate.getDate()).padStart(2, '0');
-        const hours = String(parsedTime.getHours()).padStart(2, '0');
-        const minutes = String(parsedTime.getMinutes()).padStart(2, '0');
-        const seconds = String(parsedTime.getSeconds()).padStart(2, '0');
-
-        // Construct the desired format "YYYY-MM-DD HH:mm:ss"
-        const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-        return formattedDate;
-    };
 
     const onSubmit = (data) => {
         console.log('AAA ' + JSON.stringify(data));
@@ -155,33 +146,43 @@ const NewEvent = () => {
             <View style={styles.dateSectionContainer}>
                 <View style={styles.dateTimeLabelContainer}>
                     <Text style={styles.label}>Fecha</Text>
-                    {Platform.OS !== 'ios' ? (
-                        <TouchableOpacity onPress={showDatepicker} style={styles.dateTimeContainer}>
-                            <Text>{date.toLocaleString().split(' ')[0].slice(0, -1)}</Text>
-                        </TouchableOpacity>
-                    )
-                        :
-                        <RNDateTimePicker value={date} mode="date" onChange={onChange} minimumDate={new Date()}/>
-                    }
+                    <Controller control={control} rules={{ required: true }} render={({ field }) => {
+                        if(field.value === undefined) 
+                            field.value = new Date();
+                        console.log("FIELD VALUE: " + JSON.stringify(field.value))
+
+                        return (
+                        Platform.OS !== 'ios' ? (
+                            <TouchableOpacity onPress={() => showDatepicker(field)} style={styles.dateTimeContainer}>
+                                <Text>{formatDate(field.value)}</Text>
+                            </TouchableOpacity>
+                        )
+                            :
+                            <RNDateTimePicker value={new Date(field.value)} mode="date" onChange={(event, selecteDate) => field.onChange(selecteDate)} minimumDate={new Date()} />
+                        )}} name="date" />
                 </View>
                 <View style={styles.dateTimeLabelContainer}>
                     <Text style={styles.label}>Hora</Text>
-                    <Controller control={control} rules={{ required: true }} render={({ field }) => (
-                    Platform.OS !== 'ios' ? (
-                        <TouchableOpacity onPress={showTimepicker(field)} style={styles.dateTimeContainer}>
-                            <Text>{date.toLocaleString().split(' ')[1]}</Text>
-                        </TouchableOpacity>
-                    ) :
-                        <RNDateTimePicker value={date} mode="time" onChange={field.onChange}  minimumDate={new Date()} />
-                    
-                    )} name="time" />
+                    <Controller control={control} rules={{ required: false }} render={({ field }) => {
+                        if (field.value === undefined)
+                            field.value = new Date();
+                        console.log("FIELD VALUE: " + field.value)
+                        return (Platform.OS !== 'ios' ? (
+                            <TouchableOpacity onPress={() => showTimepicker(field)} style={styles.dateTimeContainer}>
+                                <Text>{formatTime(field.value)}</Text>
+                            </TouchableOpacity>
+                        ) :
+                            <RNDateTimePicker value={field.value} mode="time" onChange={(event, selecteDate) => field.onChange(selecteDate)} minimumDate={new Date()} />
+
+                        )
+                    }} name="time" />
                 </View>
             </View>
             <View style={styles.qtyInputContainer}>
                 <Text style={styles.label}>Faltan</Text>
                 <Controller
                     control={control}
-                    render={({ field: { onChange, onBlur, value } }) => (
+                    render={({ field: { onChange, value } }) => (
                         <TextInput
                             style={styles.numberInput}
                             keyboardType="numeric"
