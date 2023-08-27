@@ -64,6 +64,7 @@ const Tabs = () => {
                 <MenuItem
                   onPress={() => {
                     console.log("Edit Profile");
+                    navigator.navigate("Edit Profile");
                     setVisible(!visible);
                   }}
                 >
