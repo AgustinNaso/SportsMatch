@@ -2,7 +2,6 @@ import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 
 //DATETIME PICKER UTILS
 const formatTime = (date) => {
-    console.log(date.getHours() + ":" + date.getMinutes())
     return date.getHours() + ":" + String(date.getMinutes()).padStart(2, "0");
 }
 

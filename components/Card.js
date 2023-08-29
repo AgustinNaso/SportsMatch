@@ -1,10 +1,10 @@
 import React from "react"
 import { View, Text, StyleSheet, Touchable, TouchableOpacity } from "react-native";
 import { useNavigation } from '@react-navigation/native';
-import { EXPERTISE, SPORT } from "../constants/data";
+import { EXPERTISE, SPORT, MONTHS } from "../constants/data";
 import { COLORS } from "../constants";
 import { Avatar } from "@rneui/themed";
-import { Button } from "@rneui/base";
+
 
 const Card = ({ props }) => {
     const navigation = useNavigation();
@@ -24,7 +24,7 @@ const Card = ({ props }) => {
         return { day, month };
     };
 
-    const time = props?.time?.split(" ")[1].split(":")[0] + ":" + props?.time?.split(" ")[1].split(":")[1]
+    const time = props?.time?.split(":")[0] + ":" + props?.time?.split(":")[1]
     const { day, month } = getDayAndMonth(props?.time)
 
     return (
@@ -32,17 +32,17 @@ const Card = ({ props }) => {
             <View style={styles.section}>
                 <View style={{...styles.verticalSection,marginLeft: 8}}>
                     <Avatar rounded size={100} source={require("../assets/default-profile.png")} containerStyle={{ backgroundColor: COLORS.secondary }} />
-                    <Text style={styles.cardMidText}>{props.owner_firstname} Marcos</Text>
+                    <Text style={styles.cardMidText}>{props.owner_firstname}</Text>
                 </View>
                 <View style={[styles.verticalSection, {alignItems: 'flex-start'}]}>
                     <Text style={styles.cardBigText}>{SPORT[props.sport_id - 1]}</Text>
-                    <Text style={{...styles.cardMidText, flex: 1}}>{EXPERTISE[2]}</Text>
+                    <Text style={{...styles.cardMidText, flex: 1}}>{EXPERTISE[props.expertise]}</Text>
                     <Text style={{...styles.cardMidText, marginBottom: 2}}>Falta{props.remaining > 1 ? 'n: ' : ': '}{props.remaining}</Text>
                 </View>
             </View>
             <View style={[styles.section, { backgroundColor: COLORS.primary, margin: -10, paddingHorizontal: 10, paddingVertical: 4 }]}>
-                <Text style={[styles.cardSmText, { color: COLORS.white }]}>{EXPERTISE[props.expertise]} 23 de agosto</Text>
-                <Text style={[styles.cardSmText, { color: COLORS.white }]}>Villa Crespo</Text>
+                <Text style={[styles.cardSmText, { color: COLORS.white }]}>{day} de {MONTHS[month + 1]}</Text>
+                <Text style={[styles.cardSmText, { color: COLORS.white }]}>{props.location}</Text>
             </View>
         </TouchableOpacity>
     )

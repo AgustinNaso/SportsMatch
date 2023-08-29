@@ -10,6 +10,8 @@ import { COLORS } from '../constants'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import RNDateTimePicker from '@react-native-community/datetimepicker'
 import { formatDate, formatTime, showDatepicker, showTimepicker } from '../utils/datetime'
+import { publishEvent } from '../services/eventService'
+import { useNavigation } from '@react-navigation/native'
 //TODO: move to constants
 const locations = [
     { key: 1, value: "Agronomía" },
@@ -25,9 +27,15 @@ const locations = [
 ];
 
 const NewEvent = () => {
+    const navigation = useNavigation();
     const [user, setUser] = React.useState(null);
     const [isLoading, setIsLoading] = React.useState(false);
     const { control, handleSubmit, formState: { errors }, watch } = useForm();
+
+
+    const dateTimeToDate = (date, time) => {
+        return `${date.getFullYear()}-${date.getMonth()}-${date.getDay()} ${time.getHours()}:${time.getMinutes()}:00`
+    }
 
 
 
@@ -39,83 +47,80 @@ const NewEvent = () => {
     }, []);
 
 
-    const onSubmit = (data) => {
-        console.log('AAA ' + JSON.stringify(data));
+    const onSubmit = (formData) => {
+        const { sport, difficulty, location, date, time, description, players } = formData;
         // setIsLoading(!isLoading);
-        // console.log("Sport: " + `${SPORT.indexOf(selectedSport) + 1}`)
-        // console.log("Difficulty: " + `${EXPERTISE.indexOf(selectedDifficulty) + 1}`)
-        // console.log("Location: " + selectedLocation)
-        // console.log("Date: " + formatDate(date, time));
-        // console.log("USE aR" + JSON.stringify(user));
-        // const data = {
-        //     sportId: `${SPORT.indexOf(selectedSport) + 1}`,
-        //     expertise: `${EXPERTISE.indexOf(selectedDifficulty) + 1}`,
-        //     location: selectedLocation,
-        //     time: formatDate(date, time),
-        //     description: description,
-        //     userId: user.uid,
-        //     remaining: 4
-        // }
-        // publishEvent(data).then((data) => {
-        //     data.json().then(data => {
-        //         console.log(data);
-        //     }
-        //     )
-        // }).catch(err => console.log(err));
+        const data = {
+            sport_id: `${SPORT.indexOf(sport) + 1}`,
+            expertise: `${EXPERTISE.indexOf(difficulty) + 1}`,
+            location: location,
+            time: dateTimeToDate(date, time),
+            description: description,
+            owner_id: "1",
+            remaining: +players
+        }
+        try {
+            publishEvent(data);
+            navigation.goBack();
+        }
+        catch (err) 
+        {
+            console.log(err);
+        }
     }
 
 
-    return (
-        <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1 }}>
-            <View style={{ padding: 10 }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Controller control={control} rules={{ required: true }} render={({ field }) => (
-                        <SelectList
-                            setSelected={field.onChange}
-                            data={SPORT}
-                            save="value"
-                            maxHeight={200}
-                            placeholder='Elija el deporte'
-                            boxStyles={{ marginVertical: 10 }}
-                            dropdownStyles={{ minWidth: '35%' }}
-                            inputStyles={{ minWidth: '35%' }}
-                            search={false}
-                        />)}
-                        name="sport" />
-                    <Controller control={control} rules={{ required: true }} render={({ field }) => (
-                        <SelectList
-                            setSelected={field.onChange}
-                            data={EXPERTISE}
-                            save="value"
-                            maxHeight={200}
-                            placeholder='Elija la dificultad'
-                            boxStyles={{ marginVertical: 10 }}
-                            dropdownStyles={{ minWidth: '35%' }}
-                            inputStyles={{ minWidth: '35%' }}
-                            search={false}
-                        />)}
-                        name="difficulty" />
-                </View>
+return (
+    <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1 }}>
+        <View style={{ padding: 10 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Controller control={control} rules={{ required: true }} render={({ field }) => (
                     <SelectList
                         setSelected={field.onChange}
-                        data={locations}
+                        data={SPORT}
                         save="value"
                         maxHeight={200}
-                        placeholder='Elija el lugar'
+                        placeholder='Elija el deporte'
                         boxStyles={{ marginVertical: 10 }}
+                        dropdownStyles={{ minWidth: '35%' }}
+                        inputStyles={{ minWidth: '35%' }}
+                        search={false}
                     />)}
-                    name="location" />
+                    name="sport" />
+                <Controller control={control} rules={{ required: true }} render={({ field }) => (
+                    <SelectList
+                        setSelected={field.onChange}
+                        data={EXPERTISE}
+                        save="value"
+                        maxHeight={200}
+                        placeholder='Elija la dificultad'
+                        boxStyles={{ marginVertical: 10 }}
+                        dropdownStyles={{ minWidth: '35%' }}
+                        inputStyles={{ minWidth: '35%' }}
+                        search={false}
+                    />)}
+                    name="difficulty" />
             </View>
-            <View style={styles.dateSectionContainer}>
-                <View style={styles.dateTimeLabelContainer}>
-                    <Text style={styles.label}>Fecha</Text>
-                    <Controller control={control} rules={{ required: true }} render={({ field }) => {
-                        if(field.value === undefined) 
-                            field.value = new Date();
-                        console.log("FIELD VALUE: " + JSON.stringify(field.value))
+            <Controller control={control} rules={{ required: true }} render={({ field }) => (
+                <SelectList
+                    setSelected={field.onChange}
+                    data={locations}
+                    save="value"
+                    maxHeight={200}
+                    placeholder='Elija el lugar'
+                    boxStyles={{ marginVertical: 10 }}
+                />)}
+                name="location" />
+        </View>
+        <View style={styles.dateSectionContainer}>
+            <View style={styles.dateTimeLabelContainer}>
+                <Text style={styles.label}>Fecha</Text>
+                <Controller control={control} rules={{ required: true }} render={({ field }) => {
+                    if (field.value === undefined)
+                        field.value = new Date();
+                    console.log("FIELD VALUE: " + JSON.stringify(field.value))
 
-                        return (
+                    return (
                         Platform.OS !== 'ios' ? (
                             <TouchableOpacity onPress={() => showDatepicker(field)} style={styles.dateTimeContainer}>
                                 <Text>{formatDate(field.value)}</Text>
@@ -123,66 +128,67 @@ const NewEvent = () => {
                         )
                             :
                             <RNDateTimePicker value={new Date(field.value)} mode="date" onChange={(event, selecteDate) => field.onChange(selecteDate)} minimumDate={new Date()} />
-                        )}} name="date" />
-                </View>
-                <View style={styles.dateTimeLabelContainer}>
-                    <Text style={styles.label}>Hora</Text>
-                    <Controller control={control} rules={{ required: false }} render={({ field }) => {
-                        if (field.value === undefined)
-                            field.value = new Date();
-                        console.log("FIELD VALUE: " + field.value)
-                        return (Platform.OS !== 'ios' ? (
-                            <TouchableOpacity onPress={() => showTimepicker(field)} style={styles.dateTimeContainer}>
-                                <Text>{formatTime(field.value)}</Text>
-                            </TouchableOpacity>
-                        ) :
-                            <RNDateTimePicker value={field.value} mode="time" onChange={(event, selecteDate) => field.onChange(selecteDate)} minimumDate={new Date()} />
+                    )
+                }} name="date" />
+            </View>
+            <View style={styles.dateTimeLabelContainer}>
+                <Text style={styles.label}>Hora</Text>
+                <Controller control={control} rules={{ required: false }} render={({ field }) => {
+                    if (field.value === undefined)
+                        field.value = new Date();
+                    console.log("FIELD VALUE: " + field.value)
+                    return (Platform.OS !== 'ios' ? (
+                        <TouchableOpacity onPress={() => showTimepicker(field)} style={styles.dateTimeContainer}>
+                            <Text>{formatTime(field.value)}</Text>
+                        </TouchableOpacity>
+                    ) :
+                        <RNDateTimePicker value={field.value} mode="time" onChange={(event, selecteDate) => field.onChange(selecteDate)} minimumDate={new Date()} />
 
-                        )
-                    }} name="time" />
-                </View>
+                    )
+                }} name="time" />
             </View>
-            <View style={styles.qtyInputContainer}>
-                <Text style={styles.label}>Faltan</Text>
-                <Controller
-                    control={control}
-                    render={({ field: { onChange, value } }) => (
-                        <TextInput
-                            style={styles.numberInput}
-                            keyboardType="numeric"
-                            placeholder="Enter the quantity of players"
-                            onChangeText={onChange}
-                            value={value}
-                        />
-                    )}
-                    name="players"
-                    defaultValue=""
-                    rules={{
-                        required: 'Quantity of players is required',
-                        pattern: {
-                            value: /^\d+$/,
-                            message: 'Please enter a valid number',
-                        },
-                    }}
-                />
-                <Text style={styles.errorText}>{errors.players?.message}</Text>
-            </View>
-            <Controller control={control} rules={{ required: false }} render={({ field }) => (
-                <TextInput
-                    placeholder='Comentarios adicionales...'
-                    value={field.value}
-                    style={styles.input}
-                    multiline={true} blurOnSubmit={true}
-                    onSubmitEditing={() => { Keyboard.dismiss() }}
-                    onChangeText={field.onChange} />
-            )}
-                name="description" />
-            <View style={styles.buttonContainer}>
-                <CustomButton title={"Cancelar"} color='red' />
-                <CustomButton title={isLoading ? "Creando" : "Crear"} color='green' isLoading={isLoading} onPress={handleSubmit(onSubmit)} />
-            </View>
-        </SafeAreaView>
-    )
+        </View>
+        <View style={styles.qtyInputContainer}>
+            <Text style={styles.label}>Faltan</Text>
+            <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                    <TextInput
+                        style={styles.numberInput}
+                        keyboardType="numeric"
+                        placeholder="Enter the quantity of players"
+                        onChangeText={onChange}
+                        value={value}
+                    />
+                )}
+                name="players"
+                defaultValue=""
+                rules={{
+                    required: 'Quantity of players is required',
+                    pattern: {
+                        value: /^\d+$/,
+                        message: 'Please enter a valid number',
+                    },
+                }}
+            />
+            <Text style={styles.errorText}>{errors.players?.message}</Text>
+        </View>
+        <Controller control={control} rules={{ required: false }} render={({ field }) => (
+            <TextInput
+                placeholder='Comentarios adicionales...'
+                value={field.value}
+                style={styles.input}
+                multiline={true} blurOnSubmit={true}
+                onSubmitEditing={() => { Keyboard.dismiss() }}
+                onChangeText={field.onChange} />
+        )}
+            name="description" />
+        <View style={styles.buttonContainer}>
+            <CustomButton title={"Cancelar"} color='red' onPress={navigation.goBack} />
+            <CustomButton title={isLoading ? "Creando" : "Crear"} color='green' isLoading={isLoading} onPress={handleSubmit(onSubmit)} />
+        </View>
+    </SafeAreaView>
+)
 }
 
 export default NewEvent

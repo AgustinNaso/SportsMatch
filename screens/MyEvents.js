@@ -10,24 +10,25 @@ import { COLORS } from '../constants';
 const renderList = ({ item }) => {
 
     //Adding event id for using it inside MyEventCard api call
-    for( let i = 0 ; i < item.participants.length; i++)
+    for (let i = 0; i < item.participants.length; i++)
         item.participants[i].event_id = item.event_id;
-    
+
     return (
         <>
-            <Text style={{ fontSize: 35, fontWeight: 600, marginLeft: 10, marginVertical: 10 }}>Partido {item.event_id} {item.location}</Text>
+            <Text style={{ fontSize: 22, fontWeight: 600, marginLeft: 10, marginVertical: 10 }}>Partido {item.event_id} {item.location}</Text>
             <FlatList
                 data={item.participants} renderItem={renderItem}
-                style={{ flex: 1 }} keyExtractor={(item, index) => {return `${item.userid} + ${index} + ${item.event_id}}`}}
-                ListEmptyComponent={<Text style={{fontSize: 20, alignSelf: 'center'}}>Aún no hay participantes</Text>}
-                >
+                style={{ flex: 1 }} keyExtractor={(item, index) => { return `${item.userid} + ${index} + ${item.event_id}}` }}
+                ListEmptyComponent={<Text style={{ fontSize: 20, alignSelf: 'center' }}>Aún no hay participantes</Text>}
+            >
             </FlatList>
         </>
     )
 }
 
 const renderItem = ({ item }) => {
-    return <MyEventCard userData={item}/>
+    console.log("ITEM: " + JSON.stringify(item))
+    return <MyEventCard userData={item} />
 
 }
 
@@ -71,7 +72,7 @@ const MyEvents = () => {
     const renderScene = ({ route }) => {
         switch (route.key) {
             case 'first':
-                return  myEvents.length > 0 ?  FirstRoute(myEvents) : null
+                return myEvents.length > 0 ? FirstRoute(myEvents) : null
             case 'second':
                 return joinedEvents.length > 0 ? SecondRoute(joinedEvents) : null
             default:
@@ -88,25 +89,24 @@ const MyEvents = () => {
 
     useEffect(() => {
         const getMyEvents = async () => {
-            const data = await fetchMyEvents(user.uid);
+            const data = await fetchMyEvents(1);
             setMyEvents(data)
         }
         getMyEvents().catch(err => console.log(err));
 
         const getNearEvents = async () => {
-            const mockData = await fetchJoinedEvents(user.uid);
-            mockData.json().then(data => {
-                console.log('JOINED ' + JSON.stringify(data))
-                setJoinedEvents(data);
-            });
+            const mockData = await fetchJoinedEvents(user?.uid);
+            console.log("MOC: " + JSON.stringify(mockData))
+            setJoinedEvents(mockData);
         }
+
         getNearEvents()
             .catch(err => console.log(err));
     }, [user])
 
     return (
         <TabView
-            renderTabBar={(props) => <TabBar {...props} style={{ backgroundColor: COLORS.primary }} indicatorStyle={{ backgroundColor: COLORS.secondary}} />}
+            renderTabBar={(props) => <TabBar {...props} style={{ backgroundColor: COLORS.primary }} indicatorStyle={{ backgroundColor: COLORS.secondary }} />}
             navigationState={{ index, routes }}
             renderScene={renderScene}
             onIndexChange={setIndex}

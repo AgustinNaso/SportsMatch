@@ -9,7 +9,8 @@ import { formatDate, showDatepicker } from "../utils/datetime";
 import { Chip } from "@rneui/themed";
 import { COLORS } from "../constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { SafeAreaView } from "react-native-safe-area-context";
+import CustomButton from '../components/CustomButton'
 
 
 const FilterModal = ({ navigation }) => {
@@ -40,9 +41,8 @@ const FilterModal = ({ navigation }) => {
                 if (storedFormValues !== null) {
                     const formValues = JSON.parse(storedFormValues);
                     Object.entries(formValues).forEach(([fieldName, fieldValue]) => {
-                        console.log("Field name: " + fieldName + " Field value: " + fieldValue)
                         if (fieldValue !== undefined) {
-                            if(fieldName === "date"){
+                            if (fieldName === "date") {
                                 fieldValue = new Date(fieldValue);
                             }
                             setValue(fieldName, fieldValue);
@@ -65,9 +65,6 @@ const FilterModal = ({ navigation }) => {
         AsyncStorage.removeItem(STORAGE_KEY);
     }
 
-
-    const selectedChips = getValues('selectedChips') || [];
-
     const toggleChipSelection = async (index, selectedChips, onChange) => {
         const isSelected = selectedChips.includes(index);
         const newSelectedChips = isSelected
@@ -77,12 +74,7 @@ const FilterModal = ({ navigation }) => {
     };
 
     return (
-        <View
-            style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-            }}>
+        <SafeAreaView style={{ flex: 1 }}>
             <Animated.View
                 style={[
                     {
@@ -91,7 +83,7 @@ const FilterModal = ({ navigation }) => {
                             {
                                 translateY: current.progress.interpolate({
                                     inputRange: [0, 1],
-                                    outputRange: [height, height * 0.15],
+                                    outputRange: [height, height * 0.05],
                                     extrapolate: 'clamp',
                                 }),
                             },
@@ -166,7 +158,7 @@ const FilterModal = ({ navigation }) => {
                                 HORARIOS.map((horario, idx) => {
                                     const isSelected = field.value.includes(idx)
                                     return (
-                                        <Chip title={horario} key={idx} color={COLORS.primary} type={isSelected ? 'solid' : 'outline'} onPress={() => toggleChipSelection(idx, field.value, field.onChange)} />
+                                        <Chip title={horario} buttonStyle={{ borderColor: COLORS.primary, borderWidth: 1 }} titleStyle={{ color: !isSelected ? COLORS.primary : COLORS.white }} key={idx} color={COLORS.primary} type={isSelected ? 'solid' : 'outline'} onPress={() => toggleChipSelection(idx, field.value, field.onChange)} />
                                     )
                                 })
                             )
@@ -175,40 +167,36 @@ const FilterModal = ({ navigation }) => {
                         </View>
 
                     </View>
-                    <Button
-                        color={'red'}
-                        mode="contained"
-                        onPress={navigation.goBack}
-                        title="Cancelar">
-                    </Button>
-                    <Button
-                        color={COLORS.primary}
-                        mode="contained"
-                        onPress={handleSubmit(onSubmit)}
-                        title="Guardar">
-                    </Button>
-                    <Button
+                    <View style={styles.buttonContainer}>
+                        <CustomButton title={"Cancelar"} color='red'/>
+                        <CustomButton title={"Guardar"} color={COLORS.primary} onPress={handleSubmit(onSubmit)} />
+                    </View>
+                    {/* //TODO: Agregar un useState para mostrar el boton si cambian los inputs */}
+                    {false && <Button
                         color={COLORS.primary}
                         mode="contained"
                         onPress={cleanFilters}
                         title="Limpiar">
                     </Button>
+                    }
                 </View>
             </Animated.View>
-        </View>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     viewAnimated: {
         width: '100%',
+        flex: 1,
     },
     viewContainer: {
         flex: 1,
         flexDirection: 'column',
         padding: 10,
-        backgroundColor: '#E5E5E5',
+        backgroundColor: '#DEDEDE',
         borderRadius: 20,
+        justifyContent: 'space-evenly',
     },
     bigText: {
         fontSize: 20,
@@ -223,6 +211,11 @@ const styles = StyleSheet.create({
         borderColor: '#aeaeae',
         borderWidth: 1,
     },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        margin: 24,
+    }
 });
 
 
