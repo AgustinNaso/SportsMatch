@@ -16,20 +16,25 @@ const filterData = [
 
 ];
 
-const FilterModal = () => {
-    return (
-        <View>
-
-        </View>
-    )
-}
-
 const Home = ({navigation, route}) => {
     const [eventsList, setEventList] = React.useState(null);
     const [filteredEventsList, setFilteredEventList] = React.useState(null);
     const [selectedFilter, setSelectedFilter] = React.useState("");
     const [loading, setLoading] = React.useState(true);
     const [showFilters, setShowFilters] = React.useState(false);
+
+    React.useEffect(() => {
+        console.log("Rerender " + route.params?.filters)
+        const getNearEvents = async () => {
+            const mockData = await fetchNearEvents(route.params?.filters);
+            setEventList(mockData);
+            setFilteredEventList(mockData);
+            setLoading(false);
+        }
+        getNearEvents()
+            .catch(err => console.log(err));
+
+    }, [route.params?.filters])
 
     React.useEffect(() => {
         const getNearEvents = async () => {

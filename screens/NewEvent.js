@@ -23,7 +23,7 @@ const locations = [
     { key: 7, value: "Caballito" },
     { key: 8, value: "Chacarita" },
     { key: 9, value: "Coghlan" },
-    { key: 10, value: "Colegiales" },
+    { key: 10, value: "Colegiales", },
 ];
 
 const NewEvent = () => {

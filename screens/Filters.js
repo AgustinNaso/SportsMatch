@@ -20,12 +20,11 @@ const FilterModal = ({ navigation }) => {
     const STORAGE_KEY = 'selectedChips';
     const { height } = useWindowDimensions();
     const { current } = useCardAnimation();
-    const { currFilters, setCurrentFilters } = useState({ location: null, expertise: null, date: null, time: null })
     const { control, handleSubmit, formState: { errors }, getValues, setValue } = useForm();
 
     const onSubmit = (data) => {
-        console.log(data);
-        navigation.navigate("Inicio", { filters: JSON.stringify(data) });
+        console.log(JSON.stringify(data));
+        navigation.navigate("Inicio", { filters: data });
         try {
             AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         } catch (error) {
@@ -53,7 +52,6 @@ const FilterModal = ({ navigation }) => {
                 console.error('Error loading filter data:', error);
             }
         };
-
         loadFilterData();
     }, []);
 
@@ -61,7 +59,7 @@ const FilterModal = ({ navigation }) => {
         setValue("location", 'Elija una ubicacion');
         setValue("expertise", 'Elija el nivel');
         setValue("date", null);
-        setValue("time", []);
+        setValue("schedule", []);
         AsyncStorage.removeItem(STORAGE_KEY);
     }
 
@@ -163,7 +161,7 @@ const FilterModal = ({ navigation }) => {
                                 })
                             )
                             }
-                                name="time" />
+                                name="schedule" />
                         </View>
 
                     </View>

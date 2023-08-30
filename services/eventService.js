@@ -9,12 +9,22 @@ export const fetchUser = async (email) => {
 
 
 export const fetchParticipants = async (eventId) => {
-    return await fetch(API_URL + '/events/' + eventId + '/owner/participants');
+    const response =  await fetch(API_URL + '/events/' + eventId + '/owner/participants');
+    return await response.json();
 }
 
-export const fetchEvents = async (ownerId) => {
+export const fetchEvents = async (ownerId, filters) => {
+    console.log("FILTERS " + filters)
     ownerId = 1;
-    return await fetch(`${API_URL}/events?userId=${ownerId}&filterOut=true`);
+    let filterString;
+    if(filters){
+        filterString = Object.entries(filters).map(([key, value]) => {
+            console.log("KEY: " + key + " VALUE: " + value)
+            return "&"+key + "=" + value;
+        }).join("");
+    }
+    console.log("FILTERS " + filterString);
+    return await fetch(`${API_URL}/events?userId=${ownerId}&filterOut=true${filterString ?? ""}`);
 }
 
 export const fetchJoinedEvents = async (userId) => {
@@ -39,9 +49,9 @@ export const fetchMyEvents = async (uid) => {
    return response;
 }
 
-export const fetchNearEvents = async () => {
+export const fetchNearEvents = async (filters = undefined) => {
     //TODO: filtrar remaining > 0 ?
-   const response = await fetchEvents();
+   const response = await fetchEvents(1, filters);
    const jsonRes = await response.json();
    console.log("RESPONSE: " + JSON.stringify(jsonRes));
    return jsonRes
