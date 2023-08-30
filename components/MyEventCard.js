@@ -23,7 +23,7 @@ const MyEventCard = ({ userData }) => {
 
     const sendMessage = () => {
         console.log(JSON.stringify(userData))
-        Linking.openURL(`whatsapp://send?phone=${userData.telephone}&text=Hola ${userData.firstname}. Nos vemos en el partido!'`);
+        Linking.openURL(`whatsapp://send?phone=${+userData.phone_number}&text=Hola ${userData.firstname}. Nos vemos en el partido!`);
     }
 
 
