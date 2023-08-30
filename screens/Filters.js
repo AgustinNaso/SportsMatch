@@ -15,24 +15,24 @@ import CustomButton from '../components/CustomButton'
 
 const FilterModal = ({ navigation }) => {
 
-    const LOCATIONS = ["Mis ubicaciones", "Almagro", "Balvanera", "Villa Crespo", "Villa Soldati", "Devoto", "Belgrano"]
+    const LOCATIONS = [
+        { key: 0, value: "Mis ubicaciones"},
+        { key: 1, value: "Agronomía" },
+        { key: 2, value: "Almagro" },
+        { key: 3, value: "Balvanera" },
+        { key: 4, value: "Barracas" },
+        { key: 5, value: "Belgrano" },
+        { key: 6, value: "Boedo" },
+        { key: 7, value: "Caballito" },
+        { key: 8, value: "Chacarita" },
+        { key: 9, value: "Coghlan" },
+        { key: 10, value: "Colegiales", },
+    ];
     const HORARIOS = ["Mañana", "Tarde", "Noche"]
     const STORAGE_KEY = 'selectedChips';
     const { height } = useWindowDimensions();
     const { current } = useCardAnimation();
     const { control, handleSubmit, formState: { errors }, getValues, setValue } = useForm();
-
-    const onSubmit = (data) => {
-        console.log(JSON.stringify(data));
-        navigation.navigate("Inicio", { filters: data });
-        try {
-            AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        } catch (error) {
-            console.error('Error saving filter data:', error);
-        }
-
-    }
-
     useEffect(() => {
         const loadFilterData = async () => {
             try {
@@ -54,6 +54,22 @@ const FilterModal = ({ navigation }) => {
         };
         loadFilterData();
     }, []);
+    
+    const onSubmit = (data) => {
+        console.log(JSON.stringify(data));
+        navigation.navigate("Inicio", { filters: JSON.stringify(data) });
+        try {
+            AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        } catch (error) {
+            console.error('Error saving filter data:', error);
+        }
+    }
+
+    const closeFilters = () => {
+        cleanFilters();
+        navigation.goBack();
+    }
+
 
     const cleanFilters = () => {
         setValue("location", 'Elija una ubicacion');
@@ -91,7 +107,7 @@ const FilterModal = ({ navigation }) => {
                 ]}>
                 <View style={styles.viewContainer}>
                     <Text style={[styles.bigText, { alignSelf: 'center' }]}>
-                        Filtros de busqueda
+                        Filtros de búsqueda
                     </Text>
                     <View style={styles.section}>
                         <Text>Ubicacion: </Text>
@@ -166,7 +182,7 @@ const FilterModal = ({ navigation }) => {
 
                     </View>
                     <View style={styles.buttonContainer}>
-                        <CustomButton title={"Cancelar"} color='red'/>
+                        <CustomButton title={"Cancelar"} color='red' onPress={closeFilters}/>
                         <CustomButton title={"Guardar"} color={COLORS.primary} onPress={handleSubmit(onSubmit)} />
                     </View>
                     {/* //TODO: Agregar un useState para mostrar el boton si cambian los inputs */}

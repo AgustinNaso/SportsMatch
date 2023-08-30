@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { EXPERTISE, SPORT, MONTHS } from "../constants/data";
 import { COLORS } from "../constants";
 import { Avatar } from "@rneui/themed";
+import { getDateComponents } from "../utils/datetime";
 
 
 const Card = ({ props }) => {
@@ -11,21 +12,8 @@ const Card = ({ props }) => {
     const handlePress = () => {
         navigation.navigate("Evento", { props: props });
     }
-    console.log(props)
 
-    const getDayAndMonth = (date) => {
-        // Convert the input string to a Date object
-        const parsedDate = new Date(date);
-
-        // Get the day and month
-        const day = parsedDate.getDate();
-        const month = parsedDate.getMonth() + 1; // Months are zero-based, so add 1
-
-        return { day, month };
-    };
-
-    const time = props?.time?.split(":")[0] + ":" + props?.time?.split(":")[1]
-    const { day, month } = getDayAndMonth(props?.time)
+    const { day, month, hours, minutes } = getDateComponents(props?.schedule)
 
     return (
         <TouchableOpacity style={styles.card} onPress={handlePress}>
@@ -41,7 +29,7 @@ const Card = ({ props }) => {
                 </View>
             </View>
             <View style={[styles.section, { backgroundColor: COLORS.primary, margin: -10, paddingHorizontal: 10, paddingVertical: 4 }]}>
-                <Text style={[styles.cardSmText, { color: COLORS.white }]}>{day} de {MONTHS[month + 1]}</Text>
+                <Text style={[styles.cardSmText, { color: COLORS.white }]}>{day} de {MONTHS[month + 1]} {hours}:{minutes} hs</Text>
                 <Text style={[styles.cardSmText, { color: COLORS.white }]}>{props.location}</Text>
             </View>
         </TouchableOpacity>

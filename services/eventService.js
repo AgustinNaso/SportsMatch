@@ -1,3 +1,5 @@
+import { EXPERTISE } from "../constants/data";
+
 
 const API_URL = 'http://10.15.18.92:8080'
 
@@ -13,11 +15,22 @@ export const fetchParticipants = async (eventId) => {
     return await response.json();
 }
 
+//TODO: clean this code
 export const fetchEvents = async (ownerId, filters) => {
-    console.log("FILTERS " + filters)
+    console.log("FILTERSS " + JSON.stringify(filters))
     ownerId = 1;
     let filterString;
     if(filters){
+        if(filters.date)
+            filters.date = filters.date.split("T")[0];
+        else
+            delete filters.date;
+        if(filters.expertise)
+            filters.expertise = EXPERTISE.indexOf(filters.expertise);
+        else
+            delete filters.expertise;
+        if(!filters.schedule || filters.schedule.length == 0)
+            delete filters.schedule;
         filterString = Object.entries(filters).map(([key, value]) => {
             console.log("KEY: " + key + " VALUE: " + value)
             return "&"+key + "=" + value;

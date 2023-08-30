@@ -8,6 +8,7 @@ import { getCurrentUserData } from "../services/authService";
 import { Avatar, Divider } from "@rneui/themed";
 import { COLORS } from "../constants";
 import { MONTHS } from "../constants/data";
+import { getDateComponents } from "../utils/datetime";
 
 
 const Event = ({ route }) => {
@@ -59,16 +60,8 @@ const Event = ({ route }) => {
         }
     }
 
-    const getDateComponents = (date) => {
-        const parsedDate = new Date(date);
-        const day = parsedDate.getDate();
-        const month = parsedDate.getMonth(); // Months are zero-based
-        const hours = parsedDate.getHours();
-        const minutes = String(parsedDate.getMinutes()).padStart(2, "0")
-
-        return { day, month, hours, minutes };
-    };
-    const { day, month, hours, minutes } = getDateComponents(props?.time)
+    
+    const { day, month, hours, minutes } = getDateComponents(props?.schedule)
 
     return (
         <View style={styles.eventContainer}>

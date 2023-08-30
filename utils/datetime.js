@@ -33,4 +33,14 @@ const showTimepicker = (field) => {
     showMode('time', field);
 };
 
-export { formatTime, formatDate, showDatepicker, showTimepicker }
+const getDateComponents = (date) => {
+    const parsedDate = new Date(date);
+    const day = parsedDate.getDate();
+    const month = parsedDate.getMonth(); // Months are zero-based
+    const hours = parsedDate.getHours();
+    const minutes = String(parsedDate.getMinutes()).padStart(2, "0")
+
+    return { day, month, hours, minutes };
+};
+
+export { formatTime, formatDate, showDatepicker, showTimepicker, getDateComponents }
