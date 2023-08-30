@@ -5,6 +5,8 @@ import { COLORS } from "../constants";
 import { AuthContext } from "../contexts/authContext"
 import { Avatar, Chip, Divider } from '@rneui/themed';
 import { Ionicons } from '@expo/vector-icons';
+import { fetchUser } from "../services/eventService";
+import { SPORT } from "../constants/data";
 
 
 const sports = ["Futbol", "Basquet", "Paddle", "Tenis", "Voley"];
@@ -24,11 +26,18 @@ const Profile = () => {
 
 
   useEffect(() => {
-    getCurrentUserData().then((data) => {
-      console.log("DATA progile: " + data);
-      setCurrUser(JSON.parse(data));
-      console.log(JSON.parse(data).given_name)
-    });
+
+    const fetchUserData = async () => {
+      const user = await fetchUser('caberna@gmail.com');
+      console.log("USER: " + JSON.stringify(user));
+      setCurrUser(user);
+    }
+    try {
+      fetchUserData();
+    }
+    catch (e) {
+      console.log(e);
+    }
     // console.log(getCurrUserJWT());
   }, []);
 
@@ -50,8 +59,7 @@ const Profile = () => {
             source={image_url ? { uri: image_url } : {}}
           />
           <View style={styles.profileTextContainer}>
-            <Text style={styles.profileTextName}>John Doe</Text>
-            {/* <Text style={styles.profileTextName}>{currUser?.given_name} {currUser?.family_name}</Text> */}
+            <Text style={styles.profileTextName}>{currUser?.firstname} {currUser?.lastname}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginVertical: 5 }}>
               <Ionicons name="star" size={18} color={COLORS.secondary} />
               <Text style={styles.profileTextAge}>  4.2 / 5</Text>
@@ -66,13 +74,13 @@ const Profile = () => {
             <View style={styles.userDataContainer}>
               <Image source={require('../assets/pin-48-blue.png')} style={{ width: 23, height: 23 }} />
               <View style={styles.userDataDisplay}>
-                <Text style={styles.itemText}>Barracas, Buenos Aires</Text>
+                <Text style={styles.itemText}>{currUser?.locations[0]}</Text>
               </View>
             </View>
             <View style={styles.userDataContainer}>
               <Ionicons name="call" size={24} color={COLORS.primary} />
               <View style={styles.userDataDisplay}>
-                <Text style={styles.itemText}>1121576283</Text>
+                <Text style={styles.itemText}>{currUser?.phone_number}</Text>
               </View>
             </View>
             <View style={styles.userDataContainer}>
@@ -86,8 +94,8 @@ const Profile = () => {
             <Text style={styles.bodyText}>Mis Deportes</Text>
             <Divider width={3} style={{ width: '100%', marginBottom: 8 }} />
             <View style={styles.chipContainer}>
-              {sports.map((sport, idx) => (
-                <Chip title={sport} key={idx} color={COLORS.primary} />
+              {currUser?.sports?.map((sport, idx) => (
+                <Chip title={SPORT[sport - 1]} key={idx} color={COLORS.primary} />
               ))}
             </View>
           </View>
@@ -95,8 +103,8 @@ const Profile = () => {
             <Text style={styles.bodyText}>Mis Ubicaciones</Text>
             <Divider width={3} style={{ width: '100%', marginBottom: 8 }} />
             <View style={styles.chipContainer}>
-              {locations.map((sport, idx) => (
-                <Chip title={sport} key={idx} color={COLORS.primary} />
+              {currUser?.locations?.map((location, idx) => (
+                <Chip title={location} key={idx} color={COLORS.primary} />
               ))}
             </View>
           </View>

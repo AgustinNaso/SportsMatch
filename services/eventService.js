@@ -1,5 +1,5 @@
 
-const API_URL = 'http://192.168.0.14:8080'
+const API_URL = 'http://10.15.18.92:8080'
 
 export const fetchUser = async (email) => {
     const data = await fetch(API_URL + '/users?email=' + email);
