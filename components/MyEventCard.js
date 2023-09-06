@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
     },
     userText: {
         fontSize: 30,
-        fontWeight: 600
+        fontWeight: 600,
+        marginLeft: 12
     }
 });
