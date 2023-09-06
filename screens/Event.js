@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native"
+import { View, Text, StyleSheet, ScrollView } from "react-native"
 import { Ionicons } from '@expo/vector-icons';
 import CustomButton from "../components/CustomButton";
 import { EXPERTISE, SPORT } from "../constants/data";
@@ -9,6 +9,7 @@ import { Avatar, Divider } from "@rneui/themed";
 import { COLORS } from "../constants";
 import { MONTHS } from "../constants/data";
 import { getDateComponents } from "../utils/datetime";
+import ParticipantCard from "../components/ParticipantCard";
 
 
 const Event = ({ route }) => {
@@ -60,7 +61,7 @@ const Event = ({ route }) => {
         }
     }
 
-    
+
     const { day, month, hours, minutes } = getDateComponents(props?.schedule)
 
     return (
@@ -86,20 +87,28 @@ const Event = ({ route }) => {
                     <Text style={styles.bodyBigText}>Ubicacion:</Text>
                     <Text style={styles.bodyBigText}>{props.location}</Text>
                 </View>
-            </View>
+                <View style={{flexDirection: 'column'}}>
+                    <Text style={styles.bodyBigText}>Participantes: </Text>
+                    <ScrollView style={styles.participantsContainer}>
+                        <ParticipantCard userData={{firstname: 'Juan',lastname: 'Perez', rating: 4.5, partidos: 21}} />
+                        <ParticipantCard userData={{firstname: 'Pedro',lastname: 'Perez', rating: 4.5, partidos: 21}} />
+                        <ParticipantCard userData={{firstname: 'Peter',lastname: 'Perez', rating: 4.5, partidos: 21}} />
+                    </ScrollView>
+                </View>
+
             {currUserIsParticipant &&
                 <Text style={{ fontSize: 20, fontWeight: 700 }}>Ya estas anotado al partido!</Text>
             }
 
             <View style={{
-                width: '50%', marginTop: 50, marginLeft: 30, height: 90,
-                flexDirection: 'column', justifyContent: 'space-between'
+                alignSelf: 'center'
             }}>
                 {currUserIsParticipant ?
                     <CustomButton title={"Desanotarme"} color={"red"} />
                     :
                     <CustomButton title={"Anotarme"} color="green" onPress={joinEvent} />
                 }
+            </View>
             </View>
         </View>
     )
@@ -115,7 +124,8 @@ const styles = StyleSheet.create({
     },
     eventContainer: {
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
+        flex: 1,
     },
     eventHeader: {
         height: 200,
@@ -155,9 +165,13 @@ const styles = StyleSheet.create({
 
     eventBody: {
         flexDirection: 'column',
-        height: '40%',
+        height: '65%',
         width: '100%',
         justifyContent: 'space-evenly',
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
+    },
+
+    participantsContainer: {
+        height: '35%'
     }
 })

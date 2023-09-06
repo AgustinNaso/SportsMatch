@@ -15,12 +15,17 @@ import { AuthContext } from "../contexts/authContext";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
-  const authContext =  useContext(AuthContext)
+  const authContext = useContext(AuthContext)
   const { control, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = async (data) => {
     setLoading(true);
-    authContext.signIn(data).catch(err => console.error("Err " + err));
+    try {
+      await authContext.signIn(data)
+    } 
+    catch (err) {
+      console.error('Error signing in', err);
+    }
   }
 
   return (

@@ -38,7 +38,6 @@ export const useAuthContext = () => {
 
   const signIn = async data => {
     const res = await login(data);
-    console.log("ADA");
     dispatch({ type: 'SIGN_IN', token: "token" });
   };
 

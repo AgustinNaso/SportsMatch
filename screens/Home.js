@@ -27,8 +27,8 @@ const Home = ({navigation, route}) => {
         console.log("Rerender " + route.params?.filters)
         const getNearEvents = async () => {
             const mockData = await fetchNearEvents(JSON.parse(route.params?.filters));
-            setEventList(mockData);
-            setFilteredEventList(mockData);
+            setEventList(mockData.items);
+            setFilteredEventList(mockData.items);
             setLoading(false);
         }
         getNearEvents()
@@ -39,8 +39,8 @@ const Home = ({navigation, route}) => {
     React.useEffect(() => {
         const getNearEvents = async () => {
             const mockData = await fetchNearEvents();
-            setEventList(mockData);
-            setFilteredEventList(mockData);
+            setEventList(mockData.items);
+            setFilteredEventList(mockData.items);
             setLoading(false);
         }
         getNearEvents()

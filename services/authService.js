@@ -5,7 +5,7 @@ import {
 } from "amazon-cognito-identity-js"
 
 import * as SecureStore from 'expo-secure-store';
-import { fecthUserId } from "./eventService";
+import { fetchUser, fecthUserId } from "./eventService";
 import { useNavigation } from "@react-navigation/native";
 
 const UserPool = new CognitoUserPool({
@@ -30,11 +30,21 @@ const getValueFor = async key => {
 }
 
 export const login = async data => {
-    return new Promise((resolve, reject) => {
-        resolve({accessToken: {
-            jwtToken: 'token'
-        }})
-    })
+
+    try {
+        const response = await fecthUserId('caberna@gmail.com');
+        return await response.json();
+    }
+    catch(err) {
+        console.error(err);
+        return undefined;
+    }
+
+    // return new Promise((resolve, reject) => {
+    //     resolve({accessToken: {
+    //         jwtToken: 'token'
+    //     }})
+    // })
     // return new Promise((resolve, reject) => {
     //     const user = new CognitoUser({
     //         Username: data.email,

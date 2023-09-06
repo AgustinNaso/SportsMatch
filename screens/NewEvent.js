@@ -34,7 +34,8 @@ const NewEvent = () => {
 
 
     const dateTimeToDate = (date, time) => {
-        return `${date.getFullYear()}-${date.getMonth()}-${date.getDay()} ${time.getHours()}:${time.getMinutes()}:00`
+        //Months are 0 indexed
+        return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${time.getHours()}:${time.getMinutes()}:00`
     }
 
 
@@ -49,12 +50,13 @@ const NewEvent = () => {
 
     const onSubmit = (formData) => {
         const { sport, difficulty, location, date, time, description, players } = formData;
+        console.log("date:", date, "time:", time, "datetime: ",dateTimeToDate(date,time))
         // setIsLoading(!isLoading);
         const data = {
             sport_id: `${SPORT.indexOf(sport) + 1}`,
             expertise: `${EXPERTISE.indexOf(difficulty) + 1}`,
             location: location,
-            time: dateTimeToDate(date, time),
+            schedule: dateTimeToDate(date, time),
             description: description,
             owner_id: "1",
             remaining: +players

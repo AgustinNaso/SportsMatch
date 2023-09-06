@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet, ScrollView, SafeAreaView, Image } from "react-native";
-import { getCurrUserJWT, getCurrentUserData } from "../services/authService";
 import { COLORS } from "../constants";
 import { AuthContext } from "../contexts/authContext"
 import { Avatar, Chip, Divider } from '@rneui/themed';
@@ -9,8 +8,6 @@ import { fetchUser } from "../services/eventService";
 import { SPORT } from "../constants/data";
 
 
-const sports = ["Futbol", "Basquet", "Paddle", "Tenis", "Voley"];
-const locations = ["Palermo", "Belgrano", "Nuñez", "Villa Crespo"]
 const image_url = 'https://randomuser.me/api/portraits/men/36.jpg'
 
 const Profile = () => {
@@ -26,7 +23,6 @@ const Profile = () => {
 
 
   useEffect(() => {
-
     const fetchUserData = async () => {
       const user = await fetchUser('caberna@gmail.com');
       console.log("USER: " + JSON.stringify(user));
@@ -35,10 +31,9 @@ const Profile = () => {
     try {
       fetchUserData();
     }
-    catch (e) {
-      console.log(e);
+    catch (err) {
+      console.error(err);
     }
-    // console.log(getCurrUserJWT());
   }, []);
 
   const handleLogout = () => {
@@ -70,7 +65,7 @@ const Profile = () => {
         <View style={styles.profileBody}>
           <View style={styles.bodySectionContainer}>
             <Text style={styles.bodyText}>Mis Datos</Text>
-            <Divider width={3} style={{ width: '100%', marginBottom: 8 }} />
+            <Divider width={3} style={{ width: '100%', marginBottom: 16 }} />
             <View style={styles.userDataContainer}>
               <Image source={require('../assets/pin-48-blue.png')} style={{ width: 23, height: 23 }} />
               <View style={styles.userDataDisplay}>
@@ -92,7 +87,7 @@ const Profile = () => {
           </View>
           <View style={styles.bodySectionContainer}>
             <Text style={styles.bodyText}>Mis Deportes</Text>
-            <Divider width={3} style={{ width: '100%', marginBottom: 8 }} />
+            <Divider width={3} style={{ width: '100%', marginBottom: 16 }} />
             <View style={styles.chipContainer}>
               {currUser?.sports?.map((sport, idx) => (
                 <Chip title={SPORT[sport - 1]} key={idx} color={COLORS.primary} />
@@ -101,7 +96,7 @@ const Profile = () => {
           </View>
           <View style={styles.bodySectionContainer}>
             <Text style={styles.bodyText}>Mis Ubicaciones</Text>
-            <Divider width={3} style={{ width: '100%', marginBottom: 8 }} />
+            <Divider width={3} style={{ width: '100%', marginBottom: 16 }} />
             <View style={styles.chipContainer}>
               {currUser?.locations?.map((location, idx) => (
                 <Chip title={location} key={idx} color={COLORS.primary} />
@@ -109,7 +104,6 @@ const Profile = () => {
             </View>
           </View>
         </View>
-        {/* <CustomButton title={"Logout"} onPress={handleLogout} color="#F00" /> */}
       </ScrollView>
     </SafeAreaView>
   );
@@ -134,7 +128,7 @@ const styles = StyleSheet.create({
     height: "24%",
     justifyContent: "space-evenly",
     alignItems: "center",
-    marginBottom: 8,
+    marginBottom: 8
   },
   profileTextContainer: {
     flexDirection: "column",
@@ -179,7 +173,7 @@ const styles = StyleSheet.create({
   chipContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center",
+    justifyContent: "space-around",
     alignItems: "center",
     gap: 8,
     paddingHorizontal: 16

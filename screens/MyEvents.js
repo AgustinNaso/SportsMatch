@@ -1,21 +1,29 @@
 import React, { useEffect } from 'react';
-import { Text, SafeAreaView, FlatList } from 'react-native';
-import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { Text, SafeAreaView, FlatList, View } from 'react-native';
+import { TabView, TabBar } from 'react-native-tab-view';
 import Card from '../components/Card';
 import MyEventCard from '../components/MyEventCard';
 import { fetchJoinedEvents, fetchMyEvents, fetchNearEvents } from '../services/eventService';
 import { getCurrentUserData } from '../services/authService';
 import { COLORS } from '../constants';
+import { useIsFocused } from '@react-navigation/native';
+import { Chip, Divider } from '@rneui/base';
+import EventStatus from '../components/EventStatus';
 
 const renderList = ({ item }) => {
+    console.log("ITEM: ", item)
 
     //Adding event id for using it inside MyEventCard api call
-    for (let i = 0; i < item.participants.length; i++)
+    for (let i = 0; i < item.participants?.length; i++)
         item.participants[i].event_id = item.event_id;
 
     return (
         <>
-            <Text style={{ fontSize: 22, fontWeight: 600, marginLeft: 10, marginVertical: 10 }}>Partido {item.event_id} {item.location}</Text>
+            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                <Text style={{ fontSize: 22, fontWeight: 600, marginLeft: 10, marginVertical: 10 }}>Partido {item.event_id} {item.location}</Text>
+                <EventStatus status={2}/>
+            </View>
+            <Divider width={3} style={{ width: '90%', marginBottom: 10, alignSelf: 'center' }} />
             <FlatList
                 data={item.participants} renderItem={renderItem}
                 style={{ flex: 1 }} keyExtractor={(item, index) => { return `${item.userid} + ${index} + ${item.event_id}}` }}
@@ -64,10 +72,11 @@ const MyEvents = () => {
         { key: 'first', title: 'Creados' },
         { key: 'second', title: 'Anotado' },
     ]);
+
     const [myEvents, setMyEvents] = React.useState([]);
     const [joinedEvents, setJoinedEvents] = React.useState([]);
-
     const [user, setUser] = React.useState(null);
+    const isFocused = useIsFocused();
 
     const renderScene = ({ route }) => {
         switch (route.key) {
@@ -88,21 +97,22 @@ const MyEvents = () => {
     }, [])
 
     useEffect(() => {
+
         const getMyEvents = async () => {
             const data = await fetchMyEvents(1);
-            setMyEvents(data)
+            console.log(" MY EVENTS: " + JSON.stringify(data))
+            setMyEvents(data.items)
         }
-        getMyEvents().catch(err => console.log(err));
-
         const getNearEvents = async () => {
             const mockData = await fetchJoinedEvents(user?.uid);
-            console.log("MOC: " + JSON.stringify(mockData))
-            setJoinedEvents(mockData);
+            setJoinedEvents(mockData.items);
         }
-
-        getNearEvents()
-            .catch(err => console.log(err));
-    }, [user])
+        if (isFocused) {
+            getMyEvents().catch(err => console.log(err));
+            getNearEvents()
+                .catch(err => console.log(err));
+        }
+    }, [user, isFocused])
 
     return (
         <TabView

@@ -1,7 +1,7 @@
 import { EXPERTISE } from "../constants/data";
 
 
-const API_URL = 'http://10.15.18.92:8080'
+export const API_URL = 'http://192.168.0.129:8080'
 
 export const fetchUser = async (email) => {
     const data = await fetch(API_URL + '/users?email=' + email);
@@ -49,7 +49,7 @@ export const fetchJoinedEvents = async (userId) => {
 
 export const fetchMyEvents = async (uid) => {
     uid = 1;
-    const events =  await fetch(API_URL + '/events?userId='+ uid);
+    const events =  await fetch(API_URL + `/events?userId=${uid}`);
     const json = await events.json();
     const response = json;
 
