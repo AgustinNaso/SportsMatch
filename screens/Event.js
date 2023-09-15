@@ -22,13 +22,11 @@ const Event = ({ route }) => {
 
     useEffect(() => {
         fetchEventById(props.event_id).then((data) => {
-            console.log(data);
+            console.log("EVENT DATA:", data);
         });
         fetchParticipants(props.event_id).then((data) => {
-            data.json().then((data) => {
-                console.log("PARTICIPANTS: " + JSON.stringify(data));
+                console.log("PARTICIPANTS: ", data);
                 setEventParticipants(data);
-            })
         })
         getCurrentUserData().then((data) => {
             console.log("DATA: " + data);

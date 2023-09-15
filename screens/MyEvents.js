@@ -11,7 +11,6 @@ import { Chip, Divider } from '@rneui/base';
 import EventStatus from '../components/EventStatus';
 
 const renderList = ({ item }) => {
-    console.log("ITEM: ", item)
 
     //Adding event id for using it inside MyEventCard api call
     for (let i = 0; i < item.participants?.length; i++)
@@ -35,7 +34,6 @@ const renderList = ({ item }) => {
 }
 
 const renderItem = ({ item }) => {
-    console.log("ITEM: " + JSON.stringify(item))
     return <MyEventCard userData={item} />
 
 }
@@ -100,7 +98,6 @@ const MyEvents = () => {
 
         const getMyEvents = async () => {
             const data = await fetchMyEvents(1);
-            console.log(" MY EVENTS: " + JSON.stringify(data))
             setMyEvents(data.items)
         }
         const getNearEvents = async () => {

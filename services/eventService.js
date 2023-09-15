@@ -1,7 +1,7 @@
 import { EXPERTISE } from "../constants/data";
 
 
-export const API_URL = 'http://192.168.0.129:8080'
+export const API_URL = 'http://192.168.122.1:8080'
 
 export const fetchUser = async (email) => {
     const data = await fetch(API_URL + '/users?email=' + email);
@@ -12,7 +12,8 @@ export const fetchUser = async (email) => {
 
 export const fetchParticipants = async (eventId) => {
     const response =  await fetch(API_URL + '/events/' + eventId + '/owner/participants');
-    return await response.json();
+    const json = await response.json();
+    return json;
 }
 
 //TODO: clean this code
@@ -53,7 +54,7 @@ export const fetchMyEvents = async (uid) => {
     const json = await events.json();
     const response = json;
 
-    console.log("MISEVENTOS : " + JSON.stringify(response))
+    console.log("MIS EVENTOS : " + JSON.stringify(response))
     for(let i = 0 ; i < response.length; i++)
         response[i].participants = await fetchParticipants(response[i].event_id);
     
