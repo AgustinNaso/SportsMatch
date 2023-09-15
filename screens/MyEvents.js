@@ -11,16 +11,15 @@ import { Chip, Divider } from '@rneui/base';
 import EventStatus from '../components/EventStatus';
 
 const renderList = ({ item }) => {
-
     //Adding event id for using it inside MyEventCard api call
     for (let i = 0; i < item.participants?.length; i++)
         item.participants[i].event_id = item.event_id;
-
+    
     return (
         <>
             <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                 <Text style={{ fontSize: 22, fontWeight: 600, marginLeft: 10, marginVertical: 10 }}>Partido {item.event_id} {item.location}</Text>
-                <EventStatus status={2}/>
+                <EventStatus status={1}/>
             </View>
             <Divider width={3} style={{ width: '90%', marginBottom: 10, alignSelf: 'center' }} />
             <FlatList
@@ -95,7 +94,6 @@ const MyEvents = () => {
     }, [])
 
     useEffect(() => {
-
         const getMyEvents = async () => {
             const data = await fetchMyEvents(1);
             setMyEvents(data.items)

@@ -54,9 +54,9 @@ export const fetchMyEvents = async (uid) => {
     const json = await events.json();
     const response = json;
 
-    console.log("MIS EVENTOS : " + JSON.stringify(response))
-    for(let i = 0 ; i < response.length; i++)
-        response[i].participants = await fetchParticipants(response[i].event_id);
+    console.log("MIS EVENTOS : ", response.items)
+    for(let i = 0 ; i < response.items.length; i++)
+        response.items[i].participants = await fetchParticipants(response.items[i].event_id);
     
    return response;
 }
