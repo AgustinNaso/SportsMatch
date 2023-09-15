@@ -8,8 +8,13 @@ import { COLORS } from "../constants";
 
 
 const MyEventCard = ({ userData }) => {
+    console.log("USER DATA", userData)
 
     const [userAccepted, setUserAccepted] = React.useState(userData.participant_status == "true");
+
+    const openRateModal = () => {
+
+    }
 
 
     const acceptUser = async () => {
@@ -42,8 +47,11 @@ const MyEventCard = ({ userData }) => {
                         <Ionicons name="checkmark" size={40} color="green" onPress={acceptUser} />
                     </TouchableOpacity>
                 </View>
-                : <Button color={COLORS.primary} mode="contained" title="Contactar" onPress={sendMessage} />
-            }
+                : userData.eventStatus !== 2 ?
+                    <Button color={COLORS.primary} mode="contained" title="Contactar" onPress={sendMessage} />
+                    : userData.eventStatus === 2 && <Button color={COLORS.primary} mode="contained" title="Puntuar" onPress={openRateModal} />
+                }
+
         </View>
     );
 }
