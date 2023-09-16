@@ -36,7 +36,7 @@ const renderList = ({ item }) => {
 }
 
 const renderItem = ({ item }) => {
-    return <MyEventCard userData={item} />
+    return <MyEventCard props={item} />
 
 }
 

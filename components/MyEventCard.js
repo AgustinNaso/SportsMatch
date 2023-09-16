@@ -1,39 +1,45 @@
 import React, { useEffect } from "react"
 import { Linking, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { Ionicons } from '@expo/vector-icons';
-import { acceptParticipant, fetchUser } from "../services/eventService";
-import { Avatar, Button, color } from "@rneui/base";
+import { acceptParticipant, fetchUser, rateUser } from "../services/eventService";
+import { AirbnbRating, Avatar, Button, color } from "@rneui/base";
 import { COLORS } from "../constants";
-import { Rating, RatingProps } from '@rneui/themed';
 
+const MyEventCard = ({ props }) => {
 
+    const currUser = {id: 1};
 
-const MyEventCard = ({ userData }) => {
-
-    const [userAccepted, setUserAccepted] = React.useState(userData.participant_status == "true");
+    console.log("UserdAta:", props);
+    const [userAccepted, setUserAccepted] = React.useState(props.participant_status);
     const [modalVisible, setModalVisible] = React.useState(false);
+    const [userRate, setUserRate] = React.useState(3);
 
-
-    const openRateModal = () => {
-        setModalVisible(true);
+    const postUserRating = async () => {
+        try {
+            await rateUser(props.event_id, currUser.id, userRate, props.user_id)
+            setModalVisible(false)
+        } catch (error) {
+            console.log(error)
+            //TODO: send user feedback of this error
+        }   
     }
-
-
+    
+    
     const acceptUser = async () => {
         try {
-            await acceptParticipant(userData.event_id, userData.user_id)
+            await acceptParticipant(props.event_id, props.user_id)
             setUserAccepted(true)
         } catch (error) {
             console.log(error)
         }
     }
-
+    
     const sendMessage = () => {
-        console.log(JSON.stringify(userData))
-        Linking.openURL(`whatsapp://send?phone=${+userData.phone_number}&text=Hola ${userData.firstname}. Nos vemos en el partido!`);
+        console.log(JSON.stringify(props))
+        Linking.openURL(`whatsapp://send?phone=${+props.phone_number}&text=Hola ${props.firstname}. Nos vemos en el partido!`);
     }
-
-
+    
+    
     return (
         <View style={styles.card}>
             <Modal
@@ -45,17 +51,17 @@ const MyEventCard = ({ userData }) => {
                 }}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Puntua al participante</Text>
-                        <View style={{marginBottom: 10}}>
-                            <Rating showRating imageSize={20} fractions={1} onFinishRating={rating => console.log(rating)} />
+                        <Text style={styles.modalText}>¿Cómo fue jugar con este participante?</Text>
+                        <View style={{ marginBottom: 20 }}>
+                            <AirbnbRating size={30} reviewSize={25} reviews={['Muy malo', 'Malo', 'Normal','Bueno', 'Muy bueno']} onFinishRating={setUserRate} />
                         </View>
-                        <Button color={COLORS.primary} mode="contained" title="Guardar puntuacion" onPress={() => setModalVisible(false)} />
+                        <Button color={COLORS.primary} mode="contained" title="Enviar puntuación" onPress={postUserRating}/>
                     </View>
                 </View>
             </Modal>
             <View style={styles.textContainer}>
                 <Avatar rounded size={62} source={require("../assets/default-profile.png")} containerStyle={{ backgroundColor: COLORS.secondary }} />
-                <Text style={styles.userText}>{userData.firstname}</Text>
+                <Text style={styles.userText}>{props.firstname}</Text>
             </View>
             {!userAccepted ?
                 <View style={styles.buttonContainer}>
@@ -66,11 +72,10 @@ const MyEventCard = ({ userData }) => {
                         <Ionicons name="checkmark" size={40} color="green" onPress={acceptUser} />
                     </TouchableOpacity>
                 </View>
-                : userData.eventStatus !== 2 ?
+                : props.eventStatus !== 2 ?
                     <Button color={COLORS.primary} mode="contained" title="Contactar" onPress={sendMessage} />
-                    : userData.eventStatus === 2 && <Button color={COLORS.primary} mode="contained" title="Puntuar" onPress={openRateModal} />
+                    : props.eventStatus === 2 && <Button color={COLORS.primary} mode="contained" title="Puntuar" onPress={() => setModalVisible(true)} />
             }
-
         </View>
     );
 }
@@ -146,7 +151,34 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     modalText: {
-        marginBottom: 15,
         textAlign: 'center',
+        fontSize: 20
+    },
+    container: {
+        flex: 1,
+    },
+    headingContainer: {
+        paddingTop: 50,
+    },
+    titleText: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        paddingVertical: 5,
+        fontFamily: Platform.OS === 'ios' ? 'Menlo-Bold' : '',
+        color: '#27ae60',
+    },
+    subtitleText: {
+        fontSize: 18,
+        fontWeight: '400',
+        textAlign: 'center',
+        fontFamily: Platform.OS === 'ios' ? 'Trebuchet MS' : '',
+        color: '#34495e',
+    },
+    viewContainer: {
+        flex: 1,
+    },
+    rating: {
+        paddingVertical: 10,
     },
 });
