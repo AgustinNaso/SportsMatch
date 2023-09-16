@@ -103,7 +103,7 @@ export const joinNewEvent = async (eventId, userId) => {
 export const acceptParticipant = async (eventId, userId) => {
     await fetch(API_URL + '/events/' + eventId + '/owner/participants', {
         method: 'PUT',
-        body: JSON.stringify({ userId: userId, eventId: eventId }),
+        body: JSON.stringify({ userId: userId }),
         headers: {
             'Content-Type': 'application/json'
         },
