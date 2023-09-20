@@ -17,7 +17,7 @@ const App = () => {
   useEffect(() => {
     getCurrentUserData().then((data) => {
       console.log("DATA: " + data);
-      // authContext.restoreToken("");
+      authContext.restoreToken("");
     })
       .catch(err => console.error(err));
   }, []);
@@ -39,7 +39,7 @@ const App = () => {
           screenOptions={{
             headerShown: false
           }}>
-          {true  ? (
+          {authContext.state.userToken  ? (
             <Stack.Screen name="Tabs" component={Tabs} />
           ) : (
             <>

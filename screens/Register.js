@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   SafeAreaView,
@@ -14,14 +14,21 @@ import { TextInput } from "react-native-gesture-handler";
 import {
   getEmailValidator, validateEmail,
 } from "../utils/validations";
+import { AuthContext } from "../contexts/authContext";
 
 
 const Register = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors }, watch } = useForm();
+  const authContext = useContext(AuthContext)
 
-  const submit = data => {
-    console.log(data)
-    //TODO: Register user using authService
+
+  const submit = async data => {
+    try {
+      authContext.signUp(data)
+    } 
+    catch (err) {
+      console.error('Error signing in', err);
+    }
   };
   return (
     <SafeAreaView

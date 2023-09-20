@@ -1,7 +1,8 @@
 import {
     CognitoUserPool,
     CognitoUser,
-    AuthenticationDetails
+    AuthenticationDetails,
+    CognitoUserAttribute
 } from "amazon-cognito-identity-js"
 
 import * as SecureStore from 'expo-secure-store';
@@ -9,8 +10,8 @@ import { fetchUser, fecthUserId } from "./eventService";
 import { useNavigation } from "@react-navigation/native";
 
 const UserPool = new CognitoUserPool({
-    UserPoolId: "us-east-1_0Zz8M72SJ",
-    ClientId: "443alqtqlr1fhkjcu3i6ot95bs"
+    UserPoolId: "us-east-1_DIhU6m4Je",
+    ClientId: "6jefbmtkmcsdsu883cjk7ra0d7"
 })
 
 
@@ -40,50 +41,45 @@ export const login = async data => {
         return undefined;
     }
 
-    // return new Promise((resolve, reject) => {
-    //     resolve({accessToken: {
-    //         jwtToken: 'token'
-    //     }})
-    // })
-    // return new Promise((resolve, reject) => {
-    //     const user = new CognitoUser({
-    //         Username: data.email,
-    //         Pool: UserPool
-    //     })
+    return new Promise((resolve, reject) => {
+        resolve({accessToken: {
+            jwtToken: 'token'
+        }})
+    })
+    return new Promise((resolve, reject) => {
+        const user = new CognitoUser({
+            Username: data.email,
+            Pool: UserPool
+        })
 
-    //     const authDetails = new AuthenticationDetails({
-    //         Username: data.email.toLowerCase(),
-    //         Password: data.password
-    //     });
+        const authDetails = new AuthenticationDetails({
+            Username: data.email.toLowerCase(),
+            Password: data.password
+        });
 
-    //     user.authenticateUser(authDetails, {
-    //         onSuccess: async (data) => {
-    //             console.log("On Success: ", data);
-    //             resolve({
-    //                 acessToken: {
-    //                     jwtToken: 'token=random'
-    //                 }
-    //             });
-    //         },
-    //         onFailure: (err) => {
-    //             console.error("On Failure: ", err);
-    //             reject(err);
-    //         },
-    //         newPasswordRequired: (data) => {
-    //             console.log("newPasswordRequired: ", data);
-    //         }
-    //     })
-    // });
+        user.authenticateUser(authDetails, {
+            onSuccess: async (data) => {
+                console.log("On Success: ", data);
+                resolve({
+                    acessToken: {
+                        jwtToken: 'token=random'
+                    }
+                });
+            },
+            onFailure: (err) => {
+                console.error("On Failure: ", err);
+                reject(err);
+            },
+            newPasswordRequired: (data) => {
+                console.log("newPasswordRequired: ", data);
+            }
+        })
+    });
 }
 
 
-export const signUp = data => {
-    const navigation = useNavigation();
+export const register = data => {
     const attributeList = [
-        new CognitoUserAttribute({
-            Name: 'custom:location', // Use "custom:" prefix for custom attributes
-            Value: data.location
-        }),
         new CognitoUserAttribute({
             Name: 'family_name',
             Value: data.lastName
@@ -91,6 +87,11 @@ export const signUp = data => {
         new CognitoUserAttribute({
             Name: 'given_name',
             Value: data.name
+        }),
+        //TODO: Add birthdate in the form
+        new CognitoUserAttribute({
+            Name: 'birthdate',
+            Value: '05/01/2000'
         }),
         new CognitoUserAttribute({
             Name: 'phone_number',
@@ -103,7 +104,7 @@ export const signUp = data => {
         }
         else {
             console.log("Sign up successful. User:", result.user);
-            navigation.navigate("ConfirmSignUp", { email: data.email });
+            return 1;
         }
     });
 }

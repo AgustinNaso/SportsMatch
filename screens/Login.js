@@ -12,11 +12,14 @@ import { TextInput } from "react-native-gesture-handler";
 import { COLORS, FONTS } from "../constants";
 import { validateEmail } from "../utils/validations";
 import { AuthContext } from "../contexts/authContext";
+import { useNavigation } from "@react-navigation/native";
+
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const authContext = useContext(AuthContext)
   const { control, handleSubmit, formState: { errors } } = useForm();
+  const navigation = useNavigation();
 
   const onSubmit = async (data) => {
     setLoading(true);
