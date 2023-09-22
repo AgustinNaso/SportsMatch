@@ -1,7 +1,7 @@
 import { EXPERTISE } from "../constants/data";
 
 
-export const API_URL = 'http://192.168.1.6:8080'
+export const API_URL = 'http://192.168.0.12:8080'
 
 export const fetchUser = async (email) => {
     const data = await fetch(API_URL + '/users?email=' + email);

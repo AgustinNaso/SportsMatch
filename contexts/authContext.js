@@ -30,8 +30,6 @@ export const useAuthContext = () => {
         case 'SIGN_UP':
           return {
             ...prevState,
-            isSignout: true,
-            userToken: null,
           };
       }
     },
@@ -45,15 +43,15 @@ export const useAuthContext = () => {
   const signIn = async data => {
     const res = await login(data);
     console.log("Res", res);
-    dispatch({ type: 'SIGN_IN', token: res.accessToken });
+    dispatch({ type: 'SIGN_IN', token: res.token });
   };
 
   const signOut = () => dispatch({ type: 'SIGN_OUT' });
 
-  const signUp = data => {
-    const res = register(data);
+  const signUp = async data => {
+    const res = await register(data);
     console.log("RESPONSE: ",res);
-    dispatch({ type: 'REGISTER', token: res.accessToken });
+    dispatch({ type: 'SIGN_UP' });
   }
 
   const restoreToken = token => dispatch({ type: 'RESTORE_TOKEN', token });

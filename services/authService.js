@@ -31,21 +31,6 @@ const getValueFor = async key => {
 }
 
 export const login = async data => {
-
-    try {
-        const response = await fecthUserId('caberna@gmail.com');
-        return await response.json();
-    }
-    catch(err) {
-        console.error(err);
-        return undefined;
-    }
-
-    return new Promise((resolve, reject) => {
-        resolve({accessToken: {
-            jwtToken: 'token'
-        }})
-    })
     return new Promise((resolve, reject) => {
         const user = new CognitoUser({
             Username: data.email,
@@ -61,9 +46,7 @@ export const login = async data => {
             onSuccess: async (data) => {
                 console.log("On Success: ", data);
                 resolve({
-                    acessToken: {
-                        jwtToken: 'token=random'
-                    }
+                    token : data.accessToken.jwtToken
                 });
             },
             onFailure: (err) => {
@@ -78,35 +61,38 @@ export const login = async data => {
 }
 
 
-export const register = data => {
-    const attributeList = [
-        new CognitoUserAttribute({
-            Name: 'family_name',
-            Value: data.lastName
-        }),
-        new CognitoUserAttribute({
-            Name: 'given_name',
-            Value: data.name
-        }),
-        //TODO: Add birthdate in the form
-        new CognitoUserAttribute({
-            Name: 'birthdate',
-            Value: '05/01/2000'
-        }),
-        new CognitoUserAttribute({
-            Name: 'phone_number',
-            Value: '+5411' + data.phone
-        }),
-    ];
-    UserPool.signUp(data.email, data.password, attributeList, null, (err, result) => {
-        if (err) {
-            console.error("Error signing up:", err);
-        }
-        else {
-            console.log("Sign up successful. User:", result.user);
-            return 1;
-        }
-    });
+export const register = async data => {
+    return new Promise((resolve, reject) => {
+        const attributeList = [
+            new CognitoUserAttribute({
+                Name: 'family_name',
+                Value: data.lastName
+            }),
+            new CognitoUserAttribute({
+                Name: 'given_name',
+                Value: data.name
+            }),
+            //TODO: Add birthdate in the form
+            new CognitoUserAttribute({
+                Name: 'birthdate',
+                Value: '05/01/2000'
+            }),
+            new CognitoUserAttribute({
+                Name: 'phone_number',
+                Value: '+5411' + data.phone
+            }),
+        ];
+        UserPool.signUp(data.email, data.password, attributeList, null, (err, result) => {
+            if (err) {
+                console.error("Error signing up:", err);
+                reject(undefined);
+            }
+            else {
+                console.log("Sign up successful. User:", result.user);
+                resolve(result.user);
+            }
+        });
+    })
 }
 
 
@@ -115,7 +101,7 @@ export const getCognitoUser = (email) => {
         Username: email,
         Pool: UserPool
     }
-    console.log(userData);
+    console.log("USR: ",userData);
     return new CognitoUser(userData);
 }
 
@@ -145,9 +131,8 @@ export const signOut = () => {
 }
 
 export const saveUserData = async data => {
-    const userData = JSON.parse(JSON.stringify(data));
-    const userJWT = userData.idToken.jwtToken;
-    const userPayload = userData.idToken.payload;
+    const userJWT = data.idToken.jwtToken;
+    const userPayload = data.idToken.payload;
     console.log(userPayload.email)
     const userInfo = await fecthUserId(userPayload.email.toLowerCase(), userJWT);
     userPayload.uid = userInfo.id;

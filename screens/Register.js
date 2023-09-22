@@ -24,10 +24,11 @@ const Register = ({ navigation }) => {
 
   const submit = async data => {
     try {
-      authContext.signUp(data)
+      await authContext.signUp(data);
+      navigation.navigate("ConfirmSignUp", { email: data.email });
     } 
     catch (err) {
-      console.error('Error signing in', err);
+      console.error('Error signing up', err);
     }
   };
   return (
