@@ -15,11 +15,17 @@ const App = () => {
   const authContext = useAuthContext();
 
   useEffect(() => {
-    getCurrentUserData().then((data) => {
-      console.log("DATA: " + data);
-      authContext.restoreToken("");
-    })
-      .catch(err => console.error(err));
+    const restoreUserToken = async () => {
+      let userToken;
+      try {
+        userToken = await getCurrentUserData();
+      }
+      catch (err) {
+        console.error('Failed: ', err);
+      }
+      authContext.restoreToken(userToken);
+    }
+    restoreUserToken();
   }, []);
 
   const [loaded] = useFonts({
@@ -39,7 +45,7 @@ const App = () => {
           screenOptions={{
             headerShown: false
           }}>
-          {authContext.state.userToken  ? (
+          {authContext.state.userToken ? (
             <Stack.Screen name="Tabs" component={Tabs} />
           ) : (
             <>

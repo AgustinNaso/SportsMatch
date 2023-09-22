@@ -36,12 +36,6 @@ const Profile = () => {
     }
   }, []);
 
-  const handleLogout = () => {
-    console.log("LOGOUT")
-    console.log(authContext);
-    authContext.signOut();
-  };
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView

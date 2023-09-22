@@ -7,13 +7,14 @@ import { MyEvents } from "../screens";
 import { useNavigation } from "@react-navigation/native";
 import { Menu, MenuItem, MenuDivider } from "react-native-material-menu";
 import { TouchableOpacity } from "react-native";
-import { StatusBar } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { AuthContext } from "../contexts/authContext";
 const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
   const navigator = useNavigation();
   const [visible, setVisible] = useState(false);
+  const authContext = useContext(AuthContext);
 
   return (
     <Tab.Navigator
@@ -63,7 +64,6 @@ const Tabs = () => {
               >
                 <MenuItem
                   onPress={() => {
-                    console.log("Edit Profile");
                     navigator.navigate("Edit Profile");
                     setVisible(!visible);
                   }}
@@ -71,7 +71,10 @@ const Tabs = () => {
                   Edit Profile
                 </MenuItem>
                 <MenuDivider />
-                <MenuItem onPress={() => setVisible(!visible)}>Logout</MenuItem>
+                <MenuItem onPress={() => {
+                  authContext.signOut();
+                  setVisible(!visible)
+                }}>Logout</MenuItem>
               </Menu>
             );
           },

@@ -1,6 +1,6 @@
 // authContext.js
 import React, { useMemo, useReducer } from "react";
-import { login, register } from "../services/authService";
+import { clearUserData, login, register } from "../services/authService";
 
 export const AuthContext = React.createContext();
 
@@ -21,11 +21,11 @@ export const useAuthContext = () => {
             userToken: action.token,
           };
         case 'SIGN_OUT':
-          console.log("Sign out action triggered");
+          clearUserData();
           return {
             ...prevState,
             isSignout: true,
-            userToken: null,
+            userToken: null
           };
         case 'SIGN_UP':
           return {
@@ -42,7 +42,6 @@ export const useAuthContext = () => {
 
   const signIn = async data => {
     const res = await login(data);
-    console.log("Res", res);
     dispatch({ type: 'SIGN_IN', token: res.token });
   };
 

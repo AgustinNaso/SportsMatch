@@ -20,7 +20,6 @@ const HomeStackNavigator = () => {
                     options={{
                         headerRight: () => {
                             return (
-
                                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                     <Ionicons name='options' style={{ marginRight: 10, marginTop: 1 }} size={24} color={COLORS.primary} onPress={() => {
                                         navigator.navigate("Filtros")

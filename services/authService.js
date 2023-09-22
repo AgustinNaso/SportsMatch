@@ -7,7 +7,6 @@ import {
 
 import * as SecureStore from 'expo-secure-store';
 import { fetchUser, fecthUserId } from "./eventService";
-import { useNavigation } from "@react-navigation/native";
 
 const UserPool = new CognitoUserPool({
     UserPoolId: "us-east-1_DIhU6m4Je",
@@ -125,7 +124,7 @@ export const verifyMail = (email, code) => {
     });
 }
 
-export const signOut = () => {
+export const clearUserData = () => {
     SecureStore.deleteItemAsync('userToken');
     SecureStore.deleteItemAsync('userPayload');
 }
