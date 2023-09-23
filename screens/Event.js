@@ -85,14 +85,14 @@ const Event = ({ route }) => {
                     <Text style={styles.bodyBigText}>Ubicacion:</Text>
                     <Text style={styles.bodyBigText}>{props.location}</Text>
                 </View>
-                <View style={{flexDirection: 'column'}}>
+                {/* <View style={{flexDirection: 'column'}}>
                     <Text style={styles.bodyBigText}>Participantes: </Text>
                     <ScrollView style={styles.participantsContainer}>
                         <ParticipantCard userData={{firstname: 'Juan',lastname: 'Perez', rating: 4.5, partidos: 21}} />
                         <ParticipantCard userData={{firstname: 'Pedro',lastname: 'Perez', rating: 4.5, partidos: 21}} />
                         <ParticipantCard userData={{firstname: 'Peter',lastname: 'Perez', rating: 4.5, partidos: 21}} />
                     </ScrollView>
-                </View>
+                </View> */}
 
             {currUserIsParticipant &&
                 <Text style={{ fontSize: 20, fontWeight: 700 }}>Ya estas anotado al partido!</Text>
