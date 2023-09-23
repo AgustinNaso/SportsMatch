@@ -5,7 +5,7 @@ import { useFonts } from "expo-font";
 import Tabs from "./navigation/Tabs";
 import { Login, Register, ConfirmSignUp } from "./screens";
 import { useEffect } from "react";
-import { getCurrentUserData } from "./services/authService";
+import { getCurrUserJWT } from "./services/authService";
 import { useAuthContext, AuthContext } from "./contexts/authContext";
 
 const Stack = createStackNavigator();
@@ -18,7 +18,7 @@ const App = () => {
     const restoreUserToken = async () => {
       let userToken;
       try {
-        userToken = await getCurrentUserData();
+        userToken = await getCurrUserJWT();
       }
       catch (err) {
         console.error('Failed: ', err);

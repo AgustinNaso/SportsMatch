@@ -44,6 +44,7 @@ export const login = async data => {
         user.authenticateUser(authDetails, {
             onSuccess: async (data) => {
                 console.log("On Success: ", data);
+                save('userToken', data.accessToken.jwtToken);
                 resolve({
                     token : data.accessToken.jwtToken
                 });
