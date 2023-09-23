@@ -75,9 +75,8 @@ const Home = ({navigation, route}) => {
         setRefreshing(true);
         try {
             const jsonData = await fetchNearEvents();
-            // console.log("Fecthed " + jsonData)
-            setEventList(jsonData);
-            setFilteredEventList(jsonData);
+            setEventList(jsonData.items);
+            setFilteredEventList(jsonData.items);
         } catch (error) {
             console.error(error);
         }
