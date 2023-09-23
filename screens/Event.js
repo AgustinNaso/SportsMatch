@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from "react-native"
 import { Ionicons } from '@expo/vector-icons';
 import CustomButton from "../components/CustomButton";
 import { EXPERTISE, SPORT } from "../constants/data";
-import { fetchEventById, fetchParticipants, joinNewEvent } from "../services/eventService";
+import { fetchEventById, fetchParticipants, joinNewEvent, removeParticipant } from "../services/eventService";
 import { getCurrentUserData } from "../services/authService";
 import { Avatar, Divider } from "@rneui/themed";
 import { COLORS } from "../constants";
@@ -46,6 +46,17 @@ const Event = ({ route }) => {
             }
         })
     }, [eventParticipants])
+
+    const quitEvent = async () => {
+        try {
+            await removeParticipant(props.event_id, 1)
+            setUserStatus(0);
+            setCurrUserIsParticipant(false);
+        }
+        catch (error) {
+            console.log('Error quitting event. ',error);
+        }
+    }
 
 
     const joinEvent = async () => {
@@ -102,7 +113,7 @@ const Event = ({ route }) => {
                 alignSelf: 'center'
             }}>
                 {currUserIsParticipant ?
-                    <CustomButton title={"Desanotarme"} color={"red"} />
+                    <CustomButton title={"Desanotarme"} color={"red"} onPress={quitEvent} />
                     :
                     <CustomButton title={"Anotarme"} color="green" onPress={joinEvent} />
                 }
