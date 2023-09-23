@@ -120,3 +120,14 @@ export const rateUser = async (eventId, userId, rating, participantId) => {
         },
     });
 }
+
+export const removeParticipant = async (eventId, userId) => {
+    console.log("REMOVING: ", userId);
+    await fetch(API_URL + '/events/' + eventId + '/participants', {
+        method: 'DELETE',
+        body: JSON.stringify({ userId: userId }),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
+}
