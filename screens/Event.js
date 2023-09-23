@@ -21,6 +21,7 @@ const Event = ({ route }) => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
+        console.log("PROPS: ", props)
         fetchEventById(props.event_id).then((data) => {
             console.log("EVENT DATA:", data);
         });
@@ -79,23 +80,30 @@ const Event = ({ route }) => {
                 <Avatar rounded size={120} source={require("../assets/default-profile.png")} containerStyle={{ backgroundColor: COLORS.secondary }} />
                 <View style={styles.headerData}>
                     <Text style={styles.bigText}>{props.owner_firstname}</Text>
-                    <Text style={{ ...styles.mediumText, alignSelf: 'center' }}>{SPORT[props.sport_id - 1]}</Text>
+                    <View style={{flexDirection: 'row', alignSelf: 'center'}}>
+                        <Ionicons name="star" size={18} color={COLORS.secondary} />
+                        <Text> 0 / 5 </Text>
+                    </View>
+                    <Text style={{ ...styles.mediumText, alignSelf: 'center'}}> {SPORT[props.sport_id - 1]}</Text>
                 </View>
             </View>
             <Divider width={4} style={{ width: '90%', marginBottom: 8 }} />
             <View style={styles.eventBody}>
                 <View style={styles.bodySection}>
                     <Text style={styles.bodyBigText}>Fecha:</Text>
-                    <Text style={styles.bodyBigText}>{`${day} de ${MONTHS[month]} ${hours}:${minutes}hs`}</Text>
+                    <Text style={styles.bodyMidText}>{`${day} de ${MONTHS[month]} ${hours}:${minutes} hs`}</Text>
                 </View>
+                <Divider width={1}/>
                 <View style={styles.bodySection}>
                     <Text style={styles.bodyBigText}>Nivel:</Text>
-                    <Text style={styles.bodyBigText}>{EXPERTISE[props.expertise - 1]}</Text>
+                    <Text style={styles.bodyMidText}>{EXPERTISE[props.expertise - 1]}</Text>
                 </View>
+                <Divider width={1}/>
                 <View style={styles.bodySection}>
                     <Text style={styles.bodyBigText}>Ubicacion:</Text>
-                    <Text style={styles.bodyBigText}>{props.location}</Text>
+                    <Text style={styles.bodyMidText}>{props.location}</Text>
                 </View>
+                <Divider width={1}/>
                 {/* <View style={{flexDirection: 'column'}}>
                     <Text style={styles.bodyBigText}>Participantes: </Text>
                     <ScrollView style={styles.participantsContainer}>
@@ -106,7 +114,7 @@ const Event = ({ route }) => {
                 </View> */}
 
             {currUserIsParticipant &&
-                <Text style={{ fontSize: 20, fontWeight: 700 }}>Ya estas anotado al partido!</Text>
+                <Text style={{ fontSize: 20, fontWeight: 700, alignSelf: 'center' }}>Ya estas anotado al partido!</Text>
             }
 
             <View style={{
@@ -129,7 +137,8 @@ export default Event;
 const styles = StyleSheet.create({
     bodySection: {
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
     eventContainer: {
         flexDirection: 'column',
@@ -154,7 +163,7 @@ const styles = StyleSheet.create({
 
     bigText: {
         fontSize: 50,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
 
     mediumText: {
@@ -164,12 +173,13 @@ const styles = StyleSheet.create({
 
     bodyBigText: {
         fontSize: 25,
-        fontWeight: 600
+        fontWeight: 'bold',
+        marginRight: 16
     },
 
     bodyMidText: {
         fontSize: 18,
-        fontWeight: 500
+        paddingTop: 4
     },
 
     eventBody: {
