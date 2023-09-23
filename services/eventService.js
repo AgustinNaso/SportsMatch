@@ -64,13 +64,14 @@ export const fetchMyEvents = async (uid) => {
 export const fetchNearEvents = async (filters = undefined) => {
     //TODO: filtrar remaining > 0 ?
     const response = await fetchEvents(1, filters);
-    const jsonRes = await response.json();
+    let jsonRes = await response.json();
+    jsonRes.items = jsonRes.items.filter(event => event.remaining > 0);
     console.log("RESPONSE: " + JSON.stringify(jsonRes));
     return jsonRes
 }
 
 export const publishEvent = async (eventData) => {
-    console.log("PUBLLISH: " + JSON.stringify(eventData));
+    console.log("PUBLLISH: ",eventData);
     return await fetch(API_URL + '/events', {
         method: 'POST',
         body: JSON.stringify(eventData),
