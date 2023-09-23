@@ -82,7 +82,8 @@ const Event = ({ route }) => {
                     <Text style={styles.bigText}>{props.owner_firstname}</Text>
                     <View style={{flexDirection: 'row', alignSelf: 'center'}}>
                         <Ionicons name="star" size={18} color={COLORS.secondary} />
-                        <Text> 0 / 5 </Text>
+                        <Text> {props.rating/props.rate_count} / 5 </Text>
+                        <Text> | {props.rate_count} {props.rate_count > 1 ? 'partidos':'partido'}</Text>
                     </View>
                     <Text style={{ ...styles.mediumText, alignSelf: 'center'}}> {SPORT[props.sport_id - 1]}</Text>
                 </View>
