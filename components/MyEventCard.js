@@ -7,7 +7,7 @@ import { COLORS } from "../constants";
 
 const MyEventCard = ({ props }) => {
 
-    const currUser = {id: 1};
+    const currUser = { id: 1 };
 
     console.log("UserdAta:", props);
     const [userAccepted, setUserAccepted] = React.useState(props.participant_status);
@@ -21,10 +21,10 @@ const MyEventCard = ({ props }) => {
         } catch (error) {
             console.log(error)
             //TODO: send user feedback of this error
-        }   
+        }
     }
-    
-    
+
+
     const acceptUser = async () => {
         try {
             await acceptParticipant(props.event_id, props.user_id)
@@ -33,13 +33,13 @@ const MyEventCard = ({ props }) => {
             console.log(error)
         }
     }
-    
+
     const sendMessage = () => {
         console.log(JSON.stringify(props))
         Linking.openURL(`whatsapp://send?phone=${+props.phone_number}&text=Hola ${props.firstname}. Nos vemos en el partido!`);
     }
-    
-    
+
+
     return (
         <View style={styles.card}>
             <Modal
@@ -53,15 +53,21 @@ const MyEventCard = ({ props }) => {
                     <View style={styles.modalView}>
                         <Text style={styles.modalText}>¿Cómo fue jugar con este participante?</Text>
                         <View style={{ marginBottom: 20 }}>
-                            <AirbnbRating size={30} reviewSize={25} reviews={['Muy malo', 'Malo', 'Normal','Bueno', 'Muy bueno']} onFinishRating={setUserRate} />
+                            <AirbnbRating size={30} reviewSize={25} reviews={['Muy malo', 'Malo', 'Normal', 'Bueno', 'Muy bueno']} onFinishRating={setUserRate} />
                         </View>
-                        <Button color={COLORS.primary} mode="contained" title="Enviar puntuación" onPress={postUserRating}/>
+                        <Button color={COLORS.primary} mode="contained" title="Enviar puntuación" onPress={postUserRating} />
                     </View>
                 </View>
             </Modal>
-            <View style={styles.textContainer}>
+            <View style={styles.userMetadataContainer}>
                 <Avatar rounded size={62} source={require("../assets/default-profile.png")} containerStyle={{ backgroundColor: COLORS.secondary }} />
-                <Text style={styles.userText}>{props.firstname}</Text>
+                <View style={styles.textContainer}>
+                    <Text style={styles.userText}>{props.firstname}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginLeft: -6}}>
+                        <Ionicons name="star" size={16} color={COLORS.secondary} />
+                        <Text style={styles.profileTextAge}> {props.rating} / 5</Text>
+                    </View>
+                </View>
             </View>
             {!userAccepted ?
                 <View style={styles.buttonContainer}>
@@ -95,12 +101,16 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 5,
     },
-    textContainer: {
+    userMetadataContainer: {
         flexDirection: 'row',
         padding: 8,
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '50%',
+    },
+    textContainer: {
+        flexDirection: 'column',
+        alignItems: 'center',
     },
     buttonContainer: {
         flexDirection: 'row',
@@ -111,7 +121,6 @@ const styles = StyleSheet.create({
     userText: {
         fontSize: 30,
         fontWeight: 600,
-        marginLeft: 12
     },
     centeredView: {
         flex: 1,
