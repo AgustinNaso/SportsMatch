@@ -3,31 +3,32 @@ import { Text, SafeAreaView, FlatList, View } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import Card from '../components/Card';
 import MyEventCard from '../components/MyEventCard';
-import { fetchJoinedEvents, fetchMyEvents, fetchNearEvents } from '../services/eventService';
+import { fetchJoinedEvents, fetchMyEvents, fetchNearEvents, removeParticipant } from '../services/eventService';
 import { getCurrentUserData } from '../services/authService';
 import { COLORS } from '../constants';
 import { useIsFocused } from '@react-navigation/native';
 import { Chip, Divider } from '@rneui/base';
 import EventStatus from '../components/EventStatus';
 
-const renderList = ({ item }) => {
+const renderList = (data, handleRemoveParticipant) => {
     //Adding event id and event status for using it inside MyEventCard api call
-    console.log("ITEM: ", item);
+    console.log("ITEMMM: ", data.item);
+    console.log("HNA:DE: ", handleRemoveParticipant)
     const eventStatus = 2;
-    for (let i = 0; i < item.participants?.length; i++){
-        item.participants[i].event_id = item.event_id;
-        item.participants[i].eventStatus = item.event_status
+    for (let i = 0; i < data.item.participants?.length; i++) {
+        data.item.participants[i].event_id = data.item.event_id;
+        data.item.participants[i].eventStatus = data.item.event_status
     }
-    
+
     return (
         <>
-            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                <Text style={{ fontSize: 22, fontWeight: 600, marginLeft: 10, marginVertical: 10 }}>Partido {item.event_id} {item.location}</Text>
-                <EventStatus status={item.event_status}/>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 10 }}>
+                <Text style={{ fontSize: 22, fontWeight: 600, marginLeft: 10, marginVertical: 10 }}>Partido {data.item.event_id} {data.item.location}</Text>
+                <EventStatus status={data.item.event_status} />
             </View>
             <Divider width={3} style={{ width: '90%', marginBottom: 10, alignSelf: 'center' }} />
             <FlatList
-                data={item.participants} renderItem={renderItem}
+                data={data.item.participants} renderItem={(listData) => renderItem(listData.item, handleRemoveParticipant)}
                 style={{ flex: 1 }} keyExtractor={(item, index) => { return `${item.userid} + ${index} + ${item.event_id}}` }}
                 ListEmptyComponent={<Text style={{ fontSize: 20, alignSelf: 'center' }}>Aún no hay participantes</Text>}
             >
@@ -36,19 +37,18 @@ const renderList = ({ item }) => {
     )
 }
 
-const renderItem = ({ item }) => {
-    return <MyEventCard props={item} />
-
+const renderItem = (data, handleRemoveParticipant) => {
+    return <MyEventCard props={data} onDelete={handleRemoveParticipant} />
 }
 
 const renderJoinedItem = ({ item }) => {
     return <Card props={item} />
 }
 
-const FirstRoute = (myEvents) => (
+const FirstRoute = (myEvents, handleRemoveParticipant) => (
     <SafeAreaView style={{ flex: 1 }}>
         <FlatList
-            data={myEvents} renderItem={renderList}
+            data={myEvents} renderItem={(data) => renderList(data, handleRemoveParticipant)}
             style={{ flex: 1 }} keyExtractor={(item, index) => {
                 return `${index}`
             }}>

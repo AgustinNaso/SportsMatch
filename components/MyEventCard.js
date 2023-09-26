@@ -5,11 +5,12 @@ import { acceptParticipant, fetchUser, rateUser } from "../services/eventService
 import { AirbnbRating, Avatar, Button, color } from "@rneui/base";
 import { COLORS } from "../constants";
 
-const MyEventCard = ({ props }) => {
+const MyEventCard = ( {props, onDelete}) => {
 
     const currUser = { id: 1 };
 
     console.log("UserdAta:", props);
+    console.log("OnD:", onDelete)
     const [userAccepted, setUserAccepted] = React.useState(props.participant_status);
     const [modalVisible, setModalVisible] = React.useState(false);
     const [userRate, setUserRate] = React.useState(3);
@@ -72,7 +73,7 @@ const MyEventCard = ({ props }) => {
             {!userAccepted ?
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity>
-                        <Ionicons name="close" size={40} color="red" />
+                        <Ionicons name="close" size={40} color="red"  onPress={() => onDelete(props.event_id, props.user_id)}/>
                     </TouchableOpacity>
                     <TouchableOpacity>
                         <Ionicons name="checkmark" size={40} color="green" onPress={acceptUser} />
