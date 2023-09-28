@@ -12,9 +12,6 @@ import EventStatus from '../components/EventStatus';
 
 const renderList = (data, handleRemoveParticipant) => {
     //Adding event id and event status for using it inside MyEventCard api call
-    console.log("ITEMMM: ", data.item);
-    console.log("HNA:DE: ", handleRemoveParticipant)
-    const eventStatus = 2;
     for (let i = 0; i < data.item.participants?.length; i++) {
         data.item.participants[i].event_id = data.item.event_id;
         data.item.participants[i].eventStatus = data.item.event_status
