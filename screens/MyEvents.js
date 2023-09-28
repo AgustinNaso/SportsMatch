@@ -3,7 +3,7 @@ import { Text, SafeAreaView, FlatList, View } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import Card from '../components/Card';
 import MyEventCard from '../components/MyEventCard';
-import { fetchJoinedEvents, fetchMyEvents, fetchNearEvents, removeParticipant } from '../services/eventService';
+import { fetchJoinedEvents, fetchMyEvents, fetchNearEvents, fetchUser, removeParticipant } from '../services/eventService';
 import { getCurrentUserData } from '../services/authService';
 import { COLORS } from '../constants';
 import { useIsFocused } from '@react-navigation/native';
@@ -96,11 +96,13 @@ const MyEvents = () => {
 
     useEffect(() => {
         const getMyEvents = async () => {
-            const data = await fetchMyEvents(1);
+            const userData = await fetchUser(user.email);
+            const data = await fetchMyEvents(userData.user_id);
             setMyEvents(data.items)
         }
         const getNearEvents = async () => {
-            const mockData = await fetchJoinedEvents(user?.uid);
+            const userData = await fetchUser(user.email);
+            const mockData = await fetchJoinedEvents(userData?.user_id);
             setJoinedEvents(mockData.items);
         }
         if (isFocused) {

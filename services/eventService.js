@@ -58,7 +58,6 @@ export const fetchEvents = async (ownerEmail, filters) => {
 
 export const fetchJoinedEvents = async (userId) => {
     const data = await SecureStore.getItemAsync('userPayload');
-    console.log("STORED DATAA: " + data);
     const userData = await fetchUser(JSON.parse(data).email);
     const response = await fetch(API_URL + '/events?participantId=' + userData.user_id);
     const jsonRes = await response.json();
@@ -68,7 +67,7 @@ export const fetchJoinedEvents = async (userId) => {
 export const fetchMyEvents = async (uid) => {
     const data = await SecureStore.getItemAsync('userPayload');
     console.log("STORED DATAA: " + data);
-    const userData = await fetchUser(JSON.parse(data).email);user_id
+    const userData = await fetchUser(JSON.parse(data).email);
     const events = await fetch(API_URL + `/events?userId=${userData.user_id}`);
     const json = await events.json();
     const response = json;
