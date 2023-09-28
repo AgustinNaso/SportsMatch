@@ -10,7 +10,6 @@ const MyEventCard = ( {props, onDelete}) => {
     const currUser = { id: 1 };
 
     console.log("UserdAta:", props);
-    console.log("OnD:", onDelete)
     const [userAccepted, setUserAccepted] = React.useState(props.participant_status);
     const [modalVisible, setModalVisible] = React.useState(false);
     const [userRate, setUserRate] = React.useState(3);
@@ -43,6 +42,7 @@ const MyEventCard = ( {props, onDelete}) => {
 
     return (
         <View style={styles.card}>
+            {/* TODO: componenthize this Modal */}
             <Modal
                 animationType="slide"
                 transparent={true}
