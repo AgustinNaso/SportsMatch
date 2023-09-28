@@ -21,7 +21,6 @@ export const useAuthContext = () => {
             userToken: action.token,
           };
         case 'SIGN_OUT':
-          clearUserData();
           return {
             ...prevState,
             isSignout: true,
@@ -42,15 +41,21 @@ export const useAuthContext = () => {
 
   const signIn = async data => {
     const res = await login(data);
+    console.log("USER DATA LOGIN: ", res);
     dispatch({ type: 'SIGN_IN', token: res.token });
   };
 
-  const signOut = () => dispatch({ type: 'SIGN_OUT' });
+  const signOut = () => {
+    dispatch({ type: 'SIGN_OUT' })
+    clearUserData();
+  }
+
 
   const signUp = async data => {
     const res = await register(data);
-    console.log("RESPONSE: ",res);
+    console.log("RESPONSE: ", res);
     dispatch({ type: 'SIGN_UP' });
+
   }
 
   const restoreToken = token => dispatch({ type: 'RESTORE_TOKEN', token });
