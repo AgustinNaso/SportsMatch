@@ -50,9 +50,9 @@ const Profile = () => {
             <Text style={styles.profileTextName}>{currUser?.firstname} {currUser?.lastname}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginVertical: 5 }}>
               <Ionicons name="star" size={18} color={COLORS.secondary} />
-              <Text style={styles.profileTextAge}>  4.2 / 5</Text>
+              <Text style={styles.profileTextAge}>{currUser?.rating}</Text>
             </View>
-            <Text style={styles.profileTextLocation}>38 partidos</Text>
+            <Text style={styles.profileTextLocation}>{currUser?.count} partidos</Text>
           </View>
         </View>
         <View style={styles.profileBody}>
@@ -62,7 +62,7 @@ const Profile = () => {
             <View style={styles.userDataContainer}>
               <Image source={require('../assets/pin-48-blue.png')} style={{ width: 23, height: 23 }} />
               <View style={styles.userDataDisplay}>
-                <Text style={styles.itemText}>{currUser?.locations[0]}</Text>
+                <Text style={styles.itemText}>{currUser?.locations[0] ?? "Argentina"}</Text>
               </View>
             </View>
             <View style={styles.userDataContainer}>
@@ -84,7 +84,7 @@ const Profile = () => {
             <View style={styles.chipContainer}>
               {currUser?.sports?.map((sport, idx) => (
                 <Chip title={SPORT[sport - 1]} key={idx} color={COLORS.primary} />
-              ))}
+              )) & currUser.sports ? null: <Chip title="No hay deportes registrados" key={1} color={COLORS.primary} />}
             </View>
           </View>
           <View style={styles.bodySectionContainer}>
@@ -93,7 +93,7 @@ const Profile = () => {
             <View style={styles.chipContainer}>
               {currUser?.locations?.map((location, idx) => (
                 <Chip title={location} key={idx} color={COLORS.primary} />
-              ))}
+              )) & currUser.sports ? null: <Chip title="No hay ubicaciones registrados" key={1} color={COLORS.primary} />}
             </View>
           </View>
         </View>
