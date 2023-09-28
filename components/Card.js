@@ -25,7 +25,7 @@ const Card = ({ props }) => {
                 <View style={[styles.verticalSection, {alignItems: 'flex-start'}]}>
                     <Text style={styles.cardBigText}>{SPORT[props.sport_id - 1]}</Text>
                     <Text style={{...styles.cardMidText, flex: 1}}>{EXPERTISE[props.expertise]}</Text>
-                    <Text style={{...styles.cardMidText, marginBottom: 2}}>Falta{props.remaining > 1 ? 'n: ' : ': '}{props.remaining}</Text>
+                    <Text style={{...styles.cardMidText, marginBottom: 2}}>{props.remaining > 0 ? 'Faltan: ' + props.remaining : 'Completo'}</Text>
                 </View>
             </View>
             <View style={[styles.section, { backgroundColor: COLORS.primary, margin: -10, paddingHorizontal: 10, paddingVertical: 4 }]}>
