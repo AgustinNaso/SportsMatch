@@ -30,7 +30,7 @@ export const fetchParticipants = async (eventId) => {
 }
 
 //TODO: clean this code
-export const fetchEvents = async (ownerId, filters) => {
+export const fetchEvents = async (ownerEmail, filters) => {
     console.log("FILTERSS " + JSON.stringify(filters))
     ownerId = 1;
     let filterString;
@@ -75,10 +75,13 @@ export const fetchMyEvents = async (uid) => {
 }
 
 export const fetchNearEvents = async (filters = undefined) => {
+    const data = await SecureStore.getItemAsync('userData');
+    const userData = await fetchUser(JSON.parse(data).email);
+    console.log("ASDASDA",userData);
     //TODO: filtrar remaining > 0 ?
-    const response = await fetchEvents(1, filters);
+    const response = await fetchEvents(userData.userId, filters);
     let jsonRes = await response.json();
-    jsonRes.items = jsonRes.items.filter(event => event.remaining > 0 && event.owner_id != 1);
+    jsonRes.items = jsonRes.items.filter(event => event.remaining > 0 && event.event_status !== 2);
     console.log("RESPONSE: " + JSON.stringify(jsonRes));
     return jsonRes
 }
@@ -124,10 +127,10 @@ export const acceptParticipant = async (eventId, userId) => {
     });
 }
 //Endpoint should be /rating for it to be RESTful
-export const rateUser = async (eventId, userId, rating, participantId) => {
-    await authenticatedFetch(`/users/${userId}/rate`, {
+export const rateUser = async (eventId, rating, participantId) => {
+    await authenticatedFetch(`/users/${participantId}/rate`, {
         method: 'POST',
-        body: JSON.stringify({ eventId: eventId, rating: rating, rater: participantId.toString() }),
+        body: JSON.stringify({ eventId: eventId, rating: rating}),
         headers: {
             'Content-Type': 'application/json'
         },

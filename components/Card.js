@@ -57,7 +57,7 @@ const Card = ({ props }) => {
                     <Text style={styles.cardBigText}>{SPORT[props.sport_id - 1]}</Text>
                     <Text style={{ ...styles.cardMidText, flex: 1 }}>{EXPERTISE[props.expertise]}</Text>
                     {props.event_status === 2 ?
-                        <Button color={COLORS.primary} mode="contained" title="Puntuar" onPress={() => setModalVisible(true)} /> :
+                        props.is_rated === 1 ? <Text style={{ ...styles.cardMidText, marginBottom: 2 }}>Finalizado</Text> : <Button color={COLORS.primary} mode="contained" title="Puntuar" onPress={() => setModalVisible(true)} /> :
                         <Text style={{ ...styles.cardMidText, marginBottom: 2 }}>{props.remaining > 0 ? 'Faltan: ' + props.remaining : 'Completo'}</Text>
                     }
                 </View>
