@@ -32,7 +32,9 @@ export const fetchParticipants = async (eventId) => {
 //TODO: clean this code
 export const fetchEvents = async (ownerEmail, filters) => {
     console.log("FILTERSS " + JSON.stringify(filters))
-    ownerId = 1;
+    const data = await SecureStore.getItemAsync('userPayload');
+    const userData = await fetchUser(JSON.parse(data).email);
+    ownerId = userData.user_id;
     let filterString;
     if (filters) {
         if (filters.date)
@@ -55,15 +57,19 @@ export const fetchEvents = async (ownerEmail, filters) => {
 }
 
 export const fetchJoinedEvents = async (userId) => {
-    userId = 1;
-    const response = await fetch(API_URL + '/events?participantId=' + userId);
+    const data = await SecureStore.getItemAsync('userPayload');
+    console.log("STORED DATAA: " + data);
+    const userData = await fetchUser(JSON.parse(data).email);
+    const response = await fetch(API_URL + '/events?participantId=' + userData.user_id);
     const jsonRes = await response.json();
     return jsonRes;
 }
 
 export const fetchMyEvents = async (uid) => {
-    uid = 1;
-    const events = await fetch(API_URL + `/events?userId=${uid}`);
+    const data = await SecureStore.getItemAsync('userPayload');
+    console.log("STORED DATAA: " + data);
+    const userData = await fetchUser(JSON.parse(data).email);user_id
+    const events = await fetch(API_URL + `/events?userId=${userData.user_id}`);
     const json = await events.json();
     const response = json;
 
@@ -75,11 +81,12 @@ export const fetchMyEvents = async (uid) => {
 }
 
 export const fetchNearEvents = async (filters = undefined) => {
-    const data = await SecureStore.getItemAsync('userData');
+    const data = await SecureStore.getItemAsync('userPayload');
+    console.log("STORED DATAA: " + data);
     const userData = await fetchUser(JSON.parse(data).email);
     console.log("ASDASDA",userData);
     //TODO: filtrar remaining > 0 ?
-    const response = await fetchEvents(userData.userId, filters);
+    const response = await fetchEvents(userData.user_id, filters);
     let jsonRes = await response.json();
     jsonRes.items = jsonRes.items.filter(event => event.remaining > 0 && event.event_status !== 2);
     console.log("RESPONSE: " + JSON.stringify(jsonRes));
@@ -108,9 +115,12 @@ export const fetchEventById = async (eventId) => {
 }
 
 export const joinNewEvent = async (eventId, userId) => {
+    const data = await SecureStore.getItemAsync('userPayload');
+    const userData = await fetchUser(JSON.parse(data).email);
+
     await fetch(API_URL + '/events/' + eventId + '/participants', {
         method: 'PUT',
-        body: JSON.stringify({ userId: 1 }),
+        body: JSON.stringify({ userId: userData.user_id }),
         headers: {
             'Content-Type': 'application/json'
         },
