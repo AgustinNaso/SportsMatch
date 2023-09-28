@@ -84,7 +84,7 @@ const Profile = () => {
             <View style={styles.chipContainer}>
               {currUser?.sports?.map((sport, idx) => (
                 <Chip title={SPORT[sport - 1]} key={idx} color={COLORS.primary} />
-              )) & currUser.sports ? null: <Chip title="No hay deportes registrados" key={1} color={COLORS.primary} />}
+              )) & currUser?.sports ? null: <Chip title="No hay deportes registrados" key={1} color={COLORS.primary} />}
             </View>
           </View>
           <View style={styles.bodySectionContainer}>
@@ -93,7 +93,7 @@ const Profile = () => {
             <View style={styles.chipContainer}>
               {currUser?.locations?.map((location, idx) => (
                 <Chip title={location} key={idx} color={COLORS.primary} />
-              )) & currUser.sports ? null: <Chip title="No hay ubicaciones registrados" key={1} color={COLORS.primary} />}
+              )) & currUser?.locations ? null: <Chip title="No hay ubicaciones registrados" key={1} color={COLORS.primary} />}
             </View>
           </View>
         </View>
