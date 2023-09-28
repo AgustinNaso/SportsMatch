@@ -1,7 +1,20 @@
 import { EXPERTISE } from "../constants/data";
+import * as SecureStore from 'expo-secure-store';
 
 
 export const API_URL = 'http://sportsmatch-lb-700737557.us-east-1.elb.amazonaws.com'
+
+const authenticatedFetch = async (url, options = {}) => {
+    const token = await SecureStore.getItemAsync('userToken');
+    const headers = {
+        ...options.headers,
+        'C-api-key': token
+    };
+    const response = await fetch(API_URL + url, { ...options, headers });
+    const data = await response.json();
+    return data;
+    
+}
 
 export const fetchUser = async (email) => {
     const data = await fetch(API_URL + '/users?email=' + email);
@@ -65,19 +78,19 @@ export const fetchNearEvents = async (filters = undefined) => {
     //TODO: filtrar remaining > 0 ?
     const response = await fetchEvents(1, filters);
     let jsonRes = await response.json();
-    jsonRes.items = jsonRes.items.filter(event => event.remaining > 0);
+    jsonRes.items = jsonRes.items.filter(event => event.remaining > 0 && event.owner_id != 1);
     console.log("RESPONSE: " + JSON.stringify(jsonRes));
     return jsonRes
 }
 
 export const publishEvent = async (eventData) => {
-    console.log("PUBLLISH: ",eventData);
-    return await fetch(API_URL + '/events', {
+    console.log("PUBLISH: ", eventData);
+    return await authenticatedFetch('/events', {
         method: 'POST',
         body: JSON.stringify(eventData),
         headers: {
-            'Content-Type': 'application/json'
-        },
+            'Content-Type': 'application/json',
+        }
     });
 }
 
@@ -112,20 +125,31 @@ export const acceptParticipant = async (eventId, userId) => {
 }
 //Endpoint should be /rating for it to be RESTful
 export const rateUser = async (eventId, userId, rating, participantId) => {
-    await fetch(API_URL + '/users/' + userId + '/rate', {
+    await authenticatedFetch(`/users/${userId}/rate`, {
         method: 'POST',
-        body: JSON.stringify({ eventId: eventId, rating: rating, rater: participantId.toString()}),
+        body: JSON.stringify({ eventId: eventId, rating: rating, rater: participantId.toString() }),
         headers: {
             'Content-Type': 'application/json'
         },
     });
 }
 
-export const removeParticipant = async (eventId, userId) => {
-    console.log("REMOVING: ", userId);
-    await fetch(API_URL + '/events/' + eventId + '/participants', {
+export const removeParticipant = async (eventId) => {
+    console.log("REMOVING MYSELF FROM EVENT: " + eventId);
+    const res = await authenticatedFetch('/events/' + eventId + '/participants', {
         method: 'DELETE',
-        body: JSON.stringify({ userId: userId }),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
+    return res;
+}
+
+export const removeParticipantAsOwner = async (eventId, userEmail) => {
+    console.log("REMOVING PARTICIPANT FROM EVENT: " + eventId);
+    await authenticatedFetch('/events/' + eventId + '/owner/participants', {
+        method: 'DELETE',
+        body: JSON.stringify({ email: userEmail }),
         headers: {
             'Content-Type': 'application/json'
         },

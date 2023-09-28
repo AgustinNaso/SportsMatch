@@ -31,7 +31,7 @@ const Event = ({ route }) => {
         })
         getCurrentUserData().then((data) => {
             console.log("DATA: " + data);
-            setUser(JSON.parse(data));
+            setUser(data);
         }
         );
     }, [])
@@ -50,7 +50,8 @@ const Event = ({ route }) => {
 
     const quitEvent = async () => {
         try {
-            await removeParticipant(props.event_id, 1)
+            const res = await removeParticipant(props.event_id)
+            console.log("RES", res);
             setUserStatus(0);
             setCurrUserIsParticipant(false);
         }
@@ -115,14 +116,16 @@ const Event = ({ route }) => {
                 </View> */}
 
             {currUserIsParticipant &&
-                <Text style={{ fontSize: 20, fontWeight: 700, alignSelf: 'center' }}>Ya estas anotado al partido!</Text>
+                <Text style={{ fontSize: 20, fontWeight: 700, alignSelf: 'center' }}>
+                    {props.event_status === 2 ? 'El partido ya finalizo!' : 'Ya estas anotado al partido!'}
+                </Text>
             }
 
             <View style={{
                 alignSelf: 'center'
             }}>
                 {currUserIsParticipant ?
-                    <CustomButton title={"Desanotarme"} color={"red"} onPress={quitEvent} />
+                    props.event_status !== 2 && <CustomButton title={"Desanotarme"} color={"red"} onPress={quitEvent} />
                     :
                     <CustomButton title={"Anotarme"} color="green" onPress={joinEvent} />
                 }

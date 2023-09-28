@@ -13,7 +13,6 @@ const UserPool = new CognitoUserPool({
     ClientId: "6jefbmtkmcsdsu883cjk7ra0d7"
 })
 
-
 const save = async (key, value) => {
     await SecureStore.setItemAsync(key, value);
 }
@@ -44,9 +43,16 @@ export const login = async data => {
         user.authenticateUser(authDetails, {
             onSuccess: async (data) => {
                 console.log("On Success: ", data);
-                save('userToken', data.accessToken.jwtToken);
+                save('userToken', data.idToken.jwtToken);
+                save('userPayload', JSON.stringify({
+                    email: data.idToken.payload.email,
+                    name: data.idToken.payload.given_name,
+                    lastName: data.idToken.payload.family_name,
+                    phone: data.idToken.payload.phone_number,
+                    birthdate: data.idToken.payload.birthdate
+                }));
                 resolve({
-                    token : data.accessToken.jwtToken
+                    token : data.idToken.jwtToken
                 });
             },
             onFailure: (err) => {
@@ -106,7 +112,8 @@ export const getCognitoUser = (email) => {
 }
 
 export const getCurrentUserData = async () => {
-    return await getValueFor('userPayload');
+    const stringRes =  await getValueFor('userPayload');
+    return await JSON.parse(stringRes);
 }
 
 export const getCurrUserJWT = async () => {

@@ -40,8 +40,7 @@ const NewEvent = () => {
 
     useEffect(() => {
         getCurrentUserData().then((data) => {
-            console.log("DATA: " + JSON.parse(data));
-            setUser(JSON.parse(data));
+            setUser(data);
         });
     }, []);
 

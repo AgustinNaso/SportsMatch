@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet, ScrollView, SafeAreaView, Image } from "react-native";
 import { COLORS } from "../constants";
-import { AuthContext } from "../contexts/authContext"
 import { Avatar, Chip, Divider } from '@rneui/themed';
 import { Ionicons } from '@expo/vector-icons';
 import { fetchUser } from "../services/eventService";
 import { SPORT } from "../constants/data";
+import { getCurrentUserData } from "../services/authService";
 
 
 const image_url = 'https://randomuser.me/api/portraits/men/36.jpg'
@@ -13,8 +13,6 @@ const image_url = 'https://randomuser.me/api/portraits/men/36.jpg'
 const Profile = () => {
 
   const [currUser, setCurrUser] = useState();
-  const authContext = useContext(AuthContext);
-
   const formatPhoneNumber = (phoneNumberString) => {
     if (!phoneNumberString) return;
     let formatted = phoneNumberString.replace(/(\d{2})(\d{2})(\d{4})/, "$1 $2 $3");
@@ -24,15 +22,16 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const user = await fetchUser('caberna@gmail.com');
-      console.log("USER: " + JSON.stringify(user));
-      setCurrUser(user);
+      const currentUser = await getCurrentUserData();
+      const user = await fetchUser(currentUser.email);
+      console.log("USER: " + JSON.stringify({...user, birthdate: currentUser.birthdate}));
+      setCurrUser({...user, birthdate: currentUser.birthdate});
     }
     try {
       fetchUserData();
     }
     catch (err) {
-      console.error(err);
+      console.error("ERROR fetching user data",err);
     }
   }, []);
 
@@ -75,7 +74,7 @@ const Profile = () => {
             <View style={styles.userDataContainer}>
               <Ionicons name="calendar" size={24} color={COLORS.primary} />
               <View style={styles.userDataDisplay}>
-                <Text style={styles.itemText}>04/07/1998</Text>
+                <Text style={styles.itemText}>{currUser?.birthdate}</Text>
               </View>
             </View>
           </View>

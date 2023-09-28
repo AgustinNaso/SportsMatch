@@ -89,7 +89,7 @@ const MyEvents = () => {
 
     useEffect(() => {
         getCurrentUserData().then((data) => {
-            setUser(JSON.parse(data));
+            setUser(data);
         });
 
     }, [])
