@@ -6,7 +6,7 @@ import { fetchNearEvents } from "../services/eventService";
 import { COLORS } from "../constants";
 import { StatusBar } from "expo-status-bar";
 import { SPORT } from "../constants/data";
-
+import { StyleSheet } from "react-native";
 const filterData = [
     { key: 1, sportId: 1, sport: SPORT[0] },
     { key: 2, sportId: 2, sport: SPORT[1] },
@@ -16,7 +16,7 @@ const filterData = [
 
 ];
 
-const Home = ({navigation, route}) => {
+const Home = ({ navigation, route }) => {
     const [eventsList, setEventList] = React.useState(null);
     const [filteredEventsList, setFilteredEventList] = React.useState(null);
     const [selectedFilter, setSelectedFilter] = React.useState("");
@@ -57,6 +57,14 @@ const Home = ({navigation, route}) => {
         return <Pill props={item} handlePress={handleFilter} currentFilter={selectedFilter} />
     }
 
+    const renderEmptyList = () => {
+        return (
+            <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>No hay partidos disponibles</Text>
+            </View>
+        );
+    };
+
     const handleFilter = (sport) => {
         if (selectedFilter == sport) {
             setSelectedFilter("")
@@ -83,9 +91,6 @@ const Home = ({navigation, route}) => {
         setRefreshing(false);
     }
 
-
-
-
     return (
         <SafeAreaView style={{ flex: 1, maxHeight: '100%' }}>
             <StatusBar />
@@ -96,15 +101,35 @@ const Home = ({navigation, route}) => {
                 size="large"
                 color={COLORS.primary}
                 style={{ alignSelf: "center", marginTop: "50%" }}
-            /> :
-                <FlatList
-                    data={filteredEventsList} renderItem={renderItem}
-                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                    style={{ flex: 1 }} keyExtractor={(item) => { return item.event_id.toString() }}>
-                </FlatList>
-            }
+            /> : filteredEventsList.length == 0 ? (
+                renderEmptyList()
+            )
+                : (
+                    <FlatList
+                        data={filteredEventsList} renderItem={renderItem}
+                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                        style={{ flex: 1 }} keyExtractor={(item) => { return item.event_id.toString() }}>
+                    </FlatList>
+                )}
         </SafeAreaView>
     )
 }
 
 export default Home;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: COLORS.background,
+        padding: 10,
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+});
