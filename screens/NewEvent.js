@@ -10,7 +10,7 @@ import { COLORS } from '../constants'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import RNDateTimePicker from '@react-native-community/datetimepicker'
 import { formatDate, formatTime, showDatepicker, showTimepicker } from '../utils/datetime'
-import { publishEvent } from '../services/eventService'
+import { fetchUser, publishEvent } from '../services/eventService'
 import { useNavigation } from '@react-navigation/native'
 //TODO: move to constants
 const locations = [
@@ -35,7 +35,7 @@ const NewEvent = () => {
 
     const dateTimeToDate = (date, time) => {
         //Months are 0 indexed
-        return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${time.getHours()}:${time.getMinutes()}:00`
+        return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${time.getHours()}:${time.getMinutes().toString().padStart(2, '0')}`
     }
 
     useEffect(() => {
@@ -45,20 +45,24 @@ const NewEvent = () => {
     }, []);
 
 
-    const onSubmit = (formData) => {
+    const onSubmit = async (formData) => {
         const { sport, difficulty, location, date, time, description, players } = formData;
+        const userD = await getCurrentUserData();
+        console.log("USERD: ", userD);
+        const userData = await fetchUser(userD.email)
         console.log("date:", date, "time:", time, "datetime: ", dateTimeToDate(date, time))
         // setIsLoading(!isLoading);
         const data = {
-            sport_id: `${SPORT.indexOf(sport) + 1}`,
-            expertise: `${EXPERTISE.indexOf(difficulty) + 1}`,
+            sport_id: SPORT.indexOf(sport) + 1,
+            expertise: EXPERTISE.indexOf(difficulty) + 1,
             location: location,
             schedule: dateTimeToDate(date, time),
             description: description,
-            owner_id: "1",
+            owner_id: userData.user_id,
             remaining: +players,
-            duration: formData.duration
+            duration: +formData.duration
         }
+        console.log("FORMD: ", data);
         try {
             publishEvent(data);
             navigation.goBack();
@@ -270,6 +274,7 @@ const styles = StyleSheet.create({
     numberInput: {
         height: 40,
         maxWidth: 140,
+        minWidth: 140,
         borderWidth: 1,
         borderRadius: 4,
         fontSize: 16,

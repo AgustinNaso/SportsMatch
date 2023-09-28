@@ -13,7 +13,7 @@ const authenticatedFetch = async (url, options = {}) => {
     const response = await fetch(API_URL + url, { ...options, headers });
     const data = await response.json();
     return data;
-    
+
 }
 
 export const fetchUser = async (email) => {
@@ -81,14 +81,19 @@ export const fetchMyEvents = async (uid) => {
 
 export const fetchNearEvents = async (filters = undefined) => {
     const data = await SecureStore.getItemAsync('userPayload');
-    console.log("STORED DATAA: " + data);
-    const userData = await fetchUser(JSON.parse(data).email);
-    console.log("ASDASDA",userData);
+    console.log("STORED DATAA: ", data)
+    let userData;
+    try {
+        userData = await fetchUser(JSON.parse(data).email);
+    }
+    catch (err) {
+        console.log("ERRPR", err);
+    }
+    console.log('USER DATA: ', userData)
     //TODO: filtrar remaining > 0 ?
     const response = await fetchEvents(userData.user_id, filters);
     let jsonRes = await response.json();
     jsonRes.items = jsonRes.items.filter(event => event.remaining > 0 && event.event_status !== 2);
-    console.log("RESPONSE: " + JSON.stringify(jsonRes));
     return jsonRes
 }
 
@@ -139,7 +144,7 @@ export const acceptParticipant = async (eventId, userId) => {
 export const rateUser = async (eventId, rating, participantId) => {
     await authenticatedFetch(`/users/${participantId}/rate`, {
         method: 'POST',
-        body: JSON.stringify({ eventId: eventId, rating: rating}),
+        body: JSON.stringify({ eventId: eventId, rating: rating }),
         headers: {
             'Content-Type': 'application/json'
         },
