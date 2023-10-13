@@ -57,8 +57,7 @@ const NewEvent = () => {
             expertise: EXPERTISE.indexOf(difficulty) + 1,
             location: location,
             schedule: dateTimeToDate(date, time),
-            description: description,
-            owner_id: userData.user_id,
+            description: description ?? "",
             remaining: +players,
             duration: +formData.duration
         }

@@ -5,15 +5,19 @@ import * as SecureStore from 'expo-secure-store';
 export const API_URL = 'http://sportsmatch-lb-700737557.us-east-1.elb.amazonaws.com'
 
 const authenticatedFetch = async (url, options = {}) => {
-    const token = await SecureStore.getItemAsync('userToken');
-    const headers = {
-        ...options.headers,
-        'C-api-key': token
-    };
-    const response = await fetch(API_URL + url, { ...options, headers });
-    const data = await response.json();
-    return data;
-
+    try {
+        const token = await SecureStore.getItemAsync('userToken');
+        const headers = {
+            ...options.headers,
+            'C-api-key': token
+        };
+        const response = await fetch(API_URL + url, { ...options, headers });
+        const data = await response.json();
+        return data;
+    } catch (err) {
+        console.log('ERROR: ', err);
+    }
+    return null;
 }
 
 export const fetchUser = async (email) => {
@@ -99,13 +103,14 @@ export const fetchNearEvents = async (filters = undefined) => {
 
 export const publishEvent = async (eventData) => {
     console.log("PUBLISH: ", eventData);
-    return await authenticatedFetch('/events', {
+    const res = await authenticatedFetch('/events', {
         method: 'POST',
         body: JSON.stringify(eventData),
         headers: {
             'Content-Type': 'application/json',
         }
     });
+    console.log("RESJSON: ", res);
 }
 
 export const fecthUserId = async (email, userJWT) => {
