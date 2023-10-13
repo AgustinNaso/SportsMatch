@@ -3,7 +3,7 @@ import {Text, StyleSheet, TouchableOpacity} from 'react-native'
 import { COLORS } from '../constants';
 
 
-const Pill = ({props, handlePress, currentFilter}) => {
+const Pill = ({props, handlePress, currentFilter, customStyle}) => {
 
     const [selected, setSelected] = React.useState(false);
 
@@ -14,13 +14,13 @@ const Pill = ({props, handlePress, currentFilter}) => {
 
     return (
         <TouchableOpacity style = {
-            [ styles.pill, selected ? styles.selectedPill : null]
+            [ customStyle ? customStyle : styles.pill, selected ? styles.selectedPill : null ]
         }
         onPress={() => {
             handlePress(props.sport)
             }
         }>
-            <Text style={[ selected ? {color: 'white', fontWeight: '700'}: null ]}>{props.sport}</Text>
+            <Text style={[ selected ? {color: 'white', fontWeight: '700'}: null, customStyle ? customStyle.textStyle : null ]}>{props.sport}</Text>
         </TouchableOpacity>
     );
 }
