@@ -18,6 +18,7 @@ import { SPORT } from "../constants/data";
 import { fetchUser } from "../services/eventService";
 import { getCurrentUserData } from "../services/authService";
 import MultiSelect from "react-native-multiple-select";
+import { updateUser } from "../services/userService";
 
 const sports = [
   { key: 1, sportId: 1, sport: SPORT[0] },
@@ -26,8 +27,6 @@ const sports = [
   { key: 4, sportId: 4, sport: SPORT[3] },
   { key: 5, sportId: 5, sport: SPORT[4] },
 ];
-
-// {"count": 0, "email": "brlin@itba.edu.ar", "firstname": "brit", "lastname": "lin", "locations": [null], "phone_number": "+541130220578", "rating": 0, "sports": [null], "user_id": 5}
 
 const EditProfile = () => {
   const navigator = useNavigation();
@@ -41,6 +40,7 @@ const EditProfile = () => {
   const [selectedSports, setSelectedSports] = useState([]);
   const [currUser, setCurrUser] = useState();
   const [loading, setLoading] = useState(true);
+  const [selectedLocations, setSelectedLocations] = useState([]);
 
   useEffect(() => {
     if (currUser) setLoading(false);
@@ -55,6 +55,8 @@ const EditProfile = () => {
         "USER: " + JSON.stringify({ ...user, birthdate: currentUser.birthdate })
       );
       setCurrUser({ ...user, birthdate: currentUser.birthdate });
+      user.sports.every((sport) => sport !== null) && setSelectedSports(user.sports);
+      user.locations.every((location) => location !== null) && setSelectedLocations(user.locations);
     };
     try {
       fetchUserData();
@@ -77,15 +79,19 @@ const EditProfile = () => {
     return selectedSports.includes(sport.sportId) ? sport.sport : null;
   };
 
-  const submit = (data) => {
+  const submit = async (data) => {
     const formData = {
-      ...data,
+      phone_number: data.phone,
+      locations: selectedLocations,
       sports: selectedSports,
     };
 
-    console.log(formData);
-    // navigator.navigate("MyProfile");
-    //TODO: change user data
+    try {
+      updateUser(currUser.user_id, formData);
+      navigator.navigate("MyProfile");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -230,15 +236,16 @@ const EditProfile = () => {
                     <MultiSelect
                       styleMainWrapper={styles.mainWrapper}
                       items={[
-                        { id: "1", name: "Belgrano" },
-                        { id: "2", name: "Caballito" },
-                        { id: "3", name: "Nuñez" },
+                        { id: "Belgrano" },
+                        { id: "Caballito" },
+                        { id: "Nuñez" },
                       ]}
                       uniqueKey="id"
-                      onSelectedItemsChange={(selectedItems) =>
+                      onSelectedItemsChange={(selectedItems) => {
+                        setSelectedLocations(selectedItems);
                         onChange(selectedItems)
-                      }
-                      selectedItems={value}
+                      }}
+                      selectedItems={selectedLocations}
                       selectText="Select locations"
                       searchInputPlaceholderText="Search locations..."
                       onChangeInput={(text) => console.log(text)}
@@ -248,13 +255,13 @@ const EditProfile = () => {
                       selectedItemTextColor={COLORS.primary}
                       selectedItemIconColor={COLORS.primary}
                       itemTextColor="#000"
-                      displayKey="name"
+                      displayKey="id"
                       submitButtonColor={COLORS.primary}
                       submitButtonText="Done"
                     />
                   </ScrollView>
                 )}
-                name="selectedSports"
+                name="locations"
                 defaultValue={[]}
               />
             </View>
