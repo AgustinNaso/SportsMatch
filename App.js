@@ -7,11 +7,11 @@ import { Login, Register, ConfirmSignUp } from "./screens";
 import { useEffect } from "react";
 import { getCurrUserJWT } from "./services/authService";
 import { useAuthContext, AuthContext } from "./contexts/authContext";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 const Stack = createStackNavigator();
 
 const App = () => {
-
   const authContext = useAuthContext();
 
   useEffect(() => {
@@ -19,12 +19,11 @@ const App = () => {
       let userToken;
       try {
         userToken = await getCurrUserJWT();
-      }
-      catch (err) {
-        console.error('Failed: ', err);
+      } catch (err) {
+        console.error("Failed: ", err);
       }
       authContext.restoreToken(userToken);
-    }
+    };
     restoreUserToken();
   }, []);
 
@@ -39,25 +38,28 @@ const App = () => {
   }
 
   return (
-    <AuthContext.Provider value={authContext}>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false
-          }}>
-          {authContext.state.userToken ? (
-            <Stack.Screen name="Tabs" component={Tabs} />
-          ) : (
-            <>
-              <Stack.Screen name="Login" component={Login} />
-              <Stack.Screen name="Register" component={Register} />
-              <Stack.Screen name="ConfirmSignUp" component={ConfirmSignUp} />
-            </>
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
-    </AuthContext.Provider>
+    <ActionSheetProvider>
+      <AuthContext.Provider value={authContext}>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            {authContext.state.userToken ? (
+              <Stack.Screen name="Tabs" component={Tabs} />
+            ) : (
+              <>
+                <Stack.Screen name="Login" component={Login} />
+                <Stack.Screen name="Register" component={Register} />
+                <Stack.Screen name="ConfirmSignUp" component={ConfirmSignUp} />
+              </>
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AuthContext.Provider>
+    </ActionSheetProvider>
   );
-}
+};
 
 export default App;
