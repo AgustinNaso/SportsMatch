@@ -6,12 +6,10 @@ import { Divider } from '@rneui/base';
 import MyEventCard from './MyEventCard';
 import { EXPERTISE, SPORT } from '../constants/data';
 import { getDateComponents } from '../utils/datetime';
+import { removeParticipantAsOwner } from '../services/eventService';
 
 const MyEventList = ({ data }) => {
     const [participantList, setParticipantsList] = useState(data.item.participants);
-
-    console.log("EventList:", data);
-
     const handleRemoveParticipant = async (eventId, participantEmail) => {
         try {
             removeParticipantAsOwner(eventId, participantEmail)

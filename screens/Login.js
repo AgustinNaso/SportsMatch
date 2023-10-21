@@ -27,6 +27,7 @@ const Login = () => {
       await authContext.signIn(data)
     } 
     catch (err) {
+      setLoading(false);
       console.error('Error signing in', err);
     }
   }

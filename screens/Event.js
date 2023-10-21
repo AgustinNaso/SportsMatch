@@ -21,7 +21,6 @@ const Event = ({ route }) => {
 
     useEffect(() => {
         fetchEventById(props.event_id).then((data) => {
-            console.log("EVENT DATA:", data);
         });
         fetchParticipants(props.event_id).then((data) => {
             setEventParticipants(data);
@@ -29,18 +28,20 @@ const Event = ({ route }) => {
         getCurrentUserData().then((data) => {
             setUser(data);
         }
-        );
+        ).catch(err => console.log("Error getting current user ", err));
     }, [])
 
 
     useEffect(() => {
         eventParticipants.forEach((participant) => {
             console.log("PArticipant: ", participant);
-            if (participant.user_id == user.uid) {
-                if(participant.status === "true")
+                        if (participant.user_id == user.uid) {
+                if(participant.participan_status === "true"){
                     setUserStatus(USER_STATUS.ENROLLED);
-                else
+                }
+                else {
                     setUserStatus(USER_STATUS.REQUESTING);
+                }
             }
         })
     }, [eventParticipants, user])
@@ -59,7 +60,7 @@ const Event = ({ route }) => {
 
     const joinEvent = async () => {
         try {
-            await joinNewEvent(props.event_id, user?.uid)
+                        await joinNewEvent(props.event_id, user?.uid)
             setUserStatus(USER_STATUS.REQUESTING);
         }
         catch (error) {

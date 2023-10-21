@@ -83,7 +83,6 @@ const MyEvents = () => {
         const getMyEvents = async () => {
             const userData = await fetchUser(user.email);
             const data = await fetchMyEvents(userData.user_id);
-            console.log("AAASDA, ", data.items);
             setMyEvents(data.items);
         }
         const getNearEvents = async () => {

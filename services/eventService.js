@@ -1,4 +1,4 @@
-import { EXPERTISE } from "../constants/data";
+import { EVENT_STATUS, EXPERTISE } from "../constants/data";
 import * as SecureStore from 'expo-secure-store';
 import { refreshSession } from "./authService";
 
@@ -14,9 +14,9 @@ export const authenticatedFetch = async (url, options = {}) => {
         };
         const response = await fetch(API_URL + url, { ...options, headers });
         console.log(`Response for ${url} :`, response.status);
-        if(response.status >= 400 && response.status < 600) {
+        if (response.status >= 400 && response.status < 600) {
             const body = await response.json();
-            if(response.status === 401 && body.internalStatus === "TOKEN_EXPIRED") {
+            if (response.status === 401 && body.internalStatus === "TOKEN_EXPIRED") {
                 await refreshSession();
                 return await authenticatedFetch(url, options);
             }
@@ -43,8 +43,7 @@ export const fetchParticipants = async (eventId) => {
 }
 
 //TODO: clean this code
-export const fetchEvents = async (ownerEmail, filters) => {
-    console.log("FILTERSS " + JSON.stringify(filters))
+export const fetchEvents = async (filters, participantId = null) => {
     const data = await SecureStore.getItemAsync('userPayload');
     const userData = await fetchUser(JSON.parse(data).email);
     ownerId = userData.user_id;
@@ -93,21 +92,18 @@ export const fetchMyEvents = async (uid) => {
 }
 
 export const fetchNearEvents = async (filters = undefined) => {
-    const data = await SecureStore.getItemAsync('userPayload');
-    console.log("STORED DATAA: ", data)
-    let userData;
     try {
-        userData = await fetchUser(JSON.parse(data).email);
+        const data = await SecureStore.getItemAsync('userPayload');
+        const userData = await fetchUser(JSON.parse(data).email);
+        const response = await fetchEvents(userData.user_id, filters);
+        let jsonRes = await response.json();
+        console.log("NEAR EVENTS: ");
+        jsonRes.items = jsonRes.items.filter(event => event.remaining > 0 && event.event_status !== EVENT_STATUS.FINALIZED);
+        return jsonRes
     }
     catch (err) {
         console.log("ERRPR", err);
     }
-    console.log('USER DATA: ', userData)
-    //TODO: filtrar remaining > 0 ?
-    const response = await fetchEvents(userData.user_id, filters);
-    let jsonRes = await response.json();
-    jsonRes.items = jsonRes.items.filter(event => event.remaining > 0 && event.event_status !== 2);
-    return jsonRes
 }
 
 export const publishEvent = async (eventData) => {

@@ -7,6 +7,7 @@ import {
 } from "amazon-cognito-identity-js"
 
 import * as SecureStore from 'expo-secure-store';
+import { fetchUser } from "./eventService";
 
 const UserPool = new CognitoUserPool({
     UserPoolId: "us-east-1_DIhU6m4Je",
@@ -23,14 +24,15 @@ const getValueFor = async key => {
         console.info("Value: " + result)
         return result;
     } else {
-        console.log("No values stored under that key.");
+        console.log("No values stored under key: " + key);
         return null;
     }
 }
 
 export const refreshSession = async () => {
     const refreshToken = await getValueFor('refreshToken');
-    const cognitoUser = UserPool.getCurrentUser();
+    const userData = await getValueFor('userPayload');
+    const cognitoUser = UserPool.getCognitoUser(userData.email);
     return new Promise((resolve, reject) => {
         cognitoUser.refreshSession(new CognitoRefreshToken({RefreshToken: refreshToken}), (err, session) => {
             if (err) {
@@ -62,6 +64,7 @@ export const login = async data => {
         user.authenticateUser(authDetails, {
             onSuccess: async (data) => {
                 console.log("On Success: ", data);
+                const userData = await fetchUser(data.getIdToken().decodePayload().email);
                 save('userToken', data.getIdToken().getJwtToken());
                 save('refreshToken', data.getRefreshToken().getToken());
                 save('userPayload', JSON.stringify({
@@ -69,7 +72,8 @@ export const login = async data => {
                     name: data.idToken.payload.given_name,
                     lastName: data.idToken.payload.family_name,
                     phone: data.idToken.payload.phone_number,
-                    birthdate: data.idToken.payload.birthdate
+                    birthdate: data.idToken.payload.birthdate,
+                    uid: userData.user_id
                 }));
                 resolve({
                     token : data.idToken.jwtToken
