@@ -2,11 +2,11 @@ import {
     CognitoUserPool,
     CognitoUser,
     AuthenticationDetails,
-    CognitoUserAttribute
+    CognitoUserAttribute,
+    CognitoRefreshToken
 } from "amazon-cognito-identity-js"
 
 import * as SecureStore from 'expo-secure-store';
-import { fetchUser, fecthUserId } from "./eventService";
 
 const UserPool = new CognitoUserPool({
     UserPoolId: "us-east-1_DIhU6m4Je",
@@ -28,6 +28,25 @@ const getValueFor = async key => {
     }
 }
 
+export const refreshSession = async () => {
+    const refreshToken = await getValueFor('refreshToken');
+    const cognitoUser = UserPool.getCurrentUser();
+    return new Promise((resolve, reject) => {
+        cognitoUser.refreshSession(new CognitoRefreshToken({RefreshToken: refreshToken}), (err, session) => {
+            if (err) {
+                console.error("Error refreshing session: ", err);
+                reject(err);
+            }
+            else {
+                console.log("Refreshed session: ", session);
+                save('userToken', session.idToken.jwtToken);
+                save('refreshToken', session.refreshToken.token);
+                resolve(session);
+            }
+        })
+    });
+}
+
 export const login = async data => {
     return new Promise((resolve, reject) => {
         const user = new CognitoUser({
@@ -43,7 +62,8 @@ export const login = async data => {
         user.authenticateUser(authDetails, {
             onSuccess: async (data) => {
                 console.log("On Success: ", data);
-                save('userToken', data.idToken.jwtToken);
+                save('userToken', data.getIdToken().getJwtToken());
+                save('refreshToken', data.getRefreshToken().getToken());
                 save('userPayload', JSON.stringify({
                     email: data.idToken.payload.email,
                     name: data.idToken.payload.given_name,
@@ -107,7 +127,6 @@ export const getCognitoUser = (email) => {
         Username: email,
         Pool: UserPool
     }
-    console.log("USR: ",userData);
     return new CognitoUser(userData);
 }
 
@@ -137,24 +156,5 @@ export const clearUserData = () => {
     SecureStore.deleteItemAsync('userPayload');
 }
 
-export const saveUserData = async data => {
-    const userJWT = data.idToken.jwtToken;
-    const userPayload = data.idToken.payload;
-    console.log(userPayload.email)
-    const userInfo = await fecthUserId(userPayload.email.toLowerCase(), userJWT);
-    userPayload.uid = userInfo.id;
-    console.log('Payload: ' + userPayload.uid);
-    save('userToken', userJWT);
-    save('userPayload', JSON.stringify(userPayload));
-}
-
-export function decodeJWT(token) {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    return JSON.parse(jsonPayload);
-}
 
 export default UserPool;
