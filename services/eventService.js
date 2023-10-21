@@ -1,6 +1,5 @@
 import { EVENT_STATUS, EXPERTISE } from "../constants/data";
 import * as SecureStore from 'expo-secure-store';
-import { refreshSession } from "./authService";
 
 
 export const API_URL = 'http://sportsmatch-lb-700737557.us-east-1.elb.amazonaws.com'
@@ -17,8 +16,8 @@ export const authenticatedFetch = async (url, options = {}) => {
         if (response.status >= 400 && response.status < 600) {
             const body = await response.json();
             if (response.status === 401 && body.internalStatus === "TOKEN_EXPIRED") {
-                await refreshSession();
-                return await authenticatedFetch(url, options);
+                // await refreshSession();
+                // return await authenticatedFetch(url, options);
             }
             else
                 throw new Error("Bad response from server");
@@ -39,14 +38,13 @@ export const fetchUser = async (email) => {
 export const fetchParticipants = async (eventId) => {
     const response = await fetch(API_URL + '/events/' + eventId + '/owner/participants');
     const json = await response.json();
+    console.log("participants: ", json);
     return json;
 }
 
 //TODO: clean this code
-export const fetchEvents = async (filters, participantId = null) => {
-    const data = await SecureStore.getItemAsync('userPayload');
-    const userData = await fetchUser(JSON.parse(data).email);
-    ownerId = userData.user_id;
+export const fetchEvents = async (filters) => {
+    const data = JSON.parse(await SecureStore.getItemAsync('userPayload'));
     let filterString;
     if (filters) {
         if (filters.date)
@@ -64,21 +62,17 @@ export const fetchEvents = async (filters, participantId = null) => {
             return "&" + key + "=" + value;
         }).join("");
     }
-    console.log("FILTERS " + filterString);
-    return await fetch(`${API_URL}/events?userId=${ownerId}&filterOut=true${filterString ?? ""}`);
+    return await fetch(`${API_URL}/events?userId=${data.user_id}&filterOut=true${filterString ?? ""}`);
 }
 
 export const fetchJoinedEvents = async (userId) => {
-    const data = await SecureStore.getItemAsync('userPayload');
-    const userData = await fetchUser(JSON.parse(data).email);
-    const response = await fetch(API_URL + '/events?participantId=' + userData.user_id);
+    const response = await fetch(API_URL + '/events?participantId=' + userId);
     const jsonRes = await response.json();
     return jsonRes;
 }
 
 export const fetchMyEvents = async (uid) => {
     const data = await SecureStore.getItemAsync('userPayload');
-    console.log("STORED DATAA: " + data);
     const userData = await fetchUser(JSON.parse(data).email);
     const events = await fetch(API_URL + `/events?userId=${userData.user_id}`);
     const json = await events.json();
@@ -97,8 +91,7 @@ export const fetchNearEvents = async (filters = undefined) => {
         const userData = await fetchUser(JSON.parse(data).email);
         const response = await fetchEvents(userData.user_id, filters);
         let jsonRes = await response.json();
-        console.log("NEAR EVENTS: ");
-        jsonRes.items = jsonRes.items.filter(event => event.remaining > 0 && event.event_status !== EVENT_STATUS.FINALIZED);
+        jsonRes.items = jsonRes.items?.filter(event => event.remaining > 0 && event.event_status !== EVENT_STATUS.FINALIZED);
         return jsonRes
     }
     catch (err) {

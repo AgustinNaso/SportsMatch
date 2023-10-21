@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, Text } from 'react-native';
 import { View } from 'react-native';
 import EventStatus from './EventStatus';
@@ -10,6 +10,8 @@ import { removeParticipantAsOwner } from '../services/eventService';
 
 const MyEventList = ({ data }) => {
     const [participantList, setParticipantsList] = useState(data.item.participants);
+    const { hours, day, month, minutes } = getDateComponents(data.item.schedule);
+
     const handleRemoveParticipant = async (eventId, participantEmail) => {
         try {
             removeParticipantAsOwner(eventId, participantEmail)
@@ -20,8 +22,9 @@ const MyEventList = ({ data }) => {
         }
     }
 
-    const { hours, day, month, minutes } = getDateComponents(data.item.schedule);
-
+    useEffect(() => {
+        setParticipantsList(data.item.participants);
+    }, [data.item.participants])
 
     return (
         <View style={{marginTop: 8}}>

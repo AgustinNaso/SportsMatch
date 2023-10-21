@@ -2,13 +2,10 @@ import React, { useEffect } from 'react';
 import { Text, SafeAreaView, FlatList, View } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import Card from '../components/Card';
-import MyEventCard from '../components/MyEventCard';
 import { fetchJoinedEvents, fetchMyEvents, fetchNearEvents, fetchUser, removeParticipant } from '../services/eventService';
 import { getCurrentUserData } from '../services/authService';
 import { COLORS } from '../constants';
 import { useIsFocused } from '@react-navigation/native';
-import { Chip, Divider } from '@rneui/base';
-import EventStatus from '../components/EventStatus';
 import MyEventList from '../components/MyEventList';
 
 const renderList = (data) => {
@@ -20,7 +17,6 @@ const renderJoinedItem = ({ item }) => {
 }
 
 const FirstRoute = (myEvents) => (
-
     <SafeAreaView style={{ flex: 1 }}>
         <FlatList
             data={myEvents} renderItem={(data) => renderList(data)}
@@ -83,21 +79,20 @@ const MyEvents = () => {
         const getMyEvents = async () => {
             const userData = await fetchUser(user.email);
             const data = await fetchMyEvents(userData.user_id);
-            setMyEvents(data.items);
+                        setMyEvents(data.items);
         }
-        const getNearEvents = async () => {
+        const getJoinedEvents = async () => {
             const userData = await fetchUser(user.email);
             const mockData = await fetchJoinedEvents(userData?.user_id);
             setJoinedEvents(mockData.items);
         }
         if (isFocused) {
             getMyEvents().catch(err => console.log(err));
-            getNearEvents()
-                .catch(err => console.log(err));
+            getJoinedEvents().catch(err => console.log(err));
         }
     }, [user, isFocused]);
 
-    return (
+    return ( 
         <TabView
             renderTabBar={(props) => <TabBar {...props} style={{ backgroundColor: COLORS.primary }} indicatorStyle={{ backgroundColor: COLORS.secondary }} />}
             navigationState={{ index, routes }}
