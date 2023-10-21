@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Image,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { COLORS, FONTS } from "../constants";
@@ -19,6 +20,8 @@ import { fetchUser } from "../services/eventService";
 import { getCurrentUserData } from "../services/authService";
 import MultiSelect from "react-native-multiple-select";
 import { updateUser } from "../services/userService";
+import * as ImagePicker from "expo-image-picker";
+import DefaultProfile from "../assets/default-profile.png";
 
 const sports = [
   { key: 1, sportId: 1, sport: SPORT[0] },
@@ -41,6 +44,7 @@ const EditProfile = () => {
   const [currUser, setCurrUser] = useState();
   const [loading, setLoading] = useState(true);
   const [selectedLocations, setSelectedLocations] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     if (currUser) setLoading(false);
@@ -55,8 +59,10 @@ const EditProfile = () => {
         "USER: " + JSON.stringify({ ...user, birthdate: currentUser.birthdate })
       );
       setCurrUser({ ...user, birthdate: currentUser.birthdate });
-      user.sports.every((sport) => sport !== null) && setSelectedSports(user.sports);
-      user.locations.every((location) => location !== null) && setSelectedLocations(user.locations);
+      user.sports.every((sport) => sport !== null) &&
+        setSelectedSports(user.sports);
+      user.locations.every((location) => location !== null) &&
+        setSelectedLocations(user.locations);
     };
     try {
       fetchUserData();
@@ -94,6 +100,32 @@ const EditProfile = () => {
     }
   };
 
+  const handleCameraLaunch = async () => {
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setSelectedImage(result.assets[0].uri);
+    }
+  };
+
+  const openImagePicker = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setSelectedImage(result.assets[0].uri);
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -102,6 +134,16 @@ const EditProfile = () => {
       >
         {!loading && (
           <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <Image
+                source={selectedImage ? { uri: selectedImage } : DefaultProfile}
+                style={{ width: 200, height: 200, borderRadius: 100 }}
+              />
+            <TouchableOpacity onPress={handleCameraLaunch}>
+              <Text>Open Camera</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={openImagePicker}>
+              <Text>Open Image Picker</Text>
+            </TouchableOpacity>
             <View style={styles.inputContainer}>
               <Text style={styles.inputText}>Name</Text>
               <Controller
@@ -243,7 +285,7 @@ const EditProfile = () => {
                       uniqueKey="id"
                       onSelectedItemsChange={(selectedItems) => {
                         setSelectedLocations(selectedItems);
-                        onChange(selectedItems)
+                        onChange(selectedItems);
                       }}
                       selectedItems={selectedLocations}
                       selectText="Select locations"
