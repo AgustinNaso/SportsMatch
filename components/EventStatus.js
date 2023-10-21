@@ -33,7 +33,7 @@ const EventStatus = ({ status }) => {
 
     return (
         <View style={[styles.container, getStatusStyle()]}>
-            <Text style={{color: 'white'}}>{getStatusText()}</Text>
+            <Text style={{color: 'white', fontWeight: 600}}>{getStatusText()}</Text>
         </View>
     );
 };

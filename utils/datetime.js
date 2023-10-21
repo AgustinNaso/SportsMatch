@@ -1,6 +1,5 @@
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 
-//DATETIME PICKER UTILS
 const formatTime = (date) => {
     return date.getHours() + ":" + String(date.getMinutes()).padStart(2, "0");
 }
@@ -35,8 +34,9 @@ const showTimepicker = (field) => {
 
 const getDateComponents = (date) => {
     const parsedDate = new Date(date);
+    console.log("PARSED" , parsedDate)
     const day = parsedDate.getDate();
-    const month = parsedDate.getMonth(); // Months are zero-based
+    const month = parsedDate.getMonth() + 1; // Months are zero-based
     const hours = parsedDate.getHours();
     const minutes = String(parsedDate.getMinutes()).padStart(2, "0")
 
