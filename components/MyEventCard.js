@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { acceptParticipant, fetchUser, rateUser, removeParticipantAsOwner } from "../services/eventService";
 import { AirbnbRating, Avatar, Button, color } from "@rneui/base";
 import { COLORS } from "../constants";
+import { EVENT_STATUS } from "../constants/data";
 
 const MyEventCard = ({ props, eventId, handleRemoveParticipant }) => {
 
@@ -76,9 +77,9 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant }) => {
                         <Ionicons name="checkmark" size={40} color="green" onPress={acceptUser} />
                     </TouchableOpacity>
                 </View>
-                : props.eventStatus !== 2 ?
+                : props.eventStatus !== EVENT_STATUS.FINALIZED ?
                     <Button color={COLORS.primary} mode="contained" title="Contactar" onPress={sendMessage} />
-                    : props.eventStatus === 2 && <Button color={COLORS.primary} mode="contained" title="Puntuar" onPress={() => setModalVisible(true)} />
+                    : props.eventStatus === EVENT_STATUS.FINALIZED && <Button color={COLORS.primary} mode="contained" title="Puntuar" onPress={() => setModalVisible(true)} />
             }
         </View>
     );
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
         padding: 8,
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: '50%',
+        width: '60%',
     },
     textContainer: {
         flexDirection: 'column',

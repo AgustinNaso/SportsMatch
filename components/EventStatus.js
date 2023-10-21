@@ -1,16 +1,17 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { COLORS } from "../constants";
+import { EVENT_STATUS } from "../constants/data";
 
 const EventStatus = ({ status }) => {
     // Define styles based on the status code
     const getStatusStyle = () => {
         switch (status) {
-            case 0: // Recruiting
+            case EVENT_STATUS.RECRUITING: 
                 return styles.recruiting;
-            case 1: // In Progress
+            case EVENT_STATUS.IN_PROGRESS: 
                 return styles.inProgress;
-            case 2: // Finalized
+            case EVENT_STATUS.FINALIZED:
                 return styles.finalized;
             default:
                 return styles.default;
@@ -20,11 +21,11 @@ const EventStatus = ({ status }) => {
     // Define status text based on the status code
     const getStatusText = () => {
         switch (status) {
-            case 0:
+            case EVENT_STATUS.RECRUITING:
                 return "Convocando";
-            case 1:
+            case EVENT_STATUS.IN_PROGRESS:
                 return "En progreso";
-            case 2:
+            case EVENT_STATUS.FINALIZED:
                 return "Finalizado";
             default:
                 return "Unknown";
