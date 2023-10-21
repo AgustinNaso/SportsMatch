@@ -19,6 +19,11 @@ import { fetchUser } from "../services/eventService";
 import { getCurrentUserData } from "../services/authService";
 import MultiSelect from "react-native-multiple-select";
 import { updateUser } from "../services/userService";
+import * as ImagePicker from "expo-image-picker";
+import DefaultProfile from "../assets/default-profile.png";
+import { Avatar } from "@rneui/themed";
+import { Ionicons } from "@expo/vector-icons";
+import { useActionSheet } from '@expo/react-native-action-sheet';
 
 const sports = [
   { key: 1, sportId: 1, sport: SPORT[0] },
@@ -41,6 +46,8 @@ const EditProfile = () => {
   const [currUser, setCurrUser] = useState();
   const [loading, setLoading] = useState(true);
   const [selectedLocations, setSelectedLocations] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const { showActionSheetWithOptions } = useActionSheet();
 
   useEffect(() => {
     if (currUser) setLoading(false);
@@ -55,8 +62,10 @@ const EditProfile = () => {
         "USER: " + JSON.stringify({ ...user, birthdate: currentUser.birthdate })
       );
       setCurrUser({ ...user, birthdate: currentUser.birthdate });
-      user.sports.every((sport) => sport !== null) && setSelectedSports(user.sports);
-      user.locations.every((location) => location !== null) && setSelectedLocations(user.locations);
+      user.sports.every((sport) => sport !== null) &&
+        setSelectedSports(user.sports);
+      user.locations.every((location) => location !== null) &&
+        setSelectedLocations(user.locations);
     };
     try {
       fetchUserData();
@@ -94,6 +103,56 @@ const EditProfile = () => {
     }
   };
 
+  const editProfileImage = () => {
+    const options = ['Choose from Library', 'Take Photo', 'Cancel'];
+    const libraryIndex = 0;
+    const cameraIndex = 1;
+    const cancelButtonIndex = 2;
+    const title = "Select Photo";
+
+    showActionSheetWithOptions({
+      options,
+      title,
+      libraryIndex,
+      cameraIndex,
+      cancelButtonIndex
+    }, (selectedIndex) => {
+      switch (selectedIndex) {
+        case libraryIndex:
+          openImagePicker();
+          break;
+        case cameraIndex:
+          handleCameraLaunch();
+          break;
+      }});
+  }
+
+  const handleCameraLaunch = async () => {
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setSelectedImage(result.assets[0].uri);
+    }
+  };
+
+  const openImagePicker = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setSelectedImage(result.assets[0].uri);
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -102,6 +161,19 @@ const EditProfile = () => {
       >
         {!loading && (
           <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <Avatar
+              size={108}
+              rounded
+              source={selectedImage ? { uri: selectedImage } : DefaultProfile}
+            >
+              <TouchableOpacity onPress={editProfileImage}>
+                <Ionicons
+                  name="ios-camera"
+                  size={25}
+                  style={{ position: "absolute", color: COLORS.primary, bottom: 0, right: 0 }}
+                />
+              </TouchableOpacity>
+            </Avatar>
             <View style={styles.inputContainer}>
               <Text style={styles.inputText}>Name</Text>
               <Controller
@@ -243,7 +315,7 @@ const EditProfile = () => {
                       uniqueKey="id"
                       onSelectedItemsChange={(selectedItems) => {
                         setSelectedLocations(selectedItems);
-                        onChange(selectedItems)
+                        onChange(selectedItems);
                       }}
                       selectedItems={selectedLocations}
                       selectText="Select locations"
@@ -284,6 +356,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingBottom: 100,
+    paddingTop: 20,
   },
   input: {
     height: 40,
