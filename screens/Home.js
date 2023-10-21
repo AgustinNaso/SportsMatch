@@ -38,14 +38,13 @@ const Home = ({ navigation, route }) => {
 
     React.useEffect(() => {
         const getNearEvents = async () => {
-            const mockData = await fetchNearEvents();
-            setEventList(mockData.items);
-            setFilteredEventList(mockData.items);
+            const data = await fetchNearEvents();
+            setEventList(data.items);
+            setFilteredEventList(data.items);
             setLoading(false);
         }
         getNearEvents()
             .catch(err => console.log(err));
-
     }, [])
 
 
@@ -101,16 +100,14 @@ const Home = ({ navigation, route }) => {
                 size="large"
                 color={COLORS.primary}
                 style={{ alignSelf: "center", marginTop: "50%" }}
-            /> : filteredEventsList.length == 0 ? (
-                renderEmptyList()
-            )
-                : (
-                    <FlatList
-                        data={filteredEventsList} renderItem={renderItem}
-                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                        style={{ flex: 1 }} keyExtractor={(item) => { return item.event_id.toString() }}>
-                    </FlatList>
-                )}
+            /> :
+                <FlatList
+                    data={filteredEventsList} renderItem={renderItem}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                    style={{ flex: 1 }} keyExtractor={(item) => { return item.event_id.toString() }}
+                    ListEmptyComponent={renderEmptyList}>
+                </FlatList>
+            }
         </SafeAreaView>
     )
 }
@@ -125,6 +122,7 @@ const styles = StyleSheet.create({
     },
     emptyContainer: {
         flex: 1,
+        height: 500,
         justifyContent: 'center',
         alignItems: 'center',
     },

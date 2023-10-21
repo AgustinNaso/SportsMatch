@@ -5,26 +5,14 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import CustomButton from '../components/CustomButton'
 import { getCurrUserJWT, getCurrentUserData } from '../services/authService'
 import { Controller, useForm } from 'react-hook-form'
-import { EXPERTISE, SPORT } from '../constants/data'
+import { EXPERTISE, LOCATIONS, SPORT } from '../constants/data'
 import { COLORS } from '../constants'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import RNDateTimePicker from '@react-native-community/datetimepicker'
 import { formatDate, formatTime, showDatepicker, showTimepicker } from '../utils/datetime'
 import { fetchUser, publishEvent } from '../services/eventService'
 import { useNavigation } from '@react-navigation/native'
-//TODO: move to constants
-const locations = [
-    { key: 1, value: "Agronomía" },
-    { key: 2, value: "Almagro" },
-    { key: 3, value: "Balvanera" },
-    { key: 4, value: "Barracas" },
-    { key: 5, value: "Belgrano" },
-    { key: 6, value: "Boedo" },
-    { key: 7, value: "Caballito" },
-    { key: 8, value: "Chacarita" },
-    { key: 9, value: "Coghlan" },
-    { key: 10, value: "Colegiales", },
-];
+
 
 const NewEvent = () => {
     const navigation = useNavigation();
@@ -57,11 +45,10 @@ const NewEvent = () => {
             expertise: EXPERTISE.indexOf(difficulty) + 1,
             location: location,
             schedule: dateTimeToDate(date, time),
-            description: description ?? "",
+            description: description ?? " ",
             remaining: +players,
             duration: +formData.duration
         }
-        console.log("FORMD: ", data);
         try {
             publishEvent(data);
             navigation.goBack();
@@ -106,7 +93,7 @@ const NewEvent = () => {
                 <Controller control={control} rules={{ required: true }} render={({ field }) => (
                     <SelectList
                         setSelected={field.onChange}
-                        data={locations}
+                        data={LOCATIONS}
                         save="value"
                         maxHeight={200}
                         placeholder='Elija el lugar'
@@ -120,8 +107,6 @@ const NewEvent = () => {
                     <Controller control={control} rules={{ required: true }} render={({ field }) => {
                         if (field.value === undefined)
                             field.value = new Date();
-                        console.log("FIELD VALUE: " + JSON.stringify(field.value))
-
                         return (
                             Platform.OS !== 'ios' ? (
                                 <TouchableOpacity onPress={() => showDatepicker(field)} style={styles.dateTimeContainer}>

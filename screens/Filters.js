@@ -56,7 +56,6 @@ const FilterModal = ({ navigation }) => {
     }, []);
     
     const onSubmit = (data) => {
-        console.log(JSON.stringify(data));
         navigation.navigate("Inicio", { filters: JSON.stringify(data) });
         try {
             AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));

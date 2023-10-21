@@ -21,16 +21,13 @@ const Event = ({ route }) => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        console.log("PROPS: ", props)
         fetchEventById(props.event_id).then((data) => {
             console.log("EVENT DATA:", data);
         });
         fetchParticipants(props.event_id).then((data) => {
-                console.log("PARTICIPANTS: ", data);
                 setEventParticipants(data);
         })
         getCurrentUserData().then((data) => {
-            console.log("DATA: " + data);
             setUser(data);
         }
         );
@@ -38,10 +35,9 @@ const Event = ({ route }) => {
 
 
     useEffect(() => {
-        console.log('in' + JSON.stringify(eventParticipants));
         eventParticipants.forEach((participant) => {
             console.log("PPP : " + participant.user_id)
-            if (participant.user_id == 1) { //1 cambiar por user.uid
+            if (participant.user_id == participant.user_id) { //1 cambiar por user.uid
                 setCurrUserIsParticipant(true);
                 setCurrUserIsAccepted(participant.participant_status == "true")
             }

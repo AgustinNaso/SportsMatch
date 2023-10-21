@@ -1,5 +1,6 @@
 import { EXPERTISE } from "../constants/data";
 import * as SecureStore from 'expo-secure-store';
+import { refreshSession } from "./authService";
 
 
 export const API_URL = 'http://sportsmatch-lb-700737557.us-east-1.elb.amazonaws.com'
@@ -12,12 +13,14 @@ const authenticatedFetch = async (url, options = {}) => {
             'C-api-key': token
         };
         const response = await fetch(API_URL + url, { ...options, headers });
-        const data = await response.json();
-        return data;
+        if(response.status >= 400 && response.status < 600) {
+            throw new Error("Bad response from server");
+        }
+        console.log(`Response for ${url} :`, response.status);
+        return response;
     } catch (err) {
         console.log('ERROR: ', err);
     }
-    return null;
 }
 
 export const fetchUser = async (email) => {
@@ -103,17 +106,16 @@ export const fetchNearEvents = async (filters = undefined) => {
 
 export const publishEvent = async (eventData) => {
     console.log("PUBLISH: ", eventData);
-    const res = await authenticatedFetch('/events', {
+    await authenticatedFetch('/events', {
         method: 'POST',
         body: JSON.stringify(eventData),
         headers: {
             'Content-Type': 'application/json',
         }
     });
-    console.log("RESJSON: ", res);
 }
 
-export const fecthUserId = async (email, userJWT) => {
+export const fetchUserId = async (email, userJWT) => {
     const data = await fetch(API_URL + '/users?email=' + email);
     return await data.json();
 }
@@ -127,7 +129,7 @@ export const joinNewEvent = async (eventId, userId) => {
     const data = await SecureStore.getItemAsync('userPayload');
     const userData = await fetchUser(JSON.parse(data).email);
 
-    await fetch(API_URL + '/events/' + eventId + '/participants', {
+    await authenticatedFetch('/events/' + eventId + '/participants', {
         method: 'PUT',
         body: JSON.stringify({ userId: userData.user_id }),
         headers: {
@@ -137,7 +139,7 @@ export const joinNewEvent = async (eventId, userId) => {
 }
 
 export const acceptParticipant = async (eventId, userId) => {
-    await fetch(API_URL + '/events/' + eventId + '/owner/participants', {
+    await authenticatedFetch('/events/' + eventId + '/owner/participants', {
         method: 'PUT',
         body: JSON.stringify({ userId: userId }),
         headers: {

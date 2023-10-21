@@ -54,7 +54,6 @@ const ConfirmSignUp = ({ navigation }) => {
   const email = route.params?.email;
 
   const onConfirmPressed = async () => {
-    console.log("Email: " + email);
     verifyMail(email, code).then((response) => {
       if (response.error) {
         setError(response.error.message);
