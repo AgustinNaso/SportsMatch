@@ -13,10 +13,16 @@ export const authenticatedFetch = async (url, options = {}) => {
             'C-api-key': token
         };
         const response = await fetch(API_URL + url, { ...options, headers });
-        if(response.status >= 400 && response.status < 600) {
-            throw new Error("Bad response from server");
-        }
         console.log(`Response for ${url} :`, response.status);
+        if(response.status >= 400 && response.status < 600) {
+            const body = await response.json();
+            if(response.status === 401 && body.internalStatus === "TOKEN_EXPIRED") {
+                await refreshSession();
+                return await authenticatedFetch(url, options);
+            }
+            else
+                throw new Error("Bad response from server");
+        }
         return response;
     } catch (err) {
         console.log('ERROR: ', err);
