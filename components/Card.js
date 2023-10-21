@@ -6,12 +6,14 @@ import { COLORS } from "../constants";
 import { Avatar } from "@rneui/themed";
 import { getDateComponents } from "../utils/datetime";
 import { AirbnbRating, Button } from "@rneui/base";
+import { rateUser } from "../services/eventService";
 
 
 const Card = ({ props }) => {
     const navigation = useNavigation();
     const [modalVisible, setModalVisible] = React.useState(false);
     const [userRate, setUserRate] = React.useState(3);
+    console.log("PROPS DE CARD", props);
 
     const handlePress = () => {
         navigation.navigate("Evento", { props: props });
@@ -19,7 +21,7 @@ const Card = ({ props }) => {
 
     const postUserRating = async () => {
         try {
-            await rateUser(props.event_id, currUser.id, userRate, props.user_id)
+            await rateUser(props.event_id, userRate, props.user_id)
             setModalVisible(false)
         } catch (error) {
             console.log(error)

@@ -9,7 +9,6 @@ import { Avatar, Divider } from "@rneui/themed";
 import { COLORS } from "../constants";
 import { MONTHS } from "../constants/data";
 import { getDateComponents } from "../utils/datetime";
-import ParticipantCard from "../components/ParticipantCard";
 
 
 const Event = ({ route }) => {
@@ -34,7 +33,7 @@ const Event = ({ route }) => {
     useEffect(() => {
         eventParticipants.forEach((participant) => {
             if (participant.user_id == user.user_id) {
-                if (participant.participan_status === "true") {
+                if (participant.participant_status === "true") {
                     setUserStatus(USER_STATUS.ENROLLED);
                 }
                 else {
@@ -57,7 +56,7 @@ const Event = ({ route }) => {
 
     const joinEvent = async () => {
         try {
-            await joinNewEvent(props.event_id, user?.uid)
+            await joinNewEvent(props.event_id, user?.user_id)
             setUserStatus(USER_STATUS.REQUESTING);
         }
         catch (error) {
