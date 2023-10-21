@@ -15,7 +15,6 @@ import ParticipantCard from "../components/ParticipantCard";
 const Event = ({ route }) => {
     const { props } = route.params;
     const [eventParticipants, setEventParticipants] = useState([]);
-    const [currUserIsParticipant, setCurrUserIsParticipant] = useState(false);
     const [userStatus, setUserStatus] = useState(USER_STATUS.UNENROLLED);
     const [user, setUser] = useState(null);
 
@@ -34,7 +33,7 @@ const Event = ({ route }) => {
 
     useEffect(() => {
         eventParticipants.forEach((participant) => {
-            if (participant.user_id == user.uid) {
+            if (participant.user_id == user.user_id) {
                 if (participant.participan_status === "true") {
                     setUserStatus(USER_STATUS.ENROLLED);
                 }
@@ -49,7 +48,6 @@ const Event = ({ route }) => {
         try {
             const res = await removeParticipant(props.event_id)
             setUserStatus(USER_STATUS.UNENROLLED);
-            setCurrUserIsParticipant(false);
         }
         catch (error) {
             console.log('Error quitting event. ', error);
