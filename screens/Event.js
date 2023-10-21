@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native"
 import { Ionicons } from '@expo/vector-icons';
 import CustomButton from "../components/CustomButton";
-import { EXPERTISE, SPORT } from "../constants/data";
+import { EVENT_STATUS, EXPERTISE, SPORT } from "../constants/data";
 import { fetchEventById, fetchParticipants, joinNewEvent, removeParticipant } from "../services/eventService";
 import { getCurrentUserData } from "../services/authService";
 import { Avatar, Divider } from "@rneui/themed";
@@ -25,7 +25,7 @@ const Event = ({ route }) => {
             console.log("EVENT DATA:", data);
         });
         fetchParticipants(props.event_id).then((data) => {
-                setEventParticipants(data);
+            setEventParticipants(data);
         })
         getCurrentUserData().then((data) => {
             setUser(data);
@@ -52,7 +52,7 @@ const Event = ({ route }) => {
             setCurrUserIsParticipant(false);
         }
         catch (error) {
-            console.log('Error quitting event. ',error);
+            console.log('Error quitting event. ', error);
         }
     }
 
@@ -74,15 +74,15 @@ const Event = ({ route }) => {
     return (
         <View style={styles.eventContainer}>
             <View style={styles.eventHeader}>
-                <Avatar rounded size={120} source={require("../assets/default-profile.png")} containerStyle={{ backgroundColor: COLORS.secondary }} />
+                <Avatar rounded size={100} source={require("../assets/default-profile.png")} containerStyle={{ backgroundColor: COLORS.secondary }} />
                 <View style={styles.headerData}>
                     <Text style={styles.bigText}>{props.owner_firstname}</Text>
-                    <View style={{flexDirection: 'row', alignSelf: 'center'}}>
+                    <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
                         <Ionicons name="star" size={18} color={COLORS.secondary} />
-                        <Text> {props.rating/(props.rate_count !== 0 ? props.rate_count : 1)} / 5 </Text>
-                        <Text> | {props.rate_count} {props.rate_count !== 1 ? 'partidos':'partido'}</Text>
+                        <Text> {props.rating / (props.rate_count !== 0 ? props.rate_count : 1)} / 5 </Text>
+                        <Text> | {props.rate_count} {props.rate_count !== 1 ? 'partidos' : 'partido'}</Text>
                     </View>
-                    <Text style={{ ...styles.mediumText, alignSelf: 'center'}}> {SPORT[props.sport_id - 1]}</Text>
+                    <Text style={{ ...styles.mediumText, alignSelf: 'center' }}> {SPORT[props.sport_id - 1]}</Text>
                 </View>
             </View>
             <Divider width={4} style={{ width: '90%', marginBottom: 8 }} />
@@ -91,17 +91,26 @@ const Event = ({ route }) => {
                     <Text style={styles.bodyBigText}>Fecha:</Text>
                     <Text style={styles.bodyMidText}>{`${day} de ${MONTHS[month]} ${hours}:${minutes} hs`}</Text>
                 </View>
-                <Divider width={1}/>
+                <Divider width={1} />
                 <View style={styles.bodySection}>
                     <Text style={styles.bodyBigText}>Nivel:</Text>
                     <Text style={styles.bodyMidText}>{EXPERTISE[props.expertise - 1]}</Text>
                 </View>
-                <Divider width={1}/>
+                <Divider width={1} />
                 <View style={styles.bodySection}>
                     <Text style={styles.bodyBigText}>Ubicacion:</Text>
                     <Text style={styles.bodyMidText}>{props.location}</Text>
                 </View>
-                <Divider width={1}/>
+                <Divider width={1} />
+                <View style={{ ...styles.bodySection }}>
+                    <Text style={styles.bodyBigText}>Descripcion:</Text>
+                    <View style={{width: 150}}>
+                        <ScrollView>
+                            <Text style={styles.bodyMidText}>{props.description}assssssssssssssssssssssssssssssssssss</Text>
+                        </ScrollView>
+                    </View>
+                </View>
+                <Divider width={1} />
                 {/* <View style={{flexDirection: 'column'}}>
                     <Text style={styles.bodyBigText}>Participantes: </Text>
                     <ScrollView style={styles.participantsContainer}>
@@ -111,22 +120,23 @@ const Event = ({ route }) => {
                     </ScrollView>
                 </View> */}
 
-            {currUserIsParticipant &&
-                <Text style={{ fontSize: 20, fontWeight: 700, alignSelf: 'center' }}>
-                    {props.event_status === 2 ? 'El partido ya finalizo!' : 'Ya estas anotado al partido!'}
-                </Text>
-            }
-
-            <View style={{
-                alignSelf: 'center'
-            }}>
-                {currUserIsParticipant ?
-                    props.event_status !== 2 && <CustomButton title={"Desanotarme"} color={"red"} onPress={quitEvent} />
-                    :
-                    <CustomButton title={"Anotarme"} color="green" onPress={joinEvent} />
+                {currUserIsParticipant &&
+                    <Text style={{ fontSize: 20, fontWeight: 700, alignSelf: 'center' }}>
+                        {props.event_status === EVENT_STATUS.FINALIZED ? 'El partido ya finalizo!' : 'Ya estas anotado al partido!'}
+                    </Text>
                 }
+
             </View>
-            </View>
+                <View style={{
+                    alignSelf: 'center',
+
+                }}>
+                    {currUserIsParticipant ?
+                        props.event_status !== EVENT_STATUS.FINALIZED && <CustomButton title={"Desanotarme"} color={"red"} onPress={quitEvent} />
+                        :
+                        <CustomButton title={"Anotarme"} color="green" onPress={joinEvent} />
+                    }
+                </View>
         </View>
     )
 }
@@ -138,7 +148,8 @@ const styles = StyleSheet.create({
     bodySection: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        maxHeight: 130
     },
     eventContainer: {
         flexDirection: 'column',
@@ -146,7 +157,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     eventHeader: {
-        height: 200,
+        height: 150,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
@@ -162,7 +173,7 @@ const styles = StyleSheet.create({
     },
 
     bigText: {
-        fontSize: 50,
+        fontSize: 36,
         fontWeight: 'bold',
         alignSelf: 'center'
     },
@@ -180,12 +191,12 @@ const styles = StyleSheet.create({
 
     bodyMidText: {
         fontSize: 18,
-        paddingTop: 4
+        paddingTop: 4,
     },
 
     eventBody: {
         flexDirection: 'column',
-        height: '65%',
+        height: '55%',
         width: '100%',
         justifyContent: 'space-evenly',
         paddingHorizontal: 20,

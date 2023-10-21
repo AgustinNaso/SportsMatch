@@ -1,5 +1,5 @@
 import React from "react"
-import { View, Text, StyleSheet, Touchable, TouchableOpacity, Modal } from "react-native";
+import { View, Text, StyleSheet, Touchable, TouchableOpacity, Modal, Pressable } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { EXPERTISE, SPORT, MONTHS } from "../constants/data";
 import { COLORS } from "../constants";
@@ -38,7 +38,7 @@ const Card = ({ props }) => {
                 onRequestClose={() => {
                     setModalVisible(!modalVisible);
                 }}>
-                <View style={styles.centeredView}>
+                <Pressable style={styles.centeredView} onPress={e => e.target == e.currentTarget && setModalVisible(false)}>
                     <View style={styles.modalView}>
                         <Text style={styles.modalText}>¿Cómo fue jugar con este participante?</Text>
                         <View style={{ marginBottom: 20 }}>
@@ -46,7 +46,7 @@ const Card = ({ props }) => {
                         </View>
                         <Button color={COLORS.primary} mode="contained" title="Enviar puntuación" onPress={postUserRating} />
                     </View>
-                </View>
+                </Pressable>
             </Modal>
             <View style={styles.section}>
                 <View style={{ ...styles.verticalSection, marginLeft: 8 }}>

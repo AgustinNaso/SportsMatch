@@ -27,7 +27,7 @@ const MyEventList = ({ data }) => {
 
     return (
         <View style={{marginTop: 8}}>
-            <View style={{ flexDirection: 'column', justifyContent: 'center', paddingHorizontal: 10, marginVertical: 4}}>
+            <View style={{ flexDirection: 'column', justifyContent: 'center', paddingHorizontal: 10, marginVertical: 8, gap: 8}}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <Text style={{ fontSize: 22, fontWeight: 600, marginLeft: 10 }}>{SPORT[data.item.sport_id - 1]} en {data.item.location}</Text>
                     <EventStatus status={data.item.event_status} />
@@ -41,7 +41,7 @@ const MyEventList = ({ data }) => {
             <FlatList
                 data={participantList} renderItem={(listData) => renderItem(listData.item, data.item.event_id, handleRemoveParticipant)}
                 style={{ flex: 1 }} keyExtractor={(item, index) => { return `${item.userid} + ${index} + ${item.event_id}}` }}
-                ListEmptyComponent={<Text style={{ fontSize: 20, alignSelf: 'center' }}>Aún no hay participantes</Text>}
+                ListEmptyComponent={<Text style={{ fontSize: 20, alignSelf: 'center', marginVertical: 8 }}>Aún no hay participantes</Text>}
             >
             </FlatList>
             {/* <Divider width={3} style={{ width: '90%', marginTop: 10, alignSelf: 'center' }} /> */}
