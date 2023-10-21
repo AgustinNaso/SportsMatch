@@ -32,7 +32,6 @@ const FirstRoute = (myEvents) => (
 );
 
 const SecondRoute = (joinedEvents) => (
-    console.log("JOINED"),
     <SafeAreaView style={{ flex: 1 }}>
         <FlatList
             data={joinedEvents} renderItem={renderJoinedItem}
