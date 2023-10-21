@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native"
 import { Ionicons } from '@expo/vector-icons';
 import CustomButton from "../components/CustomButton";
-import { EVENT_STATUS, EXPERTISE, SPORT } from "../constants/data";
+import { EVENT_STATUS, EXPERTISE, SPORT, USER_STATUS } from "../constants/data";
 import { fetchEventById, fetchParticipants, joinNewEvent, removeParticipant } from "../services/eventService";
 import { getCurrentUserData } from "../services/authService";
 import { Avatar, Divider } from "@rneui/themed";
@@ -16,8 +16,7 @@ const Event = ({ route }) => {
     const { props } = route.params;
     const [eventParticipants, setEventParticipants] = useState([]);
     const [currUserIsParticipant, setCurrUserIsParticipant] = useState(false);
-    const [currUserIsAccepted, setCurrUserIsAccepted] = useState(false);
-    const [userStatus, setUserStatus] = useState(0); //0: no anotado, 1: anotado, 2: aceptado
+    const [userStatus, setUserStatus] = useState(USER_STATUS.UNENROLLED);
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -36,19 +35,20 @@ const Event = ({ route }) => {
 
     useEffect(() => {
         eventParticipants.forEach((participant) => {
-            console.log("PPP : " + participant.user_id)
-            if (participant.user_id == participant.user_id) { //1 cambiar por user.uid
-                setCurrUserIsParticipant(true);
-                setCurrUserIsAccepted(participant.participant_status == "true")
+            console.log("PArticipant: ", participant);
+            if (participant.user_id == user.uid) {
+                if(participant.status === "true")
+                    setUserStatus(USER_STATUS.ENROLLED);
+                else
+                    setUserStatus(USER_STATUS.REQUESTING);
             }
         })
-    }, [eventParticipants])
+    }, [eventParticipants, user])
 
     const quitEvent = async () => {
         try {
             const res = await removeParticipant(props.event_id)
-            console.log("RES", res);
-            setUserStatus(0);
+            setUserStatus(USER_STATUS.UNENROLLED);
             setCurrUserIsParticipant(false);
         }
         catch (error) {
@@ -60,11 +60,35 @@ const Event = ({ route }) => {
     const joinEvent = async () => {
         try {
             await joinNewEvent(props.event_id, user?.uid)
-            setUserStatus(1);
-            setCurrUserIsParticipant(true);
+            setUserStatus(USER_STATUS.REQUESTING);
         }
         catch (error) {
             console.log(error)
+        }
+    }
+
+    const renderParticipantStatusMessage = () => {
+        if(props.event_status === EVENT_STATUS.FINALIZED)
+            return <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 700, alignSelf: 'center' }}>Evento finalizado!</Text>
+        switch(userStatus) {
+            case USER_STATUS.UNENROLLED:
+                return null;
+            case USER_STATUS.REQUESTING:
+                return <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 700, alignSelf: 'center' }}>Esperando confirmación del creador del evento</Text>
+            case USER_STATUS.ENROLLED:
+                return <Text style={{ fontSize: 20, fontWeight: 700, alignSelf: 'center' }}>Ya estás anotado al evento!</Text>
+        }
+    }
+
+    const renderEventButton = () => {
+        if(props.event_status === EVENT_STATUS.FINALIZED)
+            return null
+        switch(userStatus) {
+            case USER_STATUS.UNENROLLED:
+                return <CustomButton title={"Anotarme"} color="green" onPress={joinEvent} />
+            case USER_STATUS.REQUESTING:
+            case USER_STATUS.ENROLLED:
+                return <CustomButton title={"Desanotarme"} color={"red"} onPress={quitEvent} />
         }
     }
 
@@ -106,36 +130,16 @@ const Event = ({ route }) => {
                     <Text style={styles.bodyBigText}>Descripcion:</Text>
                     <View style={{width: 150}}>
                         <ScrollView>
-                            <Text style={styles.bodyMidText}>{props.description}assssssssssssssssssssssssssssssssssss</Text>
+                            <Text style={styles.bodyMidText}>{props.description}</Text>
                         </ScrollView>
                     </View>
                 </View>
                 <Divider width={1} />
-                {/* <View style={{flexDirection: 'column'}}>
-                    <Text style={styles.bodyBigText}>Participantes: </Text>
-                    <ScrollView style={styles.participantsContainer}>
-                        <ParticipantCard userData={{firstname: 'Juan',lastname: 'Perez', rating: 4.5, partidos: 21}} />
-                        <ParticipantCard userData={{firstname: 'Pedro',lastname: 'Perez', rating: 4.5, partidos: 21}} />
-                        <ParticipantCard userData={{firstname: 'Peter',lastname: 'Perez', rating: 4.5, partidos: 21}} />
-                    </ScrollView>
-                </View> */}
-
-                {currUserIsParticipant &&
-                    <Text style={{ fontSize: 20, fontWeight: 700, alignSelf: 'center' }}>
-                        {props.event_status === EVENT_STATUS.FINALIZED ? 'El partido ya finalizo!' : 'Ya estas anotado al partido!'}
-                    </Text>
-                }
+                {renderParticipantStatusMessage()}
 
             </View>
-                <View style={{
-                    alignSelf: 'center',
-
-                }}>
-                    {currUserIsParticipant ?
-                        props.event_status !== EVENT_STATUS.FINALIZED && <CustomButton title={"Desanotarme"} color={"red"} onPress={quitEvent} />
-                        :
-                        <CustomButton title={"Anotarme"} color="green" onPress={joinEvent} />
-                    }
+                <View style={{alignSelf: 'center'}}>
+                    {renderEventButton()}
                 </View>
         </View>
     )
