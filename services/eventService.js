@@ -5,7 +5,7 @@ import { refreshSession } from "./authService";
 
 export const API_URL = 'http://sportsmatch-lb-700737557.us-east-1.elb.amazonaws.com'
 
-const authenticatedFetch = async (url, options = {}) => {
+export const authenticatedFetch = async (url, options = {}) => {
     try {
         const token = await SecureStore.getItemAsync('userToken');
         const headers = {
