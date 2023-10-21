@@ -123,7 +123,6 @@ const NewEvent = () => {
                     <Controller control={control} rules={{ required: false }} render={({ field }) => {
                         if (field.value === undefined)
                             field.value = new Date();
-                        console.log("FIELD VALUE: " + field.value)
                         return (Platform.OS !== 'ios' ? (
                             <TouchableOpacity onPress={() => showTimepicker(field)} style={styles.dateTimeContainer}>
                                 <Text>{formatTime(field.value)}</Text>

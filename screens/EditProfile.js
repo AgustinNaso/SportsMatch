@@ -58,9 +58,6 @@ const EditProfile = () => {
       const currentUser = await getCurrentUserData();
       [];
       const user = await fetchUser(currentUser.email);
-      console.log(
-        "USER: " + JSON.stringify({ ...user, birthdate: currentUser.birthdate })
-      );
       setCurrUser({ ...user, birthdate: currentUser.birthdate });
       user.sports.every((sport) => sport !== null) &&
         setSelectedSports(user.sports);

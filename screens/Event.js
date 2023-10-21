@@ -34,9 +34,8 @@ const Event = ({ route }) => {
 
     useEffect(() => {
         eventParticipants.forEach((participant) => {
-            console.log("PArticipant: ", participant);
-                        if (participant.user_id == user.uid) {
-                if(participant.participan_status === "true"){
+            if (participant.user_id == user.uid) {
+                if (participant.participan_status === "true") {
                     setUserStatus(USER_STATUS.ENROLLED);
                 }
                 else {
@@ -60,7 +59,7 @@ const Event = ({ route }) => {
 
     const joinEvent = async () => {
         try {
-                        await joinNewEvent(props.event_id, user?.uid)
+            await joinNewEvent(props.event_id, user?.uid)
             setUserStatus(USER_STATUS.REQUESTING);
         }
         catch (error) {
@@ -69,9 +68,9 @@ const Event = ({ route }) => {
     }
 
     const renderParticipantStatusMessage = () => {
-        if(props.event_status === EVENT_STATUS.FINALIZED)
+        if (props.event_status === EVENT_STATUS.FINALIZED)
             return <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 700, alignSelf: 'center' }}>Evento finalizado!</Text>
-        switch(userStatus) {
+        switch (userStatus) {
             case USER_STATUS.UNENROLLED:
                 return null;
             case USER_STATUS.REQUESTING:
@@ -82,9 +81,9 @@ const Event = ({ route }) => {
     }
 
     const renderEventButton = () => {
-        if(props.event_status === EVENT_STATUS.FINALIZED)
+        if (props.event_status === EVENT_STATUS.FINALIZED)
             return null
-        switch(userStatus) {
+        switch (userStatus) {
             case USER_STATUS.UNENROLLED:
                 return <CustomButton title={"Anotarme"} color="green" onPress={joinEvent} />
             case USER_STATUS.REQUESTING:
@@ -129,7 +128,7 @@ const Event = ({ route }) => {
                 <Divider width={1} />
                 <View style={{ ...styles.bodySection }}>
                     <Text style={styles.bodyBigText}>Descripcion:</Text>
-                    <View style={{width: 150}}>
+                    <View style={{ width: 150 }}>
                         <ScrollView>
                             <Text style={styles.bodyMidText}>{props.description}</Text>
                         </ScrollView>
@@ -139,9 +138,9 @@ const Event = ({ route }) => {
                 {renderParticipantStatusMessage()}
 
             </View>
-                <View style={{alignSelf: 'center'}}>
-                    {renderEventButton()}
-                </View>
+            <View style={{ alignSelf: 'center' }}>
+                {renderEventButton()}
+            </View>
         </View>
     )
 }

@@ -38,7 +38,6 @@ export const fetchUser = async (email) => {
 export const fetchParticipants = async (eventId) => {
     const response = await fetch(API_URL + '/events/' + eventId + '/owner/participants');
     const json = await response.json();
-    console.log("participants: ", json);
     return json;
 }
 
@@ -100,7 +99,6 @@ export const fetchNearEvents = async (filters = undefined) => {
 }
 
 export const publishEvent = async (eventData) => {
-    console.log("PUBLISH: ", eventData);
     await authenticatedFetch('/events', {
         method: 'POST',
         body: JSON.stringify(eventData),

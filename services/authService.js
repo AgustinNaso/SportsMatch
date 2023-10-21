@@ -65,7 +65,6 @@ export const login = async data => {
             onSuccess: async (data) => {
                 console.log("On Success: ", data);
                 const userData = await fetchUser(data.getIdToken().decodePayload().email);
-                console.log("USERDATA", userData.user_id);
                 save('userToken', data.getIdToken().getJwtToken());
                 save('refreshToken', data.getRefreshToken().getToken());
                 save('userPayload', JSON.stringify({
