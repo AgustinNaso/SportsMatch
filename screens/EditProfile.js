@@ -56,7 +56,6 @@ const EditProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const currentUser = await getCurrentUserData();
-      [];
       const user = await fetchUser(currentUser.email);
       setCurrUser({ ...user, birthdate: currentUser.birthdate });
       user.sports.every((sport) => sport !== null) &&
@@ -93,7 +92,7 @@ const EditProfile = () => {
     };
 
     try {
-      updateUser(currUser.user_id, formData);
+      await updateUser(currUser.user_id, formData);
       navigator.navigate("MyProfile");
     } catch (err) {
       console.log(err);
@@ -296,7 +295,7 @@ const EditProfile = () => {
               <Text style={styles.inputText}>My Locations</Text>
               <Controller
                 control={control}
-                render={({ field: { onChange, value } }) => (
+                render={({ field: { onChange } }) => (
                   <ScrollView
                     horizontal={true}
                     scrollEnabled={false}
