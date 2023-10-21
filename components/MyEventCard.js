@@ -1,15 +1,14 @@
 import React, { useEffect } from "react"
 import { Linking, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { Ionicons } from '@expo/vector-icons';
-import { acceptParticipant, fetchUser, rateUser } from "../services/eventService";
+import { acceptParticipant, fetchUser, rateUser, removeParticipantAsOwner } from "../services/eventService";
 import { AirbnbRating, Avatar, Button, color } from "@rneui/base";
 import { COLORS } from "../constants";
 
-const MyEventCard = ( {props, onDelete}) => {
+const MyEventCard = ({ props, eventId, handleRemoveParticipant }) => {
 
     const currUser = { id: 1 };
-
-    console.log("UserdAta:", props);
+    console.log("Props: ", props);
     const [userAccepted, setUserAccepted] = React.useState(props.participant_status);
     const [modalVisible, setModalVisible] = React.useState(false);
     const [userRate, setUserRate] = React.useState(3);
@@ -24,7 +23,6 @@ const MyEventCard = ( {props, onDelete}) => {
         }
     }
 
-
     const acceptUser = async () => {
         try {
             await acceptParticipant(props.event_id, props.user_id)
@@ -35,7 +33,6 @@ const MyEventCard = ( {props, onDelete}) => {
     }
 
     const sendMessage = () => {
-        console.log(JSON.stringify(props))
         Linking.openURL(`whatsapp://send?phone=${+props.phone_number}&text=Hola ${props.firstname}. Nos vemos en el partido!`);
     }
 
@@ -64,7 +61,7 @@ const MyEventCard = ( {props, onDelete}) => {
                 <Avatar rounded size={62} source={require("../assets/default-profile.png")} containerStyle={{ backgroundColor: COLORS.secondary }} />
                 <View style={styles.textContainer}>
                     <Text style={styles.userText}>{props.firstname}</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginLeft: -6}}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginLeft: -6 }}>
                         <Ionicons name="star" size={16} color={COLORS.secondary} />
                         <Text style={styles.profileTextAge}> {props.rating} / 5</Text>
                     </View>
@@ -73,7 +70,7 @@ const MyEventCard = ( {props, onDelete}) => {
             {!userAccepted ?
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity>
-                        <Ionicons name="close" size={40} color="red"  onPress={() => onDelete(props.event_id, props.user_id)}/>
+                        <Ionicons name="close" size={40} color="red" onPress={() => handleRemoveParticipant(eventId, props.email)} />
                     </TouchableOpacity>
                     <TouchableOpacity>
                         <Ionicons name="checkmark" size={40} color="green" onPress={acceptUser} />
