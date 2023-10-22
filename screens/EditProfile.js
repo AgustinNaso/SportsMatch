@@ -18,12 +18,16 @@ import { SPORT } from "../constants/data";
 import { fetchUser } from "../services/eventService";
 import { getCurrentUserData } from "../services/authService";
 import MultiSelect from "react-native-multiple-select";
-import { updateUser, updateUserImage, fetchUserImage } from "../services/userService";
+import {
+  updateUser,
+  updateUserImage,
+  fetchUserImage,
+} from "../services/userService";
 import * as ImagePicker from "expo-image-picker";
 import DefaultProfile from "../assets/default-profile.png";
 import { Avatar } from "@rneui/themed";
 import { Ionicons } from "@expo/vector-icons";
-import { useActionSheet } from '@expo/react-native-action-sheet';
+import { useActionSheet } from "@expo/react-native-action-sheet";
 
 const sports = [
   { key: 1, sportId: 1, sport: SPORT[0] },
@@ -41,7 +45,6 @@ const EditProfile = () => {
     formState: { errors },
     watch,
   } = useForm();
-  const phone = "30220578";
   const [selectedSports, setSelectedSports] = useState([]);
   const [currUser, setCurrUser] = useState();
   const [loading, setLoading] = useState(true);
@@ -74,7 +77,11 @@ const EditProfile = () => {
     const fetchUserData = async () => {
       const currentUser = await getCurrentUserData();
       const user = await fetchUser(currentUser.email);
-      setCurrUser({ ...user, birthdate: currentUser.birthdate });
+      setCurrUser({
+        ...user,
+        birthdate: currentUser.birthdate,
+        phone_number: currentUser.phone,
+      });
       user.sports.every((sport) => sport !== null) &&
         setSelectedSports(user.sports);
       user.locations.every((location) => location !== null) &&
@@ -113,7 +120,10 @@ const EditProfile = () => {
     if (userUpdatedRes.status !== 200) {
       setError(userUpdatedRes.message);
     } else if (imageChanged) {
-      const imgUpdatedRes = await updateUserImage(currUser.user_id, selectedImage);
+      const imgUpdatedRes = await updateUserImage(
+        currUser.user_id,
+        selectedImage
+      );
       if (imgUpdatedRes.status == 200) navigator.navigate("MyProfile");
       setError(imgUpdatedRes.message);
     } else {
@@ -122,28 +132,32 @@ const EditProfile = () => {
   };
 
   const editProfileImage = () => {
-    const options = ['Choose from Library', 'Take Photo', 'Cancel'];
+    const options = ["Choose from Library", "Take Photo", "Cancel"];
     const libraryIndex = 0;
     const cameraIndex = 1;
     const cancelButtonIndex = 2;
     const title = "Select Photo";
 
-    showActionSheetWithOptions({
-      options,
-      title,
-      libraryIndex,
-      cameraIndex,
-      cancelButtonIndex
-    }, (selectedIndex) => {
-      switch (selectedIndex) {
-        case libraryIndex:
-          handleLibraryLaunch();
-          break;
-        case cameraIndex:
-          handleCameraLaunch();
-          break;
-      }});
-  }
+    showActionSheetWithOptions(
+      {
+        options,
+        title,
+        libraryIndex,
+        cameraIndex,
+        cancelButtonIndex,
+      },
+      (selectedIndex) => {
+        switch (selectedIndex) {
+          case libraryIndex:
+            handleLibraryLaunch();
+            break;
+          case cameraIndex:
+            handleCameraLaunch();
+            break;
+        }
+      }
+    );
+  };
 
   const handleCameraLaunch = async () => {
     const result = await ImagePicker.launchCameraAsync({
@@ -156,7 +170,7 @@ const EditProfile = () => {
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
-      setSelectedImage(result.assets[0].base64)
+      setSelectedImage(result.assets[0].base64);
       setImageChanged(true);
     }
   };
@@ -172,7 +186,7 @@ const EditProfile = () => {
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
-      setSelectedImage(result.assets[0].base64)
+      setSelectedImage(result.assets[0].base64);
       setImageChanged(true);
     }
   };
@@ -194,7 +208,12 @@ const EditProfile = () => {
                 <Ionicons
                   name="ios-camera"
                   size={25}
-                  style={{ position: "absolute", color: COLORS.primary, bottom: 0, right: 0 }}
+                  style={{
+                    position: "absolute",
+                    color: COLORS.primary,
+                    bottom: 0,
+                    right: 0,
+                  }}
                 />
               </TouchableOpacity>
             </Avatar>
@@ -208,6 +227,7 @@ const EditProfile = () => {
                 defaultValue={currUser.firstname}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
+                    editable={false}
                     style={styles.input}
                     onBlur={onBlur}
                     onChangeText={onChange}
@@ -230,6 +250,7 @@ const EditProfile = () => {
                 defaultValue={currUser.lastname}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
+                    editable={false}
                     style={styles.input}
                     onBlur={onBlur}
                     onChangeText={onChange}
@@ -271,6 +292,25 @@ const EditProfile = () => {
             )}
             <View style={styles.inputContainer}>
               <Text style={styles.inputText}>Phone Number</Text>
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                defaultValue={currUser.phone_number}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    editable={false}
+                    style={styles.input}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+                name="phone"
+              />
+            </View>
+            {/* </View>
               <View style={styles.phoneContainer}>
                 <Text style={styles.phoneContainer.code}>11</Text>
                 <Controller
@@ -292,7 +332,7 @@ const EditProfile = () => {
                   name="phone"
                 />
               </View>
-            </View>
+            </View> */}
             {errors.phone && (
               <Text style={styles.error}>Phone number must have 8 digits</Text>
             )}
@@ -361,7 +401,9 @@ const EditProfile = () => {
                 defaultValue={[]}
               />
             </View>
-            {error && <Text style={{ color: "red", paddingTop: 15 }}>{error}</Text>}
+            {error && (
+              <Text style={{ color: "red", paddingTop: 15 }}>{error}</Text>
+            )}
             <TouchableOpacity
               style={styles.saveBtn}
               onPress={handleSubmit(submit)}

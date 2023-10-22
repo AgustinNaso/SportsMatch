@@ -34,6 +34,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (currUser) {
+      console.log(currUser)
       try {
         fetchImage();
       } catch (err) {
@@ -45,7 +46,7 @@ const Profile = () => {
   const fetchUserData = async () => {
     const currentUser = await getCurrentUserData();
     const user = await fetchUser(currentUser.email);
-    setCurrUser({ ...user, birthdate: currentUser.birthdate });
+    setCurrUser({ ...user, birthdate: currentUser.birthdate, phone_number: currentUser.phone });
   };
 
   const fetchImage = async () => {
@@ -122,7 +123,7 @@ const Profile = () => {
               <View style={styles.userDataContainer}>
                 <Ionicons name="call" size={24} color={COLORS.primary} />
                 <View style={styles.userDataDisplay}>
-                  <Text style={styles.itemText}>{currUser?.phone_number}</Text>
+                  <Text style={styles.itemText}>{currUser.phone_number}</Text>
                 </View>
               </View>
               <View style={styles.userDataContainer}>
