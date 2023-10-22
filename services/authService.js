@@ -109,7 +109,7 @@ export const register = async data => {
             }),
             new CognitoUserAttribute({
                 Name: 'phone_number',
-                Value: '+5411' + data.phone
+                Value: data.phone
             }),
         ];
         UserPool.signUp(data.email, data.password, attributeList, null, (err, result) => {

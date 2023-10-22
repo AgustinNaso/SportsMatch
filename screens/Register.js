@@ -7,28 +7,29 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
 } from "react-native";
 import { COLORS, FONTS } from "../constants";
 import { TextInput } from "react-native-gesture-handler";
-import {
-  getEmailValidator, validateEmail,
-} from "../utils/validations";
+import { getEmailValidator, validateEmail } from "../utils/validations";
 import { AuthContext } from "../contexts/authContext";
-
+import PhoneInput from "react-native-phone-number-input";
 
 const Register = ({ navigation }) => {
-  const { control, handleSubmit, formState: { errors }, watch } = useForm();
-  const authContext = useContext(AuthContext)
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm();
+  const authContext = useContext(AuthContext);
 
-
-  const submit = async data => {
+  const submit = async (data) => {
     try {
       await authContext.signUp(data);
       navigation.navigate("ConfirmSignUp", { email: data.email });
-    } 
-    catch (err) {
-      console.error('Error signing up', err);
+    } catch (err) {
+      console.error("Error signing up", err);
     }
   };
   return (
@@ -38,8 +39,9 @@ const Register = ({ navigation }) => {
       }}
     >
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}>
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text
             style={{
@@ -56,7 +58,7 @@ const Register = ({ navigation }) => {
             <Controller
               control={control}
               rules={{
-                required: true
+                required: true,
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
@@ -64,7 +66,8 @@ const Register = ({ navigation }) => {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                />)}
+                />
+              )}
               name="name"
             />
           </View>
@@ -76,7 +79,7 @@ const Register = ({ navigation }) => {
             <Controller
               control={control}
               rules={{
-                required: true
+                required: true,
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
@@ -84,7 +87,8 @@ const Register = ({ navigation }) => {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                />)}
+                />
+              )}
               name="lastName"
             />
           </View>
@@ -98,9 +102,9 @@ const Register = ({ navigation }) => {
               rules={{
                 required: true,
                 pattern: {
-                  matchPattern: mail => validateEmail(mail),
-                  message: 'Invalid email address'
-                }
+                  matchPattern: (mail) => validateEmail(mail),
+                  message: "Invalid email address",
+                },
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
@@ -108,7 +112,8 @@ const Register = ({ navigation }) => {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                />)}
+                />
+              )}
               name="email"
             />
           </View>
@@ -118,20 +123,23 @@ const Register = ({ navigation }) => {
           <View style={styles.inputContainer}>
             <Text style={styles.inputText}>Phone Number</Text>
             <View style={styles.phoneContainer}>
-              <Text style={styles.phoneContainer.code}>11</Text>
               <Controller
                 control={control}
                 rules={{
                   required: true,
-                  length: 8,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={[styles.input, styles.phoneContainer.input]}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    keyboardType="numeric"
+                  <PhoneInput
+                    defaultValue={""}
+                    defaultCode="AR"
+                    layout="first"
+                    autoFocus
+                    containerStyle={styles.phoneContainer}
+                    textContainerStyle={styles.phoneContainer.input}
+                    flagButtonStyle={styles.phoneContainer.flag}
+                    onChangeFormattedText={(text) => {
+                      onChange(text);
+                    }}
                   />
                 )}
                 name="phone"
@@ -139,7 +147,7 @@ const Register = ({ navigation }) => {
             </View>
           </View>
           {errors.phone && (
-            <Text style={styles.error}>Phone number must have 8 digits</Text>
+            <Text style={styles.error}>Please enter a valid phone number</Text>
           )}
           <View style={styles.inputContainer}>
             <Text style={styles.inputText}>Password</Text>
@@ -171,7 +179,7 @@ const Register = ({ navigation }) => {
               rules={{
                 required: true,
                 length: 8,
-                validate: (value) => value === watch('password')
+                validate: (value) => value === watch("password"),
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
@@ -188,7 +196,10 @@ const Register = ({ navigation }) => {
           {errors.confPassword && (
             <Text style={styles.error}>Passwords do not match</Text>
           )}
-          <TouchableOpacity style={styles.loginBtn} onPress={handleSubmit(submit)}>
+          <TouchableOpacity
+            style={styles.loginBtn}
+            onPress={handleSubmit(submit)}
+          >
             <Text style={{ ...FONTS.h3, color: COLORS.white }}>Register</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -202,7 +213,6 @@ const Register = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
 
 const styles = StyleSheet.create({
   scrollContainer: {
@@ -234,14 +244,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    width: "100%",
+    borderRadius: 20,
+    
 
-    code: {
-      color: COLORS.primary,
-      fontSize: 18,
-      marginLeft: 10,
+    flag: {
+      width: 55,
     },
     input: {
-      width: "85%",
+      borderRadius: 20,
+      width: "90%",
     },
   },
   loginBtn: {
