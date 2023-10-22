@@ -21,7 +21,7 @@ const Card = ({ props }) => {
 
     const postUserRating = async () => {
         try {
-            await rateUser(props.event_id, userRate, props.user_id)
+            await rateUser(props.event_id, userRate, props.owner_id)
             setModalVisible(false)
         } catch (error) {
             console.log(error)
@@ -65,7 +65,7 @@ const Card = ({ props }) => {
                 </View>
             </View>
             <View style={[styles.section, { backgroundColor: COLORS.primary, margin: -10, paddingHorizontal: 10, paddingVertical: 4 }]}>
-                <Text style={[styles.cardSmText, { color: COLORS.white }]}>{day} de {MONTHS[month]} {hours}:{minutes} hs</Text>
+                <Text style={[styles.cardSmText, { color: COLORS.white }]}>{day} de {MONTHS[month - 1]} {hours}:{minutes} hs</Text>
                 <Text style={[styles.cardSmText, { color: COLORS.white }]}>{props.location}</Text>
             </View>
         </TouchableOpacity>

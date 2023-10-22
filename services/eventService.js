@@ -90,7 +90,7 @@ export const fetchNearEvents = async (filters = undefined) => {
         const userData = await fetchUser(JSON.parse(data).email);
         const response = await fetchEvents(userData.user_id, filters);
         let jsonRes = await response.json();
-        jsonRes.items = jsonRes.items?.filter(event => event.remaining > 0);
+        jsonRes.items = jsonRes.items?.filter(event => event.remaining > 0 && event.event_status !== EVENT_STATUS.FINALIZED);
         return jsonRes
     }
     catch (err) {
@@ -119,6 +119,9 @@ export const fetchEventById = async (eventId) => {
 }
 
 export const joinNewEvent = async (eventId, userId) => {
+    const data = await SecureStore.getItemAsync('userPayload');
+    const userData = await fetchUser(JSON.parse(data).email);
+
     await authenticatedFetch('/events/' + eventId + '/participants', {
         method: 'PUT',
         body: JSON.stringify({ userId: userData.user_id }),
@@ -128,10 +131,10 @@ export const joinNewEvent = async (eventId, userId) => {
     });
 }
 
-export const acceptParticipant = async (eventId, userId) => {
+export const acceptParticipant = async (eventId, email) => {
     await authenticatedFetch('/events/' + eventId + '/owner/participants', {
         method: 'PUT',
-        body: JSON.stringify({ userId: userId }),
+        body: JSON.stringify({ email: email }),
         headers: {
             'Content-Type': 'application/json'
         },

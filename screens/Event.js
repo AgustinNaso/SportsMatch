@@ -18,8 +18,7 @@ const Event = ({ route }) => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        fetchEventById(props.event_id).then((data) => {
-        });
+
         fetchParticipants(props.event_id).then((data) => {
             setEventParticipants(data);
         })
@@ -110,7 +109,7 @@ const Event = ({ route }) => {
             <View style={styles.eventBody}>
                 <View style={styles.bodySection}>
                     <Text style={styles.bodyBigText}>Fecha:</Text>
-                    <Text style={styles.bodyMidText}>{`${day} de ${MONTHS[month]} ${hours}:${minutes} hs`}</Text>
+                    <Text style={styles.bodyMidText}>{`${day} de ${MONTHS[month - 1]} ${hours}:${minutes} hs`}</Text>
                 </View>
                 <Divider width={1} />
                 <View style={styles.bodySection}>

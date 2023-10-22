@@ -26,7 +26,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant }) => {
 
     const acceptUser = async () => {
         try {
-            await acceptParticipant(props.event_id, props.user_id)
+            await acceptParticipant(eventId, props.email)
             setUserAccepted(true)
         } catch (error) {
             console.log(error)
