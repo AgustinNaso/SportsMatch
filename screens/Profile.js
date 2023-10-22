@@ -52,8 +52,6 @@ const Profile = () => {
     const response = await fetchUserImage(currUser.user_id);
     if (response.status == 200) {
       setImage(response.imageURL);
-    } else {
-      setImage(null);
     }
     setLoading(false);
   };
@@ -84,6 +82,7 @@ const Profile = () => {
               size={108}
               rounded
               source={ image ? { uri: image } : DefaultProfile}
+              containerStyle={{ backgroundColor: COLORS.secondary }}
             />
             <View style={styles.profileTextContainer}>
               <Text style={styles.profileTextName}>
