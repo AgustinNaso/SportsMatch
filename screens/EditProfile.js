@@ -18,7 +18,7 @@ import { SPORT } from "../constants/data";
 import { fetchUser } from "../services/eventService";
 import { getCurrentUserData } from "../services/authService";
 import MultiSelect from "react-native-multiple-select";
-import { updateUser } from "../services/userService";
+import { updateUser, updateUserImage } from "../services/userService";
 import * as ImagePicker from "expo-image-picker";
 import DefaultProfile from "../assets/default-profile.png";
 import { Avatar } from "@rneui/themed";
@@ -47,6 +47,7 @@ const EditProfile = () => {
   const [loading, setLoading] = useState(true);
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [error, setError] = useState();
   const { showActionSheetWithOptions } = useActionSheet();
 
   useEffect(() => {
@@ -91,11 +92,16 @@ const EditProfile = () => {
       sports: selectedSports,
     };
 
-    try {
-      await updateUser(currUser.user_id, formData);
+    const userUpdatedRes = await updateUser(currUser.user_id, formData);
+
+    if (userUpdatedRes.status !== 200) {
+      setError("Upload failed, please try again");
+    } else if (selectedImage) {
+      const imgUpdatedRes = await updateUserImage(currUser.user_id, selectedImage.base64);
+      if (imgUpdatedRes.status == 200) navigator.navigate("MyProfile");
+      setError("Image upload failed, please try againg");
+    } else {
       navigator.navigate("MyProfile");
-    } catch (err) {
-      console.log(err);
     }
   };
 
@@ -115,7 +121,7 @@ const EditProfile = () => {
     }, (selectedIndex) => {
       switch (selectedIndex) {
         case libraryIndex:
-          openImagePicker();
+          handleLibraryLaunch();
           break;
         case cameraIndex:
           handleCameraLaunch();
@@ -136,16 +142,17 @@ const EditProfile = () => {
     }
   };
 
-  const openImagePicker = async () => {
+  const handleLibraryLaunch = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      base64: true,
     });
 
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+      setSelectedImage(result.assets[0]);
     }
   };
 
@@ -160,7 +167,7 @@ const EditProfile = () => {
             <Avatar
               size={108}
               rounded
-              source={selectedImage ? { uri: selectedImage } : DefaultProfile}
+              source={selectedImage ? { uri: selectedImage.uri } : DefaultProfile}
             >
               <TouchableOpacity onPress={editProfileImage}>
                 <Ionicons
@@ -333,6 +340,7 @@ const EditProfile = () => {
                 defaultValue={[]}
               />
             </View>
+            {error && <Text style={{ color: "red", paddingTop: 15 }}>{error}</Text>}
             <TouchableOpacity
               style={styles.saveBtn}
               onPress={handleSubmit(submit)}
