@@ -34,8 +34,6 @@ const Profile = () => {
 
   useEffect(() => {
     if (currUser) {
-      // setLoading(false);
-      // console.log("CURR USER: ", currUser);
       try {
         fetchImage();
       } catch (err) {

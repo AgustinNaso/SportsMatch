@@ -18,7 +18,7 @@ import { SPORT } from "../constants/data";
 import { fetchUser } from "../services/eventService";
 import { getCurrentUserData } from "../services/authService";
 import MultiSelect from "react-native-multiple-select";
-import { updateUser, updateUserImage } from "../services/userService";
+import { updateUser, updateUserImage, fetchUserImage } from "../services/userService";
 import * as ImagePicker from "expo-image-picker";
 import DefaultProfile from "../assets/default-profile.png";
 import { Avatar } from "@rneui/themed";
@@ -47,11 +47,27 @@ const EditProfile = () => {
   const [loading, setLoading] = useState(true);
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [image, setImage] = useState(null);
+  const [imageChanged, setImageChanged] = useState(false);
   const [error, setError] = useState();
   const { showActionSheetWithOptions } = useActionSheet();
 
+  const fetchImage = async () => {
+    const response = await fetchUserImage(currUser.user_id);
+    if (response.status == 200) {
+      setImage(response.imageURL);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    if (currUser) setLoading(false);
+    if (currUser) {
+      try {
+        fetchImage();
+      } catch (err) {
+        console.error("ERROR fetching user image", err);
+      }
+    }
   }, [currUser]);
 
   useEffect(() => {
@@ -96,8 +112,8 @@ const EditProfile = () => {
 
     if (userUpdatedRes.status !== 200) {
       setError(userUpdatedRes.message);
-    } else if (selectedImage) {
-      const imgUpdatedRes = await updateUserImage(currUser.user_id, selectedImage.base64);
+    } else if (imageChanged) {
+      const imgUpdatedRes = await updateUserImage(currUser.user_id, selectedImage);
       if (imgUpdatedRes.status == 200) navigator.navigate("MyProfile");
       setError(imgUpdatedRes.message);
     } else {
@@ -135,10 +151,13 @@ const EditProfile = () => {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      base64: true,
     });
 
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+      setImage(result.assets[0].uri);
+      setSelectedImage(result.assets[0].base64)
+      setImageChanged(true);
     }
   };
 
@@ -152,7 +171,9 @@ const EditProfile = () => {
     });
 
     if (!result.canceled) {
-      setSelectedImage(result.assets[0]);
+      setImage(result.assets[0].uri);
+      setSelectedImage(result.assets[0].base64)
+      setImageChanged(true);
     }
   };
 
@@ -167,7 +188,7 @@ const EditProfile = () => {
             <Avatar
               size={108}
               rounded
-              source={selectedImage ? { uri: selectedImage.uri } : DefaultProfile}
+              source={image ? { uri: image } : DefaultProfile}
             >
               <TouchableOpacity onPress={editProfileImage}>
                 <Ionicons
