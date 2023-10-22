@@ -11,6 +11,7 @@ import { COLORS } from "../constants";
 import { Avatar, Chip, Divider } from "@rneui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { fetchUser } from "../services/eventService";
+import { fetchUserImage } from "../services/userService";
 import { SPORT } from "../constants/data";
 import { getCurrentUserData } from "../services/authService";
 import { useIsFocused } from "@react-navigation/native";
@@ -20,6 +21,7 @@ const image_url = "https://randomuser.me/api/portraits/men/36.jpg";
 const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [currUser, setCurrUser] = useState();
+  const [image, setImage] = useState(null);
   const isFocused = useIsFocused();
 
   const formatPhoneNumber = (phoneNumberString) => {
@@ -32,13 +34,28 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    if (currUser) setLoading(false);
+    if (currUser) {
+      setLoading(false);
+      console.log("CURR USER: ", currUser);
+      try {
+        fetchImage();
+      } catch (err) {
+        console.error("ERROR fetching user image", err);
+      }
+    }
   }, [currUser]);
 
   const fetchUserData = async () => {
     const currentUser = await getCurrentUserData();
     const user = await fetchUser(currentUser.email);
     setCurrUser({ ...user, birthdate: currentUser.birthdate });
+  };
+
+  const fetchImage = async () => {
+    const response = await fetchUserImage(currUser.user_id);
+    if (response.status == 200) {
+      setImage(response.imageURL);
+    }
   };
 
   useEffect(() => {
@@ -65,7 +82,7 @@ const Profile = () => {
             <Avatar
               size={108}
               rounded
-              source={image_url ? { uri: image_url } : {}}
+              source={{ uri: image ? image : image_url }}
             />
             <View style={styles.profileTextContainer}>
               <Text style={styles.profileTextName}>

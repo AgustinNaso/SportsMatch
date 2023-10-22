@@ -15,7 +15,7 @@ export const updateUser = async (userId, userData) => {
 
   return {
     status: response.status,
-    message: JSON.stringify(response),
+    message: response.ok ? "Update succesful" : "Failed to upload user data",
   };
 };
 
@@ -27,7 +27,7 @@ export const updateUserImage = async (userId, base64Img) => {
   if (!res.ok) {
     return {
       status: res.status,
-      message: JSON.stringify(res),
+      message: "Failed to upload user image",
     };
   }
 
@@ -44,6 +44,43 @@ export const updateUserImage = async (userId, base64Img) => {
 
   return {
     status: response.status,
-    message: JSON.stringify(response),
+    message: response.ok
+      ? "Image update successful"
+      : "Failed to upload user image",
+  };
+};
+
+export const fetchUserImage = async (userId) => {
+  const res = await authenticatedFetch("/users/" + userId + "/image", {
+    method: "GET",
+  });
+
+  if (!res.ok) {
+    return {
+      status: res.status,
+      message: "Failed to fetch user image",
+    };
+  }
+
+  const presignedUrl = await res.json();
+
+  var requestOptions = {
+    method: "GET",
+  };
+
+  const response = await fetch(presignedUrl.presignedGetUrl, requestOptions);
+
+  if (response.ok) {
+    const data = await response.text();
+
+    return {
+      status: response.status,
+      imageURL: `data:image/png;base64,${data}`
+    }
+  }
+
+  return {
+    status: response.status,
+    message: "Failed to fetch user image",
   };
 };

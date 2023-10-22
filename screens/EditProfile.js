@@ -95,11 +95,11 @@ const EditProfile = () => {
     const userUpdatedRes = await updateUser(currUser.user_id, formData);
 
     if (userUpdatedRes.status !== 200) {
-      setError("Upload failed, please try again");
+      setError(userUpdatedRes.message);
     } else if (selectedImage) {
       const imgUpdatedRes = await updateUserImage(currUser.user_id, selectedImage.base64);
       if (imgUpdatedRes.status == 200) navigator.navigate("MyProfile");
-      setError("Image upload failed, please try againg");
+      setError(imgUpdatedRes.message);
     } else {
       navigator.navigate("MyProfile");
     }
