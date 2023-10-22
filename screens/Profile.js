@@ -15,8 +15,7 @@ import { fetchUserImage } from "../services/userService";
 import { SPORT } from "../constants/data";
 import { getCurrentUserData } from "../services/authService";
 import { useIsFocused } from "@react-navigation/native";
-
-const image_url = "https://randomuser.me/api/portraits/men/36.jpg";
+import DefaultProfile from "../assets/default-profile.png";
 
 const Profile = () => {
   const [loading, setLoading] = useState(true);
@@ -35,8 +34,8 @@ const Profile = () => {
 
   useEffect(() => {
     if (currUser) {
-      setLoading(false);
-      console.log("CURR USER: ", currUser);
+      // setLoading(false);
+      // console.log("CURR USER: ", currUser);
       try {
         fetchImage();
       } catch (err) {
@@ -55,10 +54,14 @@ const Profile = () => {
     const response = await fetchUserImage(currUser.user_id);
     if (response.status == 200) {
       setImage(response.imageURL);
+    } else {
+      setImage(null);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
+    setLoading(true);
     try {
       fetchUserData();
     } catch (err) {
@@ -82,7 +85,7 @@ const Profile = () => {
             <Avatar
               size={108}
               rounded
-              source={{ uri: image ? image : image_url }}
+              source={ image ? { uri: image } : DefaultProfile}
             />
             <View style={styles.profileTextContainer}>
               <Text style={styles.profileTextName}>
