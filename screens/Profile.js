@@ -34,7 +34,6 @@ const Profile = () => {
 
   useEffect(() => {
     if (currUser) {
-      console.log(currUser)
       try {
         fetchImage();
       } catch (err) {
@@ -46,7 +45,7 @@ const Profile = () => {
   const fetchUserData = async () => {
     const currentUser = await getCurrentUserData();
     const user = await fetchUser(currentUser.email);
-    setCurrUser({ ...user, birthdate: currentUser.birthdate, phone_number: currentUser.phone });
+    setCurrUser({ ...user, birthdate: currentUser.birthdate });
   };
 
   const fetchImage = async () => {

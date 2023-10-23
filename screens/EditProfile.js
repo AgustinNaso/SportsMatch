@@ -28,6 +28,8 @@ import DefaultProfile from "../assets/default-profile.png";
 import { Avatar } from "@rneui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { useActionSheet } from "@expo/react-native-action-sheet";
+import PhoneInput from "react-native-phone-number-input";
+import { PhoneNumberUtil } from "google-libphonenumber";
 
 const sports = [
   { key: 1, sportId: 1, sport: SPORT[0] },
@@ -53,7 +55,20 @@ const EditProfile = () => {
   const [image, setImage] = useState(null);
   const [imageChanged, setImageChanged] = useState(false);
   const [error, setError] = useState();
+  const phoneUtil = PhoneNumberUtil.getInstance();
   const { showActionSheetWithOptions } = useActionSheet();
+
+  const parsePhoneNumber = (phone) => {
+    const parsedNumber = phoneUtil.parse(phone, "");
+    const code = phoneUtil.getRegionCodeForNumber(parsedNumber);
+    const phone_number = phoneUtil
+      .parseAndKeepRawInput(phone, code)
+      .getNationalNumber();
+    return {
+      code: code,
+      phone_number: phone_number.toString(),
+    };
+  };
 
   const fetchImage = async () => {
     const response = await fetchUserImage(currUser.user_id);
@@ -77,10 +92,12 @@ const EditProfile = () => {
     const fetchUserData = async () => {
       const currentUser = await getCurrentUserData();
       const user = await fetchUser(currentUser.email);
+      const { code, phone_number } = parsePhoneNumber(user.phone_number);
       setCurrUser({
         ...user,
         birthdate: currentUser.birthdate,
-        phone_number: currentUser.phone,
+        country_code: code,
+        phone_number: phone_number,
       });
       user.sports.every((sport) => sport !== null) &&
         setSelectedSports(user.sports);
@@ -93,6 +110,14 @@ const EditProfile = () => {
       console.error("ERROR fetching user data", err);
     }
   }, []);
+
+  const validatePhone = (phone) => {
+    const { code, phone_number } = parsePhoneNumber(phone);
+    return phoneUtil.isValidNumberForRegion(
+      phoneUtil.parse(phone_number, code),
+      code
+    );
+  };
 
   const handleSportsSelect = (sport) => {
     if (selectedSports.includes(sport.sportId)) {
@@ -296,45 +321,30 @@ const EditProfile = () => {
                 control={control}
                 rules={{
                   required: true,
+                  validate: (phone) => validatePhone(phone),
                 }}
                 defaultValue={currUser.phone_number}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    editable={false}
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
+                  <PhoneInput
+                    defaultValue={currUser.phone_number}
+                    defaultCode={currUser.country_code}
+                    layout="first"
+                    autoFocus
+                    containerStyle={styles.phoneContainer}
+                    textContainerStyle={styles.phoneContainer.input}
+                    flagButtonStyle={styles.phoneContainer.flag}
+                    onChangeFormattedText={(text) => {
+                      onChange(text);
+                    }}
                   />
                 )}
                 name="phone"
               />
             </View>
-            {/* </View>
-              <View style={styles.phoneContainer}>
-                <Text style={styles.phoneContainer.code}>11</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                    length: 8,
-                  }}
-                  defaultValue={phone}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={[styles.input, styles.phoneContainer.input]}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      keyboardType="numeric"
-                    />
-                  )}
-                  name="phone"
-                />
-              </View>
-            </View> */}
             {errors.phone && (
-              <Text style={styles.error}>Phone number must have 8 digits</Text>
+              <Text style={styles.error}>
+                Please enter a valid phone number
+              </Text>
             )}
             <View style={styles.inputContainer}>
               <Text style={styles.inputText}>My Sports</Text>
@@ -448,14 +458,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    width: "100%",
+    borderRadius: 20,
 
-    code: {
-      color: COLORS.primary,
-      fontSize: 18,
-      marginLeft: 10,
+    flag: {
+      width: 55,
     },
     input: {
-      width: "85%",
+      borderRadius: 20,
+      width: "90%",
     },
   },
   sportsContainer: {
