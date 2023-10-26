@@ -32,7 +32,7 @@ const Event = ({ route }) => {
     useEffect(() => {
         eventParticipants.forEach((participant) => {
             if (participant.user_id == user.user_id) {
-                if (participant.participant_status === "true") {
+                if (participant.participant_status === true) {
                     setUserStatus(USER_STATUS.ENROLLED);
                 }
                 else {
