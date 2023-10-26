@@ -18,12 +18,18 @@ import { SPORT } from "../constants/data";
 import { fetchUser } from "../services/eventService";
 import { getCurrentUserData } from "../services/authService";
 import MultiSelect from "react-native-multiple-select";
-import { updateUser } from "../services/userService";
+import {
+  updateUser,
+  updateUserImage,
+  fetchUserImage,
+} from "../services/userService";
 import * as ImagePicker from "expo-image-picker";
 import DefaultProfile from "../assets/default-profile.png";
 import { Avatar } from "@rneui/themed";
 import { Ionicons } from "@expo/vector-icons";
-import { useActionSheet } from '@expo/react-native-action-sheet';
+import { useActionSheet } from "@expo/react-native-action-sheet";
+import PhoneInput from "react-native-phone-number-input";
+import { PhoneNumberUtil } from "google-libphonenumber";
 
 const sports = [
   { key: 1, sportId: 1, sport: SPORT[0] },
@@ -41,24 +47,58 @@ const EditProfile = () => {
     formState: { errors },
     watch,
   } = useForm();
-  const phone = "30220578";
   const [selectedSports, setSelectedSports] = useState([]);
   const [currUser, setCurrUser] = useState();
   const [loading, setLoading] = useState(true);
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [image, setImage] = useState(null);
+  const [imageChanged, setImageChanged] = useState(false);
+  const [error, setError] = useState();
+  const phoneUtil = PhoneNumberUtil.getInstance();
   const { showActionSheetWithOptions } = useActionSheet();
 
+  const parsePhoneNumber = (phone) => {
+    const parsedNumber = phoneUtil.parse(phone, "");
+    const code = phoneUtil.getRegionCodeForNumber(parsedNumber);
+    const phone_number = phoneUtil
+      .parseAndKeepRawInput(phone, code)
+      .getNationalNumber();
+    return {
+      code: code,
+      phone_number: phone_number.toString(),
+    };
+  };
+
+  const fetchImage = async () => {
+    const response = await fetchUserImage(currUser.user_id);
+    if (response.status == 200) {
+      setImage(response.imageURL);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    if (currUser) setLoading(false);
+    if (currUser) {
+      try {
+        fetchImage();
+      } catch (err) {
+        console.error("ERROR fetching user image", err);
+      }
+    }
   }, [currUser]);
 
   useEffect(() => {
     const fetchUserData = async () => {
       const currentUser = await getCurrentUserData();
-      [];
       const user = await fetchUser(currentUser.email);
-      setCurrUser({ ...user, birthdate: currentUser.birthdate });
+      const { code, phone_number } = parsePhoneNumber(user.phone_number);
+      setCurrUser({
+        ...user,
+        birthdate: currentUser.birthdate,
+        country_code: code,
+        phone_number: phone_number,
+      });
       user.sports.every((sport) => sport !== null) &&
         setSelectedSports(user.sports);
       user.locations.every((location) => location !== null) &&
@@ -70,6 +110,14 @@ const EditProfile = () => {
       console.error("ERROR fetching user data", err);
     }
   }, []);
+
+  const validatePhone = (phone) => {
+    const { code, phone_number } = parsePhoneNumber(phone);
+    return phoneUtil.isValidNumberForRegion(
+      phoneUtil.parse(phone_number, code),
+      code
+    );
+  };
 
   const handleSportsSelect = (sport) => {
     if (selectedSports.includes(sport.sportId)) {
@@ -92,37 +140,49 @@ const EditProfile = () => {
       sports: selectedSports,
     };
 
-    try {
-      updateUser(currUser.user_id, formData);
+    const userUpdatedRes = await updateUser(currUser.user_id, formData);
+
+    if (userUpdatedRes.status !== 200) {
+      setError(userUpdatedRes.message);
+    } else if (imageChanged) {
+      const imgUpdatedRes = await updateUserImage(
+        currUser.user_id,
+        selectedImage
+      );
+      if (imgUpdatedRes.status == 200) navigator.navigate("MyProfile");
+      setError(imgUpdatedRes.message);
+    } else {
       navigator.navigate("MyProfile");
-    } catch (err) {
-      console.log(err);
     }
   };
 
   const editProfileImage = () => {
-    const options = ['Choose from Library', 'Take Photo', 'Cancel'];
+    const options = ["Choose from Library", "Take Photo", "Cancel"];
     const libraryIndex = 0;
     const cameraIndex = 1;
     const cancelButtonIndex = 2;
     const title = "Select Photo";
 
-    showActionSheetWithOptions({
-      options,
-      title,
-      libraryIndex,
-      cameraIndex,
-      cancelButtonIndex
-    }, (selectedIndex) => {
-      switch (selectedIndex) {
-        case libraryIndex:
-          openImagePicker();
-          break;
-        case cameraIndex:
-          handleCameraLaunch();
-          break;
-      }});
-  }
+    showActionSheetWithOptions(
+      {
+        options,
+        title,
+        libraryIndex,
+        cameraIndex,
+        cancelButtonIndex,
+      },
+      (selectedIndex) => {
+        switch (selectedIndex) {
+          case libraryIndex:
+            handleLibraryLaunch();
+            break;
+          case cameraIndex:
+            handleCameraLaunch();
+            break;
+        }
+      }
+    );
+  };
 
   const handleCameraLaunch = async () => {
     const result = await ImagePicker.launchCameraAsync({
@@ -130,23 +190,29 @@ const EditProfile = () => {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      base64: true,
     });
 
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+      setImage(result.assets[0].uri);
+      setSelectedImage(result.assets[0].base64);
+      setImageChanged(true);
     }
   };
 
-  const openImagePicker = async () => {
+  const handleLibraryLaunch = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      base64: true,
     });
 
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+      setImage(result.assets[0].uri);
+      setSelectedImage(result.assets[0].base64);
+      setImageChanged(true);
     }
   };
 
@@ -161,13 +227,18 @@ const EditProfile = () => {
             <Avatar
               size={108}
               rounded
-              source={selectedImage ? { uri: selectedImage } : DefaultProfile}
+              source={image ? { uri: image } : DefaultProfile}
             >
               <TouchableOpacity onPress={editProfileImage}>
                 <Ionicons
                   name="ios-camera"
                   size={25}
-                  style={{ position: "absolute", color: COLORS.primary, bottom: 0, right: 0 }}
+                  style={{
+                    position: "absolute",
+                    color: COLORS.primary,
+                    bottom: 0,
+                    right: 0,
+                  }}
                 />
               </TouchableOpacity>
             </Avatar>
@@ -181,6 +252,7 @@ const EditProfile = () => {
                 defaultValue={currUser.firstname}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
+                    editable={false}
                     style={styles.input}
                     onBlur={onBlur}
                     onChangeText={onChange}
@@ -203,6 +275,7 @@ const EditProfile = () => {
                 defaultValue={currUser.lastname}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
+                    editable={false}
                     style={styles.input}
                     onBlur={onBlur}
                     onChangeText={onChange}
@@ -244,30 +317,34 @@ const EditProfile = () => {
             )}
             <View style={styles.inputContainer}>
               <Text style={styles.inputText}>Phone Number</Text>
-              <View style={styles.phoneContainer}>
-                <Text style={styles.phoneContainer.code}>11</Text>
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                    length: 8,
-                  }}
-                  defaultValue={phone}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={[styles.input, styles.phoneContainer.input]}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      keyboardType="numeric"
-                    />
-                  )}
-                  name="phone"
-                />
-              </View>
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                  validate: (phone) => validatePhone(phone),
+                }}
+                defaultValue={currUser.phone_number}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <PhoneInput
+                    defaultValue={currUser.phone_number}
+                    defaultCode={currUser.country_code}
+                    layout="first"
+                    autoFocus
+                    containerStyle={styles.phoneContainer}
+                    textContainerStyle={styles.phoneContainer.input}
+                    flagButtonStyle={styles.phoneContainer.flag}
+                    onChangeFormattedText={(text) => {
+                      onChange(text);
+                    }}
+                  />
+                )}
+                name="phone"
+              />
             </View>
             {errors.phone && (
-              <Text style={styles.error}>Phone number must have 8 digits</Text>
+              <Text style={styles.error}>
+                Please enter a valid phone number
+              </Text>
             )}
             <View style={styles.inputContainer}>
               <Text style={styles.inputText}>My Sports</Text>
@@ -296,7 +373,7 @@ const EditProfile = () => {
               <Text style={styles.inputText}>My Locations</Text>
               <Controller
                 control={control}
-                render={({ field: { onChange, value } }) => (
+                render={({ field: { onChange } }) => (
                   <ScrollView
                     horizontal={true}
                     scrollEnabled={false}
@@ -334,6 +411,9 @@ const EditProfile = () => {
                 defaultValue={[]}
               />
             </View>
+            {error && (
+              <Text style={{ color: "red", paddingTop: 15 }}>{error}</Text>
+            )}
             <TouchableOpacity
               style={styles.saveBtn}
               onPress={handleSubmit(submit)}
@@ -378,14 +458,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    width: "100%",
+    borderRadius: 20,
 
-    code: {
-      color: COLORS.primary,
-      fontSize: 18,
-      marginLeft: 10,
+    flag: {
+      width: 55,
     },
     input: {
-      width: "85%",
+      borderRadius: 20,
+      width: "90%",
     },
   },
   sportsContainer: {
