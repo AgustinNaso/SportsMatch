@@ -40,18 +40,17 @@ const MyEventList = ({ data }) => {
             </View>
             <Divider width={3} style={{ width: '90%', marginBottom: 10, alignSelf: 'center' }} />
             <FlatList
-                data={participantList} renderItem={(listData) => renderItem(listData.item, data.item.event_id, handleRemoveParticipant)}
+                data={participantList} renderItem={(listData) => renderItem(listData.item, data.item.event_id, handleRemoveParticipant, data.item.event_status)}
                 style={{ flex: 1 }} keyExtractor={(item, index) => { return `${item.userid} + ${index} + ${item.event_id}}` }}
                 ListEmptyComponent={<Text style={{ fontSize: 20, alignSelf: 'center', marginVertical: 8 }}>Aún no hay participantes</Text>}
             >
             </FlatList>
-            {/* <Divider width={3} style={{ width: '90%', marginTop: 10, alignSelf: 'center' }} /> */}
         </View>
     )
 }
 
 
-const renderItem = (data, eventId, handleRemoveParticipant) => {
-    return <MyEventCard props={data} eventId={eventId} handleRemoveParticipant={handleRemoveParticipant} />
+const renderItem = (data, eventId, handleRemoveParticipant, eventStatus) => {
+    return <MyEventCard props={data} eventId={eventId} handleRemoveParticipant={handleRemoveParticipant} eventStatus={eventStatus}/>
 }
 export default MyEventList;

@@ -97,7 +97,7 @@ const Profile = () => {
                 }}
               >
                 <Ionicons name="star" size={18} color={COLORS.secondary} />
-                <Text style={styles.profileTextAge}>{currUser?.rating}</Text>
+                <Text style={styles.profileTextAge}>{Number(currUser?.rating).toFixed(1)}</Text>
               </View>
               <Text style={styles.profileTextLocation}>
                 {currUser?.count} partidos
@@ -115,7 +115,7 @@ const Profile = () => {
                 />
                 <View style={styles.userDataDisplay}>
                   <Text style={styles.itemText}>
-                    {currUser?.locations[0] ?? "Argentina"}
+                    {"Argentina"}
                   </Text>
                 </View>
               </View>

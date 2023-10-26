@@ -44,6 +44,7 @@ export const fetchParticipants = async (eventId) => {
 //TODO: clean this code
 export const fetchEvents = async (filters) => {
     const data = JSON.parse(await SecureStore.getItemAsync('userPayload'));
+    console.log("FILTROS ", filters)
     let filterString;
     if (filters) {
         if (filters.date)
@@ -88,7 +89,7 @@ export const fetchNearEvents = async (filters = undefined) => {
     try {
         const data = await SecureStore.getItemAsync('userPayload');
         const userData = await fetchUser(JSON.parse(data).email);
-        const response = await fetchEvents(userData.user_id, filters);
+        const response = await fetchEvents(filters);
         let jsonRes = await response.json();
         jsonRes.items = jsonRes.items?.filter(event => event.remaining > 0 && event.event_status !== EVENT_STATUS.FINALIZED);
         return jsonRes

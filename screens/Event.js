@@ -151,7 +151,7 @@ const Event = ({ route }) => {
             <Ionicons name="star" size={18} color={COLORS.secondary} />
             <Text>
               {" "}
-              {props.rating / (props.rate_count !== 0 ? props.rate_count : 1)} /
+              {Number(props.rating).toFixed(1)} /
               5{" "}
             </Text>
             <Text>

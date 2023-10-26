@@ -21,7 +21,7 @@ import { EVENT_STATUS } from "../constants/data";
 import DefaultProfile from "../assets/default-profile.png";
 import { fetchUserImage } from "../services/userService";
 
-const MyEventCard = ({ props, eventId, handleRemoveParticipant }) => {
+const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) => {
   const currUser = { id: 1 };
   console.log("Props: ", props);
   const [userAccepted, setUserAccepted] = React.useState(
@@ -47,7 +47,8 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant }) => {
 
   const postUserRating = async () => {
     try {
-      await rateUser(props.event_id, currUser.id, userRate, props.user_id);
+      console.log("A " + eventId + " " + userRate + " " + props.user_id);
+      await rateUser(eventId, userRate, props.user_id);
       setModalVisible(false);
     } catch (error) {
       console.log(error);
@@ -66,11 +67,28 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant }) => {
 
   const sendMessage = () => {
     Linking.openURL(
-      `whatsapp://send?phone=${+props.phone_number}&text=Hola ${
-        props.firstname
+      `whatsapp://send?phone=${+props.phone_number}&text=Hola ${props.firstname
       }. Nos vemos en el partido!`
     );
   };
+
+  const renderButton = () => {
+    if (eventStatus !== EVENT_STATUS.FINALIZED)
+      return <Button
+        color={COLORS.primary}
+        mode="contained"
+        title="Contactar"
+        onPress={sendMessage}
+      />
+    if (eventStatus === EVENT_STATUS.FINALIZED && props.is_rated === 0)
+      return <Button
+        color={COLORS.primary}
+        mode="contained"
+        title="Puntuar"
+        onPress={() => setModalVisible(true)}
+      />
+    return <Text style={{fontSize: 18, fontWeight: 600}}>Calificado</Text>
+  }
 
   return (
     <View style={styles.card}>
@@ -109,7 +127,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant }) => {
         <Avatar
           rounded
           size={62}
-          source={ image ? { uri: image } : DefaultProfile}
+          source={image ? { uri: image } : DefaultProfile}
           containerStyle={{ backgroundColor: COLORS.secondary }}
         />
         <View style={styles.textContainer}>
@@ -123,7 +141,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant }) => {
             }}
           >
             <Ionicons name="star" size={16} color={COLORS.secondary} />
-            <Text style={styles.profileTextAge}> {props.rating} / 5</Text>
+            <Text style={styles.profileTextAge}> {Number(props.rating).toFixed(1)} / 5</Text>
           </View>
         </View>
       </View>
@@ -146,23 +164,9 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant }) => {
             />
           </TouchableOpacity>
         </View>
-      ) : props.eventStatus !== EVENT_STATUS.FINALIZED ? (
-        <Button
-          color={COLORS.primary}
-          mode="contained"
-          title="Contactar"
-          onPress={sendMessage}
-        />
-      ) : (
-        props.eventStatus === EVENT_STATUS.FINALIZED && (
-          <Button
-            color={COLORS.primary}
-            mode="contained"
-            title="Puntuar"
-            onPress={() => setModalVisible(true)}
-          />
-        )
-      )}
+      ) :
+        renderButton()
+      }
     </View>
   );
 };
@@ -187,11 +191,12 @@ const styles = StyleSheet.create({
     padding: 8,
     justifyContent: "space-between",
     alignItems: "center",
-    width: "60%",
+    maxWidth: "65%",
   },
   textContainer: {
     flexDirection: "column",
     alignItems: "center",
+    marginHorizontal: 8
   },
   buttonContainer: {
     flexDirection: "row",
