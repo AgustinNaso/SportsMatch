@@ -32,11 +32,11 @@ import PhoneInput from "react-native-phone-number-input";
 import { PhoneNumberUtil } from "google-libphonenumber";
 
 const sports = [
-  { key: 1, sportId: 1, sport: SPORT[0] },
-  { key: 2, sportId: 2, sport: SPORT[1] },
-  { key: 3, sportId: 3, sport: SPORT[2] },
-  { key: 4, sportId: 4, sport: SPORT[3] },
-  { key: 5, sportId: 5, sport: SPORT[4] },
+  { key: 1, sportId: 1, title: SPORT[0] },
+  { key: 2, sportId: 2, title: SPORT[1] },
+  { key: 3, sportId: 3, title: SPORT[2] },
+  { key: 4, sportId: 4, title: SPORT[3] },
+  { key: 5, sportId: 5, title: SPORT[4] },
 ];
 
 const EditProfile = () => {
@@ -130,7 +130,7 @@ const EditProfile = () => {
   };
 
   const isSelected = (sport) => {
-    return selectedSports.includes(sport.sportId) ? sport.sport : null;
+    return selectedSports.includes(sport.sportId) ? sport.title : null;
   };
 
   const submit = async (data) => {

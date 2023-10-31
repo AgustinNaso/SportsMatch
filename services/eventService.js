@@ -61,8 +61,10 @@ export const fetchEvents = async (filters) => {
             console.log("KEY: " + key + " VALUE: " + value)
             return "&" + key + "=" + value;
         }).join("");
+
     }
-    return await fetch(`${API_URL}/events?userId=${data.user_id}&filterOut=true${filterString ?? ""}`);
+    console.log("USER ID", data.user_id);
+    return await fetch(`${API_URL}/events?userId=${data.user_id}&filterOut=true${filterString ?? ""}&limit=200`);
 }
 
 export const fetchJoinedEvents = async (userId) => {
@@ -88,9 +90,10 @@ export const fetchMyEvents = async (uid) => {
 export const fetchNearEvents = async (filters = undefined) => {
     try {
         const data = await SecureStore.getItemAsync('userPayload');
-        const userData = await fetchUser(JSON.parse(data).email);
         const response = await fetchEvents(filters);
+        console.log("RESPONSE: ", response.status)
         let jsonRes = await response.json();
+        console.log("EVENTOS CERCANOS: ", jsonRes.items);
         jsonRes.items = jsonRes.items?.filter(event => event.remaining > 0 && event.event_status !== EVENT_STATUS.FINALIZED);
         return jsonRes
     }

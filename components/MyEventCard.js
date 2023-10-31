@@ -15,7 +15,7 @@ import {
   rateUser,
   removeParticipantAsOwner,
 } from "../services/eventService";
-import { AirbnbRating, Avatar, Button, color } from "@rneui/base";
+import { AirbnbRating, Avatar, Button } from "@rneui/base";
 import { COLORS } from "../constants";
 import { EVENT_STATUS } from "../constants/data";
 import DefaultProfile from "../assets/default-profile.png";
@@ -47,7 +47,6 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
 
   const postUserRating = async () => {
     try {
-      console.log("A " + eventId + " " + userRate + " " + props.user_id);
       await rateUser(eventId, userRate, props.user_id);
       setModalVisible(false);
     } catch (error) {

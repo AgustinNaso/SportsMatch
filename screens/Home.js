@@ -53,6 +53,7 @@ const Home = ({ navigation, route }) => {
     }
 
     const renderItemPill = ({ item }) => {
+        item.title = item.sport;
         return <Pill props={item} handlePress={handleFilter} currentFilter={selectedFilter} />
     }
 

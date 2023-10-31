@@ -41,6 +41,16 @@ const Profile = () => {
       }
     }
   }, [currUser]);
+  
+  useEffect(() => {
+    setLoading(true);
+    try {
+      fetchUserData();
+      setLoading(false);
+    } catch (err) {
+      console.error("ERROR fetching user data", err);
+    }
+  }, [isFocused]);
 
   const fetchUserData = async () => {
     const currentUser = await getCurrentUserData();
@@ -53,17 +63,8 @@ const Profile = () => {
     if (response.status == 200) {
       setImage(response.imageURL);
     }
-    setLoading(false);
   };
 
-  useEffect(() => {
-    setLoading(true);
-    try {
-      fetchUserData();
-    } catch (err) {
-      console.error("ERROR fetching user data", err);
-    }
-  }, [isFocused]);
 
   useEffect(() => {
     try {
@@ -122,7 +123,7 @@ const Profile = () => {
               <View style={styles.userDataContainer}>
                 <Ionicons name="call" size={24} color={COLORS.primary} />
                 <View style={styles.userDataDisplay}>
-                  <Text style={styles.itemText}>{currUser.phone_number}</Text>
+                  <Text style={styles.itemText}>{formatPhoneNumber(currUser?.phone_number)}</Text>
                 </View>
               </View>
               <View style={styles.userDataContainer}>
@@ -136,7 +137,7 @@ const Profile = () => {
               <Text style={styles.bodyText}>Mis Deportes</Text>
               <Divider width={3} style={{ width: "100%", marginBottom: 16 }} />
               <View style={styles.chipContainer}>
-                {currUser.sports &&
+                {currUser?.sports &&
                 currUser.sports.every((sport) => sport !== null) ? (
                   currUser.sports.map((sport, idx) => {
                     return (
@@ -160,7 +161,7 @@ const Profile = () => {
               <Text style={styles.bodyText}>Mis Ubicaciones</Text>
               <Divider width={3} style={{ width: "100%", marginBottom: 16 }} />
               <View style={styles.chipContainer}>
-                {currUser.locations &&
+                {currUser?.locations &&
                 currUser.locations.every((location) => location !== null) ? (
                   currUser.locations.map((location, idx) => {
                     return (

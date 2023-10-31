@@ -12,6 +12,7 @@ import RNDateTimePicker from '@react-native-community/datetimepicker'
 import { formatDate, formatTime, showDatepicker, showTimepicker } from '../utils/datetime'
 import { fetchUser, publishEvent } from '../services/eventService'
 import { useNavigation } from '@react-navigation/native'
+import Pill from '../components/Pill'
 
 
 const NewEvent = () => {
@@ -19,6 +20,7 @@ const NewEvent = () => {
     const [user, setUser] = React.useState(null);
     const [isLoading, setIsLoading] = React.useState(false);
     const { control, handleSubmit, formState: { errors }, watch } = useForm();
+    const eventDuration = ['60', '90', '120']
 
 
     const dateTimeToDate = (date, time) => {
@@ -35,6 +37,7 @@ const NewEvent = () => {
 
     const onSubmit = async (formData) => {
         const { sport, difficulty, location, date, time, description, players } = formData;
+        console.log("FORMDATA: ", formData);
         const userD = await getCurrentUserData();
         console.log("USERD: ", userD);
         const userData = await fetchUser(userD.email)
@@ -133,7 +136,7 @@ const NewEvent = () => {
                     }} name="time" />
                 </View>
             </View>
-            <View style={styles.inputsContainer}>
+            <View style={{ flexDirection: 'column' }}>
                 <View style={styles.qtyInputContainer}>
                     <Text style={styles.label}>Faltan</Text>
                     <Controller
@@ -157,37 +160,27 @@ const NewEvent = () => {
                             },
                         }}
                     />
-                    <Text style={styles.errorText}>{errors.duration?.message}</Text>
                 </View>
-                <View style={styles.qtyInputContainer}>
-                    <Text style={styles.label}>Duración</Text>
-                    <Controller
-                        control={control}
-                        render={({ field: { onChange, value } }) => (
-                            <TextInput
-                                style={styles.numberInput}
-                                keyboardType="numeric"
-                                placeholder="Duracion del partido"
-                                onChangeText={onChange}
-                                value={value}
-                            />
-                        )}
-                        name="duration"
-                        defaultValue=""
-                        rules={{
-                            required: 'La duración del evento es requerida',
-                            pattern: {
-                                value: /^\d+$/,
-                                message: 'Por favor ingrese un número válido',
-                            },
-                        }}
-                    />
-                    <Text style={styles.errorText}>{errors.players?.message}</Text>
+                <View style={{ ...styles.qtyInputContainer}}>
+                    <Text style={styles.label}>Duración (min)</Text>
+                    <View style={{flexDirection: 'row', maxWidth: '70%', alignItems: 'center'}}>
+                        <Controller
+                            control={control}
+                            render={({ field: { onChange, value } }) => {
+                                return (
+                                    eventDuration.map((duration, index) => {
+                                        return <Pill key={index} props={{ title: duration}} handlePress={onChange} currentFilter={value} />
+                                    })
+                                )
+                            }
+                        }
+                        name = "duration"/>
+                    </View>
                 </View>
             </View>
             <Controller control={control} rules={{ required: false }} render={({ field }) => (
                 <TextInput
-                    placeholder='Comentarios adicionales...'
+                    placeholder='El partido es en el club a las ...'
                     value={field.value}
                     style={styles.input}
                     multiline={true} blurOnSubmit={true}
@@ -207,7 +200,7 @@ export default NewEvent
 
 const styles = StyleSheet.create({
     input: {
-        height: '25%',
+        height: '20%',
         margin: 12,
         borderWidth: 1,
         padding: 20,
@@ -249,7 +242,6 @@ const styles = StyleSheet.create({
         fontWeight: 600
     },
     qtyInputContainer: {
-        marginBottom: 10,
         alignSelf: 'center', // Center the input container horizontally
         padding: 10,
         alignItems: 'center',
