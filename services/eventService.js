@@ -63,7 +63,6 @@ export const fetchEvents = async (filters) => {
         }).join("");
 
     }
-    console.log("USER ID", data.user_id);
     return await fetch(`${API_URL}/events?userId=${data.user_id}&filterOut=true${filterString ?? ""}&limit=200`);
 }
 

@@ -36,11 +36,10 @@ const NewEvent = () => {
 
 
     const onSubmit = async (formData) => {
-        const { sport, difficulty, location, date, time, description, players } = formData;
+        const { sport, difficulty, location, date, time, description, players, duration } = formData;
         console.log("FORMDATA: ", formData);
         const userD = await getCurrentUserData();
         console.log("USERD: ", userD);
-        const userData = await fetchUser(userD.email)
         console.log("date:", date, "time:", time, "datetime: ", dateTimeToDate(date, time))
         // setIsLoading(!isLoading);
         const data = {
@@ -50,7 +49,7 @@ const NewEvent = () => {
             schedule: dateTimeToDate(date, time),
             description: description ?? " ",
             remaining: +players,
-            duration: +formData.duration
+            duration: +duration
         }
         try {
             publishEvent(data);

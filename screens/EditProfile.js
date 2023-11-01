@@ -157,11 +157,11 @@ const EditProfile = () => {
   };
 
   const editProfileImage = () => {
-    const options = ["Choose from Library", "Take Photo", "Cancel"];
+    const options = ["Elegir de la galeria", "Tomar foto", "Cancelar"];
     const libraryIndex = 0;
     const cameraIndex = 1;
     const cancelButtonIndex = 2;
-    const title = "Select Photo";
+    const title = "Selccionar foto";
 
     showActionSheetWithOptions(
       {
@@ -205,7 +205,7 @@ const EditProfile = () => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 1,
+      quality: 0,
       base64: true,
     });
 
@@ -243,7 +243,7 @@ const EditProfile = () => {
               </TouchableOpacity>
             </Avatar>
             <View style={styles.inputContainer}>
-              <Text style={styles.inputText}>Name</Text>
+              <Text style={styles.inputText}>Nombre</Text>
               <Controller
                 control={control}
                 rules={{
@@ -263,10 +263,10 @@ const EditProfile = () => {
               />
             </View>
             {errors.name && (
-              <Text style={styles.error}>This field can't be empty</Text>
+              <Text style={styles.error}>Este campo no puede estar vacio</Text>
             )}
             <View style={styles.inputContainer}>
-              <Text style={styles.inputText}>Last Name</Text>
+              <Text style={styles.inputText}>Apellido</Text>
               <Controller
                 control={control}
                 rules={{
@@ -286,7 +286,7 @@ const EditProfile = () => {
               />
             </View>
             {errors.lastName && (
-              <Text style={styles.error}>This field can't be empty</Text>
+              <Text style={styles.error}>Este campo no puede estar vacio</Text>
             )}
             <View style={styles.inputContainer}>
               <Text style={styles.inputText}>Email</Text>
@@ -313,10 +313,10 @@ const EditProfile = () => {
               />
             </View>
             {errors.email && (
-              <Text style={styles.error}>Please enter a valid email</Text>
+              <Text style={styles.error}>Por favor ingrese un email valido</Text>
             )}
             <View style={styles.inputContainer}>
-              <Text style={styles.inputText}>Phone Number</Text>
+              <Text style={styles.inputText}>Numero de telefono</Text>
               <Controller
                 control={control}
                 rules={{
@@ -343,11 +343,11 @@ const EditProfile = () => {
             </View>
             {errors.phone && (
               <Text style={styles.error}>
-                Please enter a valid phone number
+                Por favor ingrese un numero valido.
               </Text>
             )}
             <View style={styles.inputContainer}>
-              <Text style={styles.inputText}>My Sports</Text>
+              <Text style={styles.inputText}>Mis Deportes</Text>
               <View style={styles.sportsContainer}>
                 {sports.map((sport, index) => {
                   return (
@@ -370,7 +370,7 @@ const EditProfile = () => {
               </View>
             </View>
             <View style={styles.inputContainer}>
-              <Text style={styles.inputText}>My Locations</Text>
+              <Text style={styles.inputText}>Mis Ubicaciones</Text>
               <Controller
                 control={control}
                 render={({ field: { onChange } }) => (
