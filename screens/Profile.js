@@ -46,7 +46,6 @@ const Profile = () => {
     setLoading(true);
     try {
       fetchUserData();
-      setLoading(false);
     } catch (err) {
       console.error("ERROR fetching user data", err);
     }
@@ -63,6 +62,7 @@ const Profile = () => {
     if (response.status == 200) {
       setImage(response.imageURL);
     }
+    setLoading(false);
   };
 
 
