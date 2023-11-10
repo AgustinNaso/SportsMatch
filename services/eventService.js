@@ -41,8 +41,7 @@ export const fetchParticipants = async (eventId) => {
 };
 
 //TODO: clean this code
-export const fetchEvents = async (filters) => {
-  const data = JSON.parse(await SecureStore.getItemAsync("userPayload"));
+export const fetchEvents = async (userId, filters) => {
   console.log("FILTROS ", filters);
   let filterString;
   if (filters) {
@@ -61,7 +60,7 @@ export const fetchEvents = async (filters) => {
       .join("");
   }
   return await fetch(
-    `${API_URL}/events?userId=${data.user_id}&filterOut=true${
+    `${API_URL}/events?userId=${userId}&filterOut=true${
       filterString ?? ""
     }&limit=200`
   );
@@ -87,10 +86,9 @@ export const fetchMyEvents = async (userId) => {
   return response;
 };
 
-export const fetchNearEvents = async (filters = undefined) => {
+export const fetchNearEvents = async (userId, filters = undefined) => {
   try {
-    const data = await SecureStore.getItemAsync("userPayload");
-    const response = await fetchEvents(filters);
+    const response = await fetchEvents(userId, filters);
     console.log("RESPONSE: ", response.status);
     let jsonRes = await response.json();
     console.log("EVENTOS CERCANOS: ", jsonRes.items);

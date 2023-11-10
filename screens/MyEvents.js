@@ -81,19 +81,18 @@ const MyEvents = () => {
   };
 
   useEffect(() => {
-    getCurrentUserData().then(async (data) => {
-      const userData = await fetchUser(data.email);
+    getCurrentUserData().then(async (userData) => {
       setUser(userData);
     });
   }, []);
 
   useEffect(() => {
     const getMyEvents = async () => {
-      const data = await fetchMyEvents(user.userid);
+      const data = await fetchMyEvents(user.user_id);
       setMyEvents(data.items);
     };
     const getJoinedEvents = async () => {
-      const mockData = await fetchJoinedEvents(user.userid);
+      const mockData = await fetchJoinedEvents(user.user_id);
       setJoinedEvents(mockData.items);
     };
     if (user && isFocused) {
