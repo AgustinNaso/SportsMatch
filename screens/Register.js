@@ -64,7 +64,7 @@ const Register = ({ navigation }) => {
                 <TextInput
                   style={styles.input}
                   onBlur={onBlur}
-                  onChangeText={onChange}
+                  onChangeText={(text) => onChange(text.charAt(0).toUpperCase() + text.slice(1))}
                   value={value}
                 />
               )}
@@ -85,7 +85,7 @@ const Register = ({ navigation }) => {
                 <TextInput
                   style={styles.input}
                   onBlur={onBlur}
-                  onChangeText={onChange}
+                  onChangeText={(text) => onChange(text.charAt(0).toUpperCase() + text.slice(1))}
                   value={value}
                 />
               )}
