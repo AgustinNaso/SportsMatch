@@ -61,17 +61,17 @@ const EditProfile = () => {
   const parsePhoneNumber = (phone) => {
     const parsedNumber = phoneUtil.parse(phone, "");
     const code = phoneUtil.getRegionCodeForNumber(parsedNumber);
-    const phone_number = phoneUtil
+    const national_number = phoneUtil
       .parseAndKeepRawInput(phone, code)
       .getNationalNumber();
     return {
       code: code,
-      phone_number: phone_number.toString(),
+      national_number: national_number.toString(),
     };
   };
 
   const fetchImage = async () => {
-    const response = await fetchUserImage(currUser.user_id);
+    const response = await fetchUserImage(currUser.userid);
     if (response.status == 200) {
       setImage(response.imageURL);
     }
@@ -92,12 +92,12 @@ const EditProfile = () => {
     const fetchUserData = async () => {
       const currentUser = await getCurrentUserData();
       const user = await fetchUser(currentUser.email);
-      const { code, phone_number } = parsePhoneNumber(user.phone_number);
+      const { code, national_number } = parsePhoneNumber(user.phonenumber);
       setCurrUser({
         ...user,
         birthdate: currentUser.birthdate,
         country_code: code,
-        phone_number: phone_number,
+        national_number: national_number,
       });
       user.sports.every((sport) => sport !== null) &&
         setSelectedSports(user.sports);
@@ -112,9 +112,9 @@ const EditProfile = () => {
   }, []);
 
   const validatePhone = (phone) => {
-    const { code, phone_number } = parsePhoneNumber(phone);
+    const { code, national_number } = parsePhoneNumber(phone);
     return phoneUtil.isValidNumberForRegion(
-      phoneUtil.parse(phone_number, code),
+      phoneUtil.parse(national_number, code),
       code
     );
   };
@@ -133,20 +133,46 @@ const EditProfile = () => {
     return selectedSports.includes(sport.sportId) ? sport.title : null;
   };
 
+  const dataChanged = (data) => {
+    var phoneChanged = false;
+    if (data.phone !== currUser.phonenumber) {
+      phoneChanged = true;
+    }
+
+    var sportsChanged = false;
+    if (currUser.sports[0] === null) {
+      sportsChanged = selectedSports.size > 0;
+    } else {
+      sportsChanged = currUser.sports !== selectedSports;
+    }
+
+    var locChanged = false;
+    if (currUser.locations[0] === null) {
+      locChanged = selectedLocations.size > 0;
+    } else {
+      locChanged = currUser.locations !== selectedLocations;
+    }
+
+    return phoneChanged || sportsChanged || locChanged;
+  }
+
   const submit = async (data) => {
     const formData = {
       phone_number: data.phone,
       locations: selectedLocations,
       sports: selectedSports,
     };
+    
+    var userUpdatedRes;
+    if (dataChanged(data)) {
+      userUpdatedRes = await updateUser(currUser.userid, formData);
+    }
 
-    const userUpdatedRes = await updateUser(currUser.user_id, formData);
-
-    if (userUpdatedRes.status !== 200) {
+    if (userUpdatedRes && userUpdatedRes.status !== 200) {
       setError(userUpdatedRes.message);
     } else if (imageChanged) {
       const imgUpdatedRes = await updateUserImage(
-        currUser.user_id,
+        currUser.userid,
         selectedImage
       );
       if (imgUpdatedRes.status == 200) navigator.navigate("MyProfile");
@@ -313,20 +339,24 @@ const EditProfile = () => {
               />
             </View>
             {errors.email && (
-              <Text style={styles.error}>Por favor ingrese un email valido</Text>
+              <Text style={styles.error}>
+                Por favor ingrese un email válido
+              </Text>
             )}
             <View style={styles.inputContainer}>
-              <Text style={styles.inputText}>Numero de telefono</Text>
+              <Text style={styles.inputText}>Número de teléfono</Text>
               <Controller
+                defaultValue={currUser.phonenumber}
                 control={control}
                 rules={{
                   required: true,
-                  validate: (phone) => validatePhone(phone),
+                  validate: (phone) => {
+                    validatePhone(phone);
+                  },
                 }}
-                defaultValue={currUser.phone_number}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <PhoneInput
-                    defaultValue={currUser.phone_number}
+                    defaultValue={currUser.national_number}
                     defaultCode={currUser.country_code}
                     layout="first"
                     autoFocus
@@ -343,7 +373,7 @@ const EditProfile = () => {
             </View>
             {errors.phone && (
               <Text style={styles.error}>
-                Por favor ingrese un numero valido.
+                Por favor ingrese un número válido.
               </Text>
             )}
             <View style={styles.inputContainer}>
