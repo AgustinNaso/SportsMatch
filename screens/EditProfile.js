@@ -1,4 +1,5 @@
 import { useForm, Controller } from "react-hook-form";
+import CustomButton from "../components/CustomButton";
 import {
   SafeAreaView,
   View,
@@ -422,8 +423,8 @@ const EditProfile = () => {
                         onChange(selectedItems);
                       }}
                       selectedItems={selectedLocations}
-                      selectText="Select locations"
-                      searchInputPlaceholderText="Search locations..."
+                      selectText="Elija las ubicaciones"
+                      searchInputPlaceholderText="Busque ubicaciones..."
                       onChangeInput={(text) => console.log(text)}
                       tagRemoveIconColor={COLORS.primary}
                       tagBorderColor={COLORS.primary}
@@ -433,7 +434,7 @@ const EditProfile = () => {
                       itemTextColor="#000"
                       displayKey="id"
                       submitButtonColor={COLORS.primary}
-                      submitButtonText="Done"
+                      submitButtonText="Confirmar"
                     />
                   </ScrollView>
                 )}
@@ -444,12 +445,9 @@ const EditProfile = () => {
             {error && (
               <Text style={{ color: "red", paddingTop: 15 }}>{error}</Text>
             )}
-            <TouchableOpacity
-              style={styles.saveBtn}
-              onPress={handleSubmit(submit)}
-            >
-              <Text style={{ ...FONTS.h3, color: COLORS.white }}>Save</Text>
-            </TouchableOpacity>
+            <View style={{marginTop: 40}}>
+            <CustomButton title="Guardar" onPress={handleSubmit(submit)}/>
+            </View>
           </ScrollView>
         )}
       </KeyboardAvoidingView>
