@@ -46,7 +46,6 @@ const Profile = () => {
     setLoading(true);
     try {
       fetchUserData();
-      setLoading(false);
     } catch (err) {
       console.error("ERROR fetching user data", err);
     }
@@ -59,10 +58,11 @@ const Profile = () => {
   };
 
   const fetchImage = async () => {
-    const response = await fetchUserImage(currUser.user_id);
+    const response = await fetchUserImage(currUser.userid);
     if (response.status == 200) {
       setImage(response.imageURL);
     }
+    setLoading(false);
   };
 
 
@@ -123,7 +123,7 @@ const Profile = () => {
               <View style={styles.userDataContainer}>
                 <Ionicons name="call" size={24} color={COLORS.primary} />
                 <View style={styles.userDataDisplay}>
-                  <Text style={styles.itemText}>{formatPhoneNumber(currUser?.phone_number)}</Text>
+                  <Text style={styles.itemText}>{formatPhoneNumber(currUser?.phonenumber)}</Text>
                 </View>
               </View>
               <View style={styles.userDataContainer}>

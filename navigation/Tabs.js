@@ -4,6 +4,7 @@ import HomeStackNavigator from "./HomeStackNavigator";
 import ProfileStackNavigator from "./ProfileStackNavigator";
 import { COLORS } from "../constants";
 import { MyEvents } from "../screens";
+import { View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Menu, MenuItem, MenuDivider } from "react-native-material-menu";
 import { TouchableOpacity } from "react-native";
@@ -68,13 +69,17 @@ const Tabs = () => {
                     setVisible(!visible);
                   }}
                 >
-                  Edit Profile
+                  Editar perfil
                 </MenuItem>
                 <MenuDivider />
-                <MenuItem onPress={() => {
-                  authContext.signOut();
-                  setVisible(!visible)
-                }}>Logout</MenuItem>
+                <MenuItem
+                  onPress={() => {
+                    authContext.signOut();
+                    setVisible(!visible);
+                  }}
+                >
+                  Cerrar sesión
+                </MenuItem>
               </Menu>
             );
           },

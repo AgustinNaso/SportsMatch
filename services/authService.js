@@ -73,7 +73,7 @@ export const login = async data => {
                     lastName: data.idToken.payload.family_name,
                     phone: data.idToken.payload.phone_number,
                     birthdate: data.idToken.payload.birthdate,
-                    user_id: userData.user_id
+                    user_id: userData.userid
                 }));
                 resolve({
                     token : data.idToken.jwtToken

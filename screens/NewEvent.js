@@ -43,7 +43,7 @@ const NewEvent = () => {
         console.log("date:", date, "time:", time, "datetime: ", dateTimeToDate(date, time))
         // setIsLoading(!isLoading);
         const data = {
-            sport_id: SPORT.indexOf(sport) + 1,
+            sportId: SPORT.indexOf(sport) + 1,
             expertise: EXPERTISE.indexOf(difficulty) + 1,
             location: location,
             schedule: dateTimeToDate(date, time),

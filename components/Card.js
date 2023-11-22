@@ -22,6 +22,8 @@ const Card = ({ props }) => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [userRate, setUserRate] = React.useState(3);
+  const [loading, setLoading] = React.useState(true);
+  console.log("PROPS DE CARD", props);
 
   const handlePress = () => {
     navigation.navigate("Evento", { props: props });
@@ -46,6 +48,7 @@ const Card = ({ props }) => {
       if (response.status == 200) {
         setImage(response.imageURL);
       }
+      setLoading(false);
     };
     try {
       fetchImage();
@@ -55,94 +58,112 @@ const Card = ({ props }) => {
   }, []);
 
   return (
-    <TouchableOpacity style={styles.card} onPress={handlePress}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <Pressable
-          style={styles.centeredView}
-          onPress={(e) => e.target == e.currentTarget && setModalVisible(false)}
-        >
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>
-              ¿Cómo fue jugar con este participante?
-            </Text>
-            <View style={{ marginBottom: 20 }}>
-              <AirbnbRating
-                size={30}
-                reviewSize={25}
-                reviews={["Muy malo", "Malo", "Normal", "Bueno", "Muy bueno"]}
-                onFinishRating={setUserRate}
+    <>
+      {!loading && (
+        <TouchableOpacity style={styles.card} onPress={handlePress}>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <Pressable
+              style={styles.centeredView}
+              onPress={(e) =>
+                e.target == e.currentTarget && setModalVisible(false)
+              }
+            >
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>
+                  ¿Cómo fue jugar con este participante?
+                </Text>
+                <View style={{ marginBottom: 20 }}>
+                  <AirbnbRating
+                    size={30}
+                    reviewSize={25}
+                    reviews={[
+                      "Muy malo",
+                      "Malo",
+                      "Normal",
+                      "Bueno",
+                      "Muy bueno",
+                    ]}
+                    onFinishRating={setUserRate}
+                  />
+                </View>
+                <Button
+                  color={COLORS.primary}
+                  mode="contained"
+                  title="Enviar puntuación"
+                  onPress={postUserRating}
+                />
+              </View>
+            </Pressable>
+          </Modal>
+          <View style={styles.section}>
+            <View style={{ ...styles.verticalSection, marginLeft: 8 }}>
+              <Avatar
+                rounded
+                size={100}
+                source={image ? { uri: image } : DefaultProfile}
+                containerStyle={{ backgroundColor: COLORS.secondary }}
               />
+              <Text style={styles.cardMidText}>{props.owner_firstname}</Text>
             </View>
-            <Button
-              color={COLORS.primary}
-              mode="contained"
-              title="Enviar puntuación"
-              onPress={postUserRating}
-            />
-          </View>
-        </Pressable>
-      </Modal>
-      <View style={styles.section}>
-        <View style={{ ...styles.verticalSection, marginLeft: 8 }}>
-          <Avatar
-            rounded
-            size={100}
-            source={image ? { uri: image } : DefaultProfile}
-            containerStyle={{ backgroundColor: COLORS.secondary }}
-          />
-          <Text style={styles.cardMidText}>{props.owner_firstname}</Text>
-        </View>
-        <View style={[styles.verticalSection, { alignItems: "flex-start" }]}>
-          <Text style={styles.cardBigText}>{SPORT[props.sport_id - 1]}</Text>
-          <Text style={{ ...styles.cardMidText, flex: 1 }}>
-            {EXPERTISE[props.expertise]}
-          </Text>
-          {props.event_status === EVENT_STATUS.FINALIZED ? (
-            props.is_rated === 1 ? (
-              <Text style={{ ...styles.cardMidText, marginBottom: 2 }}>
-                Finalizado
+            <View
+              style={[styles.verticalSection, { alignItems: "flex-start" }]}
+            >
+              <Text style={styles.cardBigText}>
+                {SPORT[props.sport_id - 1]}
               </Text>
-            ) : (
-              <Button
-                color={COLORS.primary}
-                mode="contained"
-                title="Puntuar"
-                onPress={() => setModalVisible(true)}
-              />
-            )
-          ) : (
-            <Text style={{ ...styles.cardMidText, marginBottom: 2 }}>
-              {props.remaining > 0 ? "Faltan: " + props.remaining : "Completo"}
+              <Text style={{ ...styles.cardMidText, flex: 1 }}>
+                {EXPERTISE[props.expertise]}
+              </Text>
+              {props.event_status === EVENT_STATUS.FINALIZED ? (
+                props.is_rated === 1 ? (
+                  <Text style={{ ...styles.cardMidText, marginBottom: 2 }}>
+                    Finalizado
+                  </Text>
+                ) : (
+                  <Button
+                    color={COLORS.primary}
+                    mode="contained"
+                    title="Puntuar"
+                    onPress={() => setModalVisible(true)}
+                  />
+                )
+              ) : (
+                <Text style={{ ...styles.cardMidText, marginBottom: 2 }}>
+                  {props.remaining > 0
+                    ? "Faltan: " + props.remaining
+                    : "Completo"}
+                </Text>
+              )}
+            </View>
+          </View>
+          <View
+            style={[
+              styles.section,
+              {
+                backgroundColor: COLORS.primary,
+                margin: -10,
+                paddingHorizontal: 10,
+                paddingVertical: 4,
+              },
+            ]}
+          >
+            <Text style={[styles.cardSmText, { color: COLORS.white }]}>
+              {day} de {MONTHS[month - 1]} {hours}:{minutes} hs
             </Text>
-          )}
-        </View>
-      </View>
-      <View
-        style={[
-          styles.section,
-          {
-            backgroundColor: COLORS.primary,
-            margin: -10,
-            paddingHorizontal: 10,
-            paddingVertical: 4,
-          },
-        ]}
-      >
-        <Text style={[styles.cardSmText, { color: COLORS.white }]}>
-          {day} de {MONTHS[month - 1]} {hours}:{minutes} hs
-        </Text>
-        <Text style={[styles.cardSmText, { color: COLORS.white }]}>
-          {props.location}
-        </Text>
-      </View>
-    </TouchableOpacity>
+            <Text style={[styles.cardSmText, { color: COLORS.white }]}>
+              {props.location}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      )}
+    </>
   );
 };
 
