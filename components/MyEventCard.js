@@ -20,6 +20,7 @@ import { COLORS } from "../constants";
 import { EVENT_STATUS } from "../constants/data";
 import DefaultProfile from "../assets/default-profile.png";
 import { fetchUserImage } from "../services/userService";
+import { Image } from "expo-image";
 
 const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) => {
   const currUser = { id: 1 };
@@ -35,6 +36,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
     const fetchImage = async () => {
       const response = await fetchUserImage(props.user_id);
       if (response.status == 200) {
+        console.log("Response: ", response.imageURL);
         setImage(response.imageURL);
       }
     };
