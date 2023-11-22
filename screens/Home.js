@@ -13,7 +13,6 @@ import Card from "../components/Card";
 import Pill from "../components/Pill";
 import { fetchNearEvents, fetchUser } from "../services/eventService";
 import { COLORS } from "../constants";
-import { StatusBar } from "expo-status-bar";
 import { SPORT } from "../constants/data";
 import { StyleSheet } from "react-native";
 import { getCurrentUserData } from "../services/authService";
@@ -115,7 +114,6 @@ const Home = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={{ flex: 1, maxHeight: "100%" }}>
-      <StatusBar />
       <FlatList
         data={filterData}
         renderItem={renderItemPill}

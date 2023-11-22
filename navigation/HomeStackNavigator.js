@@ -14,26 +14,27 @@ const HomeStackNavigator = () => {
     const [showFilters, setShowFilters] = React.useState(false);
     return (
         <Stack.Navigator
-            screenOptions={{ headerShown: true }} >
+            screenOptions={{ headerTintColor: COLORS.white, headerShown: true, statusBarColor: COLORS.primary, headerStyle: {backgroundColor: COLORS.primary }}}>
             <Stack.Group>
                 <Stack.Screen
                     options={{
                         headerRight: () => {
                             return (
                                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                    <Ionicons name='options' style={{ marginRight: 10, marginTop: 1 }} size={24} color={COLORS.primary} onPress={() => {
+                                    <Ionicons name='options' style={{ marginRight: 10, marginTop: 1 }} size={24} color={COLORS.white} onPress={() => {
                                         navigator.navigate("Filtros")
                                     }} />
-                                    <Ionicons name='add' style={{}} size={30} color={COLORS.primary} onPress={() => navigator.navigate("Nuevo Evento")} />
+                                    <Ionicons name='add' style={{}} size={30} color={COLORS.white} onPress={() => navigator.navigate("Nuevo Evento")} />
                                 </View>
                             )
                         }
                     }}
                     name="Inicio" component={Home}/>
                 <Stack.Screen name="Evento" component={Event} />
-                <Stack.Screen name="Nuevo Evento" component={NewEvent} />
+                <Stack.Screen name="Nuevo Evento" component={NewEvent}
+                />
             </Stack.Group>
-            <Stack.Group screenOptions={{ presentation: 'containedTransparentModal', headerShown: false}}>
+            <Stack.Group screenOptions={{ presentation: 'modal', headerShown: false}}>
                 <Stack.Screen name="Filtros" component={FilterModal}/>
             </Stack.Group>
         </Stack.Navigator>

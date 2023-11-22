@@ -44,9 +44,12 @@ const Tabs = () => {
         name="HomeNavigator"
         component={HomeStackNavigator}
       />
-      <Tab.Screen name="Mis Eventos" component={MyEvents} />
+      <Tab.Screen name="Mis Eventos" component={MyEvents} options={{
+         headerTintColor: COLORS.white, headerStyle: {backgroundColor: COLORS.primary }
+      }} />
       <Tab.Screen
         options={{
+          headerTintColor: COLORS.white, headerStyle: {backgroundColor: COLORS.primary },
           headerRight: () => {
             return (
               <Menu
@@ -57,7 +60,7 @@ const Tabs = () => {
                       name="menu"
                       style={{ marginRight: 10, marginTop: 1 }}
                       size={24}
-                      color={COLORS.primary}
+                      color={COLORS.white}
                     />
                   </TouchableOpacity>
                 }
