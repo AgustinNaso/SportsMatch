@@ -11,19 +11,15 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import {
   acceptParticipant,
-  fetchUser,
   rateUser,
-  removeParticipantAsOwner,
 } from "../services/eventService";
 import { AirbnbRating, Avatar, Button } from "@rneui/base";
 import { COLORS } from "../constants";
 import { EVENT_STATUS } from "../constants/data";
 import DefaultProfile from "../assets/default-profile.png";
 import { fetchUserImage } from "../services/userService";
-import { Image } from "expo-image";
 
 const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) => {
-  const currUser = { id: 1 };
   console.log("Props: ", props);
   const [userAccepted, setUserAccepted] = React.useState(
     props.participant_status
@@ -135,7 +131,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
           <Text style={styles.userText}>{props.firstname}</Text>
           <View
             style={{
-              flexDirection: "row",
+            flexDirection: "row",
               alignItems: "center",
               justifyContent: "flex-start",
               marginLeft: -6,

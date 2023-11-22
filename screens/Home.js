@@ -16,6 +16,7 @@ import { COLORS } from "../constants";
 import { SPORT } from "../constants/data";
 import { StyleSheet } from "react-native";
 import { getCurrentUserData } from "../services/authService";
+import { NoContentMessage } from "../components/NoContentMessage";
 
 const filterData = [
   { key: 1, sportId: 1, sport: SPORT[0] },
@@ -78,10 +79,10 @@ const Home = ({ navigation, route }) => {
   };
 
   const renderEmptyList = () => {
-    return (
-      <View style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>No hay partidos disponibles</Text>
-      </View>
+    return (<>
+        <NoContentMessage message="No hay eventos disponibles en este momento."/>
+        <View style={{height: 40}}/>
+    </>
     );
   };
 
@@ -113,7 +114,7 @@ const Home = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, maxHeight: "100%" }}>
+    <SafeAreaView style={{ flex: 1, minHeight: "100%" }}>
       <FlatList
         data={filterData}
         renderItem={renderItemPill}
@@ -137,7 +138,7 @@ const Home = ({ navigation, route }) => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          style={{ flex: 1 }}
+          contentContainerStyle={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8}}
           keyExtractor={(item) => {
             return item.event_id.toString();
           }}
@@ -155,15 +156,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
     padding: 10,
-  },
-  emptyContainer: {
-    flex: 1,
-    height: 500,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  emptyText: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
+  }
 });

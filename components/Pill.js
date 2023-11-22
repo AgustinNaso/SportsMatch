@@ -29,11 +29,11 @@ const Pill = ({props, handlePress, currentFilter, customStyle}) => {
 const styles = StyleSheet.create({
     pill : {
         flex: 1,
-        width: 80,
-        borderRadius: 15,
-        borderWidth: 1,
-        borderColor: 'black',
-        maxHeight: 40,
+        width: 85,
+        borderRadius: 20,
+        borderWidth: 2,
+        borderColor: COLORS.primary,
+        maxHeight: 45,
         alignItems: 'center',
         justifyContent: 'center',
         marginHorizontal: 7,

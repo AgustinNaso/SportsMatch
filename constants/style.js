@@ -6,6 +6,10 @@ export const COLORS = {
   primary: "#19204E", // blue
   secondary: "#FCB300", // yellow
 
+  primary10: "#E6EAF0",
+  primary20: "#C2C9DB",
+
+
   // basic colors
   black: "#1E1F20",
   white: "#FFFFFF",
