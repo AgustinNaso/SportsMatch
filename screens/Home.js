@@ -94,7 +94,7 @@ const Home = ({ navigation, route }) => {
       setSelectedFilter(sport);
       //TODO: FIX this should be done in the backend
       setFilteredEventList(
-        eventsList.filter((e) => SPORT[e.sport_id - 1] == sport)
+        eventsList?.filter((e) => SPORT[e.sport_id - 1] == sport)
       );
     }
   };
