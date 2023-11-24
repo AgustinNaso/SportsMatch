@@ -36,12 +36,13 @@ const Home = ({ navigation, route }) => {
 
   useEffect(() => {
     getCurrentUserData().then(async (userData) => {
+      
+    console.log("USER DATA: ", userData);
       setUser(userData);
     });
   }, []);
 
   useEffect(() => {
-    console.log("Rerender " + route.params?.filters);
     const getNearEvents = async () => {
       const mockData = await fetchNearEvents(user.user_id, JSON.parse(route.params?.filters));
       setEventList(mockData.items);
@@ -58,6 +59,7 @@ const Home = ({ navigation, route }) => {
       setFilteredEventList(data.items);
       setLoading(false);
     };
+    print("USER ", user);
     if (user) {
       getNearEvents().catch((err) => console.log(err));
     }
@@ -79,7 +81,8 @@ const Home = ({ navigation, route }) => {
   };
 
   const renderEmptyList = () => {
-    return (<>
+    return (
+    <>
         <NoContentMessage message="No hay eventos disponibles en este momento."/>
         <View style={{height: 40}}/>
     </>

@@ -1,26 +1,29 @@
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import React, { useEffect } from 'react'
-import { Keyboard, StyleSheet, TextInput, Text, TouchableOpacity, View, Platform } from 'react-native'
+import { Keyboard, StyleSheet, TextInput, Text, TouchableOpacity, View, Platform, Modal, Pressable } from 'react-native'
 import { SelectList } from 'react-native-dropdown-select-list'
 import CustomButton from '../components/CustomButton'
 import { getCurrUserJWT, getCurrentUserData } from '../services/authService'
 import { Controller, useForm } from 'react-hook-form'
 import { EXPERTISE, LOCATIONS, SPORT } from '../constants/data'
 import { COLORS } from '../constants'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import RNDateTimePicker from '@react-native-community/datetimepicker'
 import { formatDate, formatTime, showDatepicker, showTimepicker } from '../utils/datetime'
 import { fetchUser, publishEvent } from '../services/eventService'
 import { useNavigation } from '@react-navigation/native'
 import Pill from '../components/Pill'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 
 const NewEvent = () => {
     const navigation = useNavigation();
     const [user, setUser] = React.useState(null);
     const [isLoading, setIsLoading] = React.useState(false);
-    const { control, handleSubmit, formState: { errors }, watch } = useForm();
-    const eventDuration = ['60', '90', '120']
+    const { control, handleSubmit, formState: { errors }, watch, setValue } = useForm();
+    const [modalVisible, setModalVisible] = React.useState(false);
+    const [customPlayerQty, setCustomPlayerQty] = React.useState('+');
+    const eventDuration = ['60', '90', '120'];
+    const playersQty = ['1','2','3',customPlayerQty];
 
 
     const dateTimeToDate = (date, time) => {
@@ -51,8 +54,11 @@ const NewEvent = () => {
             remaining: +players,
             duration: +duration
         }
+        console.log(data);
         try {
-            publishEvent(data);
+            setIsLoading(true);
+            await publishEvent(data);
+            setIsLoading(false);
             navigation.goBack();
         }
         catch (err) {
@@ -62,9 +68,39 @@ const NewEvent = () => {
 
 
     return (
-        <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1 }}>
-            <View style={{ padding: 10 }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <SafeAreaView style={{...styles.centeredView, paddingHorizontal: 16, backgroundColor: COLORS.primary10}}>
+             <Modal
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(false);
+            }}
+          >
+            <Pressable
+              style={styles.centeredView}
+              onPress={(e) =>
+                e.target == e.currentTarget && setModalVisible(false)
+              }
+            >
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>
+                  ¿Cuantos jugadores faltan?
+                </Text>
+                <TextInput style={{width: 50, backgroundColor: COLORS.primary10, borderColor: COLORS.primary, borderWidth: 1, borderRadius: 4}}
+                textAlign='center' autoFocus={true}
+                 keyboardType='number-pad' onChangeText={(text) => setCustomPlayerQty(text)}/>
+                <CustomButton
+                  title="Guardar"
+                  onPress={() => {
+                    setValue('players', customPlayerQty);
+                    setModalVisible(false);
+                }}
+                />
+              </View>
+            </Pressable>
+          </Modal>
+            <View >
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' , gap: 10}}>
                     <Controller control={control} rules={{ required: true }} render={({ field }) => (
                         <SelectList
                             setSelected={field.onChange}
@@ -72,7 +108,7 @@ const NewEvent = () => {
                             save="value"
                             maxHeight={200}
                             placeholder='Elija el deporte'
-                            boxStyles={{ marginVertical: 10 }}
+                            boxStyles={{ marginBottom: 10 }}
                             dropdownStyles={{ minWidth: '35%' }}
                             inputStyles={{ minWidth: '35%' }}
                             search={false}
@@ -83,9 +119,8 @@ const NewEvent = () => {
                             setSelected={field.onChange}
                             data={EXPERTISE}
                             save="value"
-                            maxHeight={200}
                             placeholder='Elija la dificultad'
-                            boxStyles={{ marginVertical: 10 }}
+                            boxStyles={{ marginBottom: 10 }}
                             dropdownStyles={{ minWidth: '35%' }}
                             inputStyles={{ minWidth: '35%' }}
                             search={false}
@@ -112,7 +147,7 @@ const NewEvent = () => {
                         return (
                             Platform.OS !== 'ios' ? (
                                 <TouchableOpacity onPress={() => showDatepicker(field)} style={styles.dateTimeContainer}>
-                                    <Text>{formatDate(field.value)}</Text>
+                                    <Text style={{textAlign: 'center'}}>{formatDate(field.value)}</Text>
                                 </TouchableOpacity>
                             )
                                 :
@@ -127,7 +162,7 @@ const NewEvent = () => {
                             field.value = new Date();
                         return (Platform.OS !== 'ios' ? (
                             <TouchableOpacity onPress={() => showTimepicker(field)} style={styles.dateTimeContainer}>
-                                <Text>{formatTime(field.value)}</Text>
+                                <Text style={{textAlign: 'center'}}>{formatTime(field.value)}</Text>
                             </TouchableOpacity>
                         ) :
                             <RNDateTimePicker value={field.value} mode="time" onChange={(event, selecteDate) => field.onChange(selecteDate)} minimumDate={new Date()} />
@@ -138,31 +173,26 @@ const NewEvent = () => {
             <View style={{ flexDirection: 'column' }}>
                 <View style={styles.qtyInputContainer}>
                     <Text style={styles.label}>Faltan</Text>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Controller
-                        control={control}
-                        render={({ field: { onChange, value } }) => (
-                            <TextInput
-                                style={styles.numberInput}
-                                keyboardType="numeric"
-                                placeholder="Cantidad de jugadores"
-                                onChangeText={onChange}
-                                value={value}
-                            />
-                        )}
-                        name="players"
-                        defaultValue=""
-                        rules={{
-                            required: 'Quantity of players is required',
-                            pattern: {
-                                value: /^\d+$/,
-                                message: 'Por favor ingrese un número válido',
-                            },
-                        }}
-                    />
+                            control={control}
+                            render={({ field: { onChange, value } }) => {
+                                console.log("VALUE: ", value);
+                                return (
+                                    playersQty.map((qty, index) => {
+                                        return <Pill key={index} props={{ title: qty}} handlePress={
+                                            index != playersQty.length - 1 ? onChange : () => setModalVisible(true)}
+                                            currentFilter={value} />
+                                    })
+                                )
+                            }
+                        }
+                        name = "players"/>
+                        </View>
                 </View>
                 <View style={{ ...styles.qtyInputContainer}}>
                     <Text style={styles.label}>Duración (min)</Text>
-                    <View style={{flexDirection: 'row', maxWidth: '70%', alignItems: 'center'}}>
+                    <View style={{flexDirection: 'row', maxWidth: '80%', alignItems: 'center'}}>
                         <Controller
                             control={control}
                             render={({ field: { onChange, value } }) => {
@@ -187,25 +217,28 @@ const NewEvent = () => {
                     onChangeText={field.onChange} />
             )}
                 name="description" />
-            <View style={styles.buttonContainer}>
-                <CustomButton title={"Cancelar"} color='red' onPress={navigation.goBack} />
-                <CustomButton title={isLoading ? "Creando" : "Crear"} color='green' isLoading={isLoading} onPress={handleSubmit(onSubmit)} />
-            </View>
+            <CustomButton title="Crear" isLoading={isLoading} onPress={handleSubmit(onSubmit)} />
         </SafeAreaView>
     )
 }
 
+
 export default NewEvent
 
 const styles = StyleSheet.create({
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      },
     input: {
         height: '20%',
-        margin: 12,
+        alignSelf:'stretch',
+        paddingHorizontal: 10,
+        marginVertical: 16,
         borderWidth: 1,
-        padding: 20,
         borderRadius: 4,
-        fontSize: 20,
-        marginTop: 10
+        fontSize: 18,
     },
     buttonContainer: {
         flexDirection: 'row',
@@ -219,23 +252,21 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingVertical: 8,
         paddingHorizontal: 15,
-        minWidth: 140
+        minWidth: 140,
     },
     dateSectionContainer: {
         flexDirection: 'row',
-        width: '90%',
         minHeight: 28,
         alignSelf: 'center',
-        justifyContent: 'space-evenly',
         marginTop: 10,
+        gap: 20
     },
     dateTimeLabelContainer: {
         flexDirection: 'column',
         alignItems: 'center',
     },
     label: {
-        marginRight: 10,
-        marginBottom: 5,
+        marginBottom: 10,
         fontSize: 18,
         color: COLORS.primary,
         fontWeight: 600
@@ -247,8 +278,6 @@ const styles = StyleSheet.create({
     },
     numberInput: {
         height: 40,
-        maxWidth: 140,
-        minWidth: 140,
         borderWidth: 1,
         borderRadius: 4,
         fontSize: 16,
@@ -258,5 +287,23 @@ const styles = StyleSheet.create({
     inputsContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
-    }
+    },
+    modalView: {
+        backgroundColor: COLORS.white,
+        borderRadius: 16,
+        paddingHorizontal: 36,
+        paddingVertical: 24,
+        alignItems: "center",
+        flexDirection: 'column',
+        gap: 14,
+        shadowOpacity: 0.25,
+        shadowRadius: 3,
+        elevation: 5,
+      },
+        modalText: {
+            textAlign: "center",
+            fontSize: 18,
+            fontWeight: 600,
+            color: COLORS.primary,
+        },
 });

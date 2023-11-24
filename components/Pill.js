@@ -21,7 +21,7 @@ const Pill = ({props, handlePress, currentFilter, customStyle}) => {
             handlePress(props.title)
             }
         }>
-            <Text style={[ selected ? {color: 'white', fontWeight: '700'}: null, customStyle ? customStyle.textStyle : null ]}>{props.title}</Text>
+            <Text style={[ selected ? {color: 'white', fontWeight: '700'}: {fontWeight: '400'}, customStyle ? customStyle.textStyle : null ]}>{props.title}</Text>
         </TouchableOpacity>
     );
 }
@@ -29,7 +29,7 @@ const Pill = ({props, handlePress, currentFilter, customStyle}) => {
 const styles = StyleSheet.create({
     pill : {
         flex: 1,
-        width: 85,
+        paddingHorizontal: 16,
         borderRadius: 20,
         borderWidth: 2,
         borderColor: COLORS.primary,

@@ -13,6 +13,7 @@ import { getCurrentUserData } from "../services/authService";
 import { COLORS } from "../constants";
 import { useIsFocused } from "@react-navigation/native";
 import MyEventList from "../components/MyEventList";
+import { NoContentMessage } from "../components/NoContentMessage";
 
 const renderList = (data) => {
   return <MyEventList data={data} />;
@@ -40,7 +41,7 @@ const SecondRoute = (joinedEvents) => (
     <FlatList
       data={joinedEvents}
       renderItem={renderJoinedItem}
-      contentContainerStyle={{ flexGrow: 1 }}
+      contentContainerStyle={{ flexGrow: 1, alignItems: "center", justifyContent: "center" }}
       style={{ flex: 1 }}
       keyExtractor={(item, index) => `${item.event_id}-${index}`}
       ListEmptyComponent={renderEmptyList}
@@ -50,11 +51,7 @@ const SecondRoute = (joinedEvents) => (
 
 const renderEmptyList = () => {
   return (
-    <View style={{ flex: 1, justifyContent: "center", height: "100%" }}>
-      <Text style={{ fontSize: 20, alignSelf: "center" }}>
-        No hay partidos por jugar
-      </Text>
-    </View>
+    <NoContentMessage message={"Aún no te anotaste a ningún evento"}/>
   );
 };
 
