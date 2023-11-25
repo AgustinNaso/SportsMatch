@@ -92,18 +92,14 @@ const EditProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const currentUser = await getCurrentUserData();
-      const user = await fetchUser(currentUser.email);
-      const { code, national_number } = parsePhoneNumber(user.phonenumber);
+      const { code, national_number } = parsePhoneNumber(currentUser.phonenumber);
       setCurrUser({
-        ...user,
-        birthdate: currentUser.birthdate,
+        ...currentUser,
         country_code: code,
         national_number: national_number,
       });
-      user.sports.every((sport) => sport !== null) &&
-        setSelectedSports(user.sports);
-      user.locations.every((location) => location !== null) &&
-        setSelectedLocations(user.locations);
+      setSelectedSports(currentUser.sports);
+      setSelectedLocations(currentUser.locations);
     };
     try {
       fetchUserData();
@@ -135,24 +131,9 @@ const EditProfile = () => {
   };
 
   const dataChanged = (data) => {
-    var phoneChanged = false;
-    if (data.phone !== currUser.phonenumber) {
-      phoneChanged = true;
-    }
-
-    var sportsChanged = false;
-    if (currUser.sports[0] === null) {
-      sportsChanged = selectedSports.size > 0;
-    } else {
-      sportsChanged = currUser.sports !== selectedSports;
-    }
-
-    var locChanged = false;
-    if (currUser.locations[0] === null) {
-      locChanged = selectedLocations.size > 0;
-    } else {
-      locChanged = currUser.locations !== selectedLocations;
-    }
+    const phoneChanged = data.phone !== currUser.phonenumber;
+    const sportsChanged = currUser.sports !== selectedSports;
+    const locChanged = currUser.locations !== selectedLocations;
 
     return phoneChanged || sportsChanged || locChanged;
   }
