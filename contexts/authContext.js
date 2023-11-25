@@ -58,7 +58,7 @@ export const useAuthContext = () => {
     const res = await register(data);
     console.log("RESPONSE: ", res);
     dispatch({ type: 'SIGN_UP' });
-
+    return res;
   }
 
   const restoreToken = token => dispatch({ type: 'RESTORE_TOKEN', token });

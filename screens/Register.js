@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   SafeAreaView,
@@ -14,6 +14,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { getEmailValidator, validateEmail } from "../utils/validations";
 import { AuthContext } from "../contexts/authContext";
 import PhoneInput from "react-native-phone-number-input";
+import { PhoneNumberUtil } from "google-libphonenumber";
 
 const Register = ({ navigation }) => {
   const {
@@ -23,16 +24,46 @@ const Register = ({ navigation }) => {
     watch,
   } = useForm();
   const authContext = useContext(AuthContext);
+  const phoneUtil = PhoneNumberUtil.getInstance();
+  const [signUpError, setSignUpError] = useState(false);
+  const [phoneConflict, setPhoneConflict] = useState(false);
+  const [emailConflict, setEmailConflict] = useState(false);
+
+  const parsePhoneNumber = (phone) => {
+    const parsedNumber = phoneUtil.parse(phone, "");
+    const code = phoneUtil.getRegionCodeForNumber(parsedNumber);
+    const national_number = phoneUtil
+      .parseAndKeepRawInput(phone, code)
+      .getNationalNumber();
+    return {
+      code: code,
+      national_number: national_number.toString(),
+    };
+  };
+
+  const validatePhone = (phone) => {
+    const { code, national_number } = parsePhoneNumber(phone);
+    return phoneUtil.isValidNumberForRegion(
+      phoneUtil.parse(national_number, code),
+      code
+    );
+  };
 
   const submit = async (data) => {
-    try {
-      delete data.confPassword;
-      await authContext.signUp(data);
-      navigation.navigate("ConfirmSignUp", { email: data.email });
-    } catch (err) {
-      console.error("Error signing up", err);
+    setPhoneConflict(false);
+    setEmailConflict(false);
+    delete data.confPassword;
+
+    const res = await authContext.signUp(data);
+    if (res.ok) {
+      navigation.navigate("Login");
+    } else if (res.internalStatus === "CONFLICT") {
+      res.message === "email" ? setEmailConflict(true) : setPhoneConflict(true);
+    } else if (res.internalStatus === "VALIDATION_ERROR") {
+      setSignUpError(true);
     }
   };
+
   return (
     <SafeAreaView
       style={{
@@ -65,7 +96,9 @@ const Register = ({ navigation }) => {
                 <TextInput
                   style={styles.input}
                   onBlur={onBlur}
-                  onChangeText={(text) => onChange(text.charAt(0).toUpperCase() + text.slice(1))}
+                  onChangeText={(text) =>
+                    onChange(text.charAt(0).toUpperCase() + text.slice(1))
+                  }
                   value={value}
                 />
               )}
@@ -86,7 +119,9 @@ const Register = ({ navigation }) => {
                 <TextInput
                   style={styles.input}
                   onBlur={onBlur}
-                  onChangeText={(text) => onChange(text.charAt(0).toUpperCase() + text.slice(1))}
+                  onChangeText={(text) =>
+                    onChange(text.charAt(0).toUpperCase() + text.slice(1))
+                  }
                   value={value}
                 />
               )}
@@ -121,6 +156,9 @@ const Register = ({ navigation }) => {
           {errors.email && (
             <Text style={styles.error}>Please enter a valid email</Text>
           )}
+          {emailConflict && (
+            <Text style={styles.error}>Email has already been taken</Text>
+          )}
           <View style={styles.inputContainer}>
             <Text style={styles.inputText}>Fecha de nacimiento</Text>
             <Controller
@@ -141,7 +179,9 @@ const Register = ({ navigation }) => {
             />
           </View>
           {errors.birthdate && (
-            <Text style={styles.error}>Por favor ingrese su fecha de nacimiento</Text>
+            <Text style={styles.error}>
+              Por favor ingrese su fecha de nacimiento
+            </Text>
           )}
           <View style={styles.inputContainer}>
             <Text style={styles.inputText}>Phone Number</Text>
@@ -150,6 +190,9 @@ const Register = ({ navigation }) => {
                 control={control}
                 rules={{
                   required: true,
+                  validate: (phone) => {
+                    return validatePhone(phone);
+                  },
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <PhoneInput
@@ -169,8 +212,13 @@ const Register = ({ navigation }) => {
               />
             </View>
           </View>
-          {errors.phone && (
+          {errors.phoneNumber && (
             <Text style={styles.error}>Please enter a valid phone number</Text>
+          )}
+          {phoneConflict && (
+            <Text style={styles.error}>
+              Phone number has already been taken
+            </Text>
           )}
           <View style={styles.inputContainer}>
             <Text style={styles.inputText}>Password</Text>
@@ -225,6 +273,11 @@ const Register = ({ navigation }) => {
           >
             <Text style={{ ...FONTS.h3, color: COLORS.white }}>Register</Text>
           </TouchableOpacity>
+          {signUpError && (
+            <Text style={styles.error}>
+              There's been an error, please try again
+            </Text>
+          )}
           <TouchableOpacity
             style={{ marginTop: 10 }}
             onPress={() => navigation.navigate("Login")}
@@ -269,7 +322,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     borderRadius: 20,
-    
+
     flag: {
       width: 55,
     },

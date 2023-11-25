@@ -352,7 +352,7 @@ const EditProfile = () => {
                 rules={{
                   required: true,
                   validate: (phone) => {
-                    validatePhone(phone);
+                    return validatePhone(phone);
                   },
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
