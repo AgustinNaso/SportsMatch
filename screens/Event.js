@@ -9,7 +9,7 @@ import {
   joinNewEvent,
   removeParticipant,
 } from "../services/eventService";
-import { getCurrentUserData } from "../services/authService";
+import { getCurrentUserData } from "../services/LocalStorageService";
 import { Avatar, Divider } from "@rneui/themed";
 import { COLORS } from "../constants";
 import { MONTHS } from "../constants/data";
@@ -48,7 +48,7 @@ const Event = ({ route }) => {
 
   useEffect(() => {
     eventParticipants.forEach((participant) => {
-      if (participant.user_id == user.user_id) {
+      if (participant.id == user.id) {
         if (participant.participant_status === true) {
           setUserStatus(USER_STATUS.ENROLLED);
         } else {
@@ -69,7 +69,7 @@ const Event = ({ route }) => {
 
   const joinEvent = async () => {
     try {
-      await joinNewEvent(props.event_id, user?.user_id);
+      await joinNewEvent(props.event_id, user?.id);
       setUserStatus(USER_STATUS.REQUESTING);
     } catch (error) {
       console.log(error);

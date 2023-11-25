@@ -30,7 +30,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
 
   useEffect(() => {
     const fetchImage = async () => {
-      const response = await fetchUserImage(props.user_id);
+      const response = await fetchUserImage(props.id);
       if (response.status == 200) {
         console.log("Response: ", response.imageURL);
         setImage(response.imageURL);
@@ -45,7 +45,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
 
   const postUserRating = async () => {
     try {
-      await rateUser(eventId, userRate, props.user_id);
+      await rateUser(eventId, userRate, props.id);
       setModalVisible(false);
     } catch (error) {
       console.log(error);

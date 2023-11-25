@@ -9,7 +9,7 @@ import {
   fetchUser,
   removeParticipant,
 } from "../services/eventService";
-import { getCurrentUserData } from "../services/authService";
+import { getCurrentUserData } from "../services/LocalStorageService";
 import { COLORS } from "../constants";
 import { useIsFocused } from "@react-navigation/native";
 import MyEventList from "../components/MyEventList";
@@ -85,11 +85,11 @@ const MyEvents = () => {
 
   useEffect(() => {
     const getMyEvents = async () => {
-      const data = await fetchMyEvents(user.user_id);
+      const data = await fetchMyEvents(user.id);
       setMyEvents(data.items);
     };
     const getJoinedEvents = async () => {
-      const mockData = await fetchJoinedEvents(user.user_id);
+      const mockData = await fetchJoinedEvents(user.id);
       setJoinedEvents(mockData.items);
     };
     if (user && isFocused) {

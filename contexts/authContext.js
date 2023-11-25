@@ -1,6 +1,7 @@
 // authContext.js
 import React, { useMemo, useReducer } from "react";
-import { clearUserData, login, register } from "../services/authService";
+import { login, register } from "../services/AuthService";
+import { save, clearUserData } from "../services/LocalStorageService";
 
 export const AuthContext = React.createContext();
 
@@ -40,9 +41,11 @@ export const useAuthContext = () => {
   );
 
   const signIn = async data => {
-    const res = await login(data);
-    console.log("USER DATA LOGIN: ", res);
-    dispatch({ type: 'SIGN_IN', token: res.token });
+    const [userToken, userData] = await login(data.email, data.password);
+    await save('userToken', userToken);
+    await save('userData', JSON.stringify(userData));
+    console.log("DAX" + JSON.stringify(userData));
+    dispatch({ type: 'SIGN_IN', token: userToken });
   };
 
   const signOut = () => {

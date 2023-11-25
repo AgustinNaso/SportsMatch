@@ -15,7 +15,7 @@ import { fetchNearEvents, fetchUser } from "../services/eventService";
 import { COLORS } from "../constants";
 import { SPORT } from "../constants/data";
 import { StyleSheet } from "react-native";
-import { getCurrentUserData } from "../services/authService";
+import { getCurrentUserData } from "../services/LocalStorageService";
 import { NoContentMessage } from "../components/NoContentMessage";
 
 const filterData = [
@@ -44,7 +44,7 @@ const Home = ({ navigation, route }) => {
 
   useEffect(() => {
     const getNearEvents = async () => {
-      const mockData = await fetchNearEvents(user.user_id, JSON.parse(route.params?.filters));
+      const mockData = await fetchNearEvents(user.id, JSON.parse(route.params?.filters));
       setEventList(mockData.items);
       setFilteredEventList(mockData.items);
       setLoading(false);
@@ -54,7 +54,7 @@ const Home = ({ navigation, route }) => {
 
   useEffect(() => {
     const getNearEvents = async () => {
-      const data = await fetchNearEvents(user.user_id);
+      const data = await fetchNearEvents(user.id);
       setEventList(data.items);
       setFilteredEventList(data.items);
       setLoading(false);

@@ -26,6 +26,7 @@ const Register = ({ navigation }) => {
 
   const submit = async (data) => {
     try {
+      delete data.confPassword;
       await authContext.signUp(data);
       navigation.navigate("ConfirmSignUp", { email: data.email });
     } catch (err) {
@@ -68,7 +69,7 @@ const Register = ({ navigation }) => {
                   value={value}
                 />
               )}
-              name="name"
+              name="firstName"
             />
           </View>
           {errors.name && (
@@ -121,6 +122,28 @@ const Register = ({ navigation }) => {
             <Text style={styles.error}>Please enter a valid email</Text>
           )}
           <View style={styles.inputContainer}>
+            <Text style={styles.inputText}>Fecha de nacimiento</Text>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  style={styles.input}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  placeholder="dd/mm/aaaa"
+                />
+              )}
+              name="birthdate"
+            />
+          </View>
+          {errors.birthdate && (
+            <Text style={styles.error}>Por favor ingrese su fecha de nacimiento</Text>
+          )}
+          <View style={styles.inputContainer}>
             <Text style={styles.inputText}>Phone Number</Text>
             <View style={styles.phoneContainer}>
               <Controller
@@ -142,7 +165,7 @@ const Register = ({ navigation }) => {
                     }}
                   />
                 )}
-                name="phone"
+                name="phoneNumber"
               />
             </View>
           </View>

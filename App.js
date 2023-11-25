@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useFonts } from "expo-font";
 import Tabs from "./navigation/Tabs";
 import { Login, Register, ConfirmSignUp } from "./screens";
-import { useEffect } from "react";
-import { getCurrUserJWT } from "./services/authService";
 import { useAuthContext, AuthContext } from "./contexts/authContext";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import { getCurrUserJWT } from "./services/LocalStorageService";
 
 const Stack = createStackNavigator();
 

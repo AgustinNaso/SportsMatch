@@ -13,7 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { fetchUser } from "../services/eventService";
 import { fetchUserImage } from "../services/userService";
 import { SPORT } from "../constants/data";
-import { getCurrentUserData } from "../services/authService";
+import { getCurrentUserData } from "../services/LocalStorageService";
 import { useIsFocused } from "@react-navigation/native";
 import DefaultProfile from "../assets/default-profile.png";
 

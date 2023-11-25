@@ -128,7 +128,7 @@ export const joinNewEvent = async (eventId, userId) => {
 
   await authenticatedFetch("/events/" + eventId + "/participants", {
     method: "PUT",
-    body: JSON.stringify({ userId: userData.user_id }),
+    body: JSON.stringify({ userId: userData.id }),
     headers: {
       "Content-Type": "application/json",
     },

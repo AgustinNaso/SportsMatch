@@ -9,7 +9,7 @@ import {
 import { TextInput } from "react-native-gesture-handler";
 import { useRoute } from "@react-navigation/native";
 import { COLORS, FONTS } from "../constants";
-import { verifyMail } from "../services/authService";
+import { verifyMail } from "../services/LocalStorageService";
 
 const styles = StyleSheet.create({
   input: {
@@ -53,15 +53,15 @@ const ConfirmSignUp = ({ navigation }) => {
   const route = useRoute();
   const email = route.params?.email;
 
-  const onConfirmPressed = async () => {
-    verifyMail(email, code).then((response) => {
-      if (response.error) {
-        setError(response.error.message);
-      } else {
-        navigation.navigate("Login");
-      }
-    });
-  }
+  // const onConfirmPressed = async () => {
+  //   verifyMail(email, code).then((response) => {
+  //     if (response.error) {
+  //       setError(response.error.message);
+  //     } else {
+  //       navigation.navigate("Login");
+  //     }
+  //   });
+  // }
 
   return (
     <SafeAreaView
@@ -69,40 +69,40 @@ const ConfirmSignUp = ({ navigation }) => {
         alignItems: "center",
         justifyContent: "center",
         paddingBottom: 100,
-      }}
-    >
-      <Text
-        style={{
-          ...FONTS.h1,
-          fontSize: 40,
-          color: COLORS.primary,
-          paddingTop: 50,
-        }}
-      >
-        SportsMatch
-      </Text>
-      {error && (
-        <Text style={styles.error}>
-          {error}
-        </Text>
-      )}
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputText}>Confirmation code</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={setCode}
-          value={code}
-          keyboardType="numeric"
-        />
-        <Text style={styles.inputText}>Please check your email for the confirmation code.</Text>
-      </View>
-      <TouchableOpacity
-        style={styles.confirmBtn}
-        onPress={onConfirmPressed}
-      >
-        <Text style={{ ...FONTS.h3, color: COLORS.white }}>Confirm</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+      }}></SafeAreaView>
+    // >
+    //   <Text
+    //     style={{
+    //       ...FONTS.h1,
+    //       fontSize: 40,
+    //       color: COLORS.primary,
+    //       paddingTop: 50,
+    //     }}
+    //   >
+    //     SportsMatch
+    //   </Text>
+    //   {error && (
+    //     <Text style={styles.error}>
+    //       {error}
+    //     </Text>
+    //   )}
+    //   <View style={styles.inputContainer}>
+    //     <Text style={styles.inputText}>Confirmation code</Text>
+    //     <TextInput
+    //       style={styles.input}
+    //       onChangeText={setCode}
+    //       value={code}
+    //       keyboardType="numeric"
+    //     />
+    //     <Text style={styles.inputText}>Please check your email for the confirmation code.</Text>
+    //   </View>
+    //   <TouchableOpacity
+    //     style={styles.confirmBtn}
+    //     onPress={onConfirmPressed}
+    //   >
+    //     <Text style={{ ...FONTS.h3, color: COLORS.white }}>Confirm</Text>
+    //   </TouchableOpacity>
+    // </SafeAreaView>
   );
 };
 
