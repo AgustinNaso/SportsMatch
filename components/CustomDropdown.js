@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { COLORS } from '../constants';
 
 
-const CustomDropdown = ({data, selected,setSelected, label}) => {
+const CustomDropdown = ({data, selected,setSelected, label, search = false}) => {
     const [isFocus, setIsFocus] = useState(false);
 
     return (
@@ -15,6 +15,7 @@ const CustomDropdown = ({data, selected,setSelected, label}) => {
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
+          itemTextStyle={{fontSize: 14}}
           iconStyle={styles.iconStyle}
           data={data.map((item) => ({ label: item, value: item }))}
           maxHeight={300}
@@ -22,6 +23,8 @@ const CustomDropdown = ({data, selected,setSelected, label}) => {
           valueField="value"
           placeholder={!isFocus ? `Seleccione ${label}`  : '...'}
           value={selected}
+          search={search}
+          searchPlaceholder='Buscar...'
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onChange={item => {
@@ -56,16 +59,16 @@ const CustomDropdown = ({data, selected,setSelected, label}) => {
       position: 'absolute',
       backgroundColor: COLORS.primary10,
       left: 24,
-      top: 6,
+      top: 4,
       zIndex: 999,
-      paddingHorizontal: 2,
+      paddingHorizontal: 4,
       fontSize: 14,
     },
     placeholderStyle: {
-      fontSize: 16,
+      fontSize: 14,
     },
     selectedTextStyle: {
-      fontSize: 16,
+      fontSize: 14,
     },
     iconStyle: {
       width: 20,
@@ -73,6 +76,6 @@ const CustomDropdown = ({data, selected,setSelected, label}) => {
     },
     inputSearchStyle: {
       height: 40,
-      fontSize: 16,
+      fontSize: 14,
     },
   });

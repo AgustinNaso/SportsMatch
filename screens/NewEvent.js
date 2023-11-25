@@ -1,4 +1,3 @@
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import React, { useEffect } from 'react'
 import { Keyboard, StyleSheet, TextInput, Text, TouchableOpacity, View, Platform, Modal, Pressable } from 'react-native'
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -12,9 +11,9 @@ import { fetchUser, publishEvent } from '../services/eventService'
 import { useNavigation } from '@react-navigation/native'
 import Pill from '../components/Pill'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import DropDownPicker from 'react-native-dropdown-picker'
 import { Dropdown } from 'react-native-element-dropdown'
 import CustomDropdown from '../components/CustomDropdown'
+import { getCurrentUserData } from '../services/LocalStorageService'
 
 
 const NewEvent = () => {
@@ -123,6 +122,7 @@ const NewEvent = () => {
                     setSelected={field.onChange}
                     data={LOCATIONS}
                     label="Lugar"
+                    search={true}
                     />
                     )}
                     name="location" />
