@@ -16,6 +16,7 @@ import { SPORT } from "../constants/data";
 import { getCurrentUserData } from "../services/LocalStorageService";
 import { useIsFocused } from "@react-navigation/native";
 import DefaultProfile from "../assets/default-profile.png";
+import { NoContentMessage } from "../components/NoContentMessage";
 
 const Profile = () => {
   const [loading, setLoading] = useState(true);
@@ -53,8 +54,8 @@ const Profile = () => {
 
   const fetchUserData = async () => {
     const currentUser = await getCurrentUserData();
-    const user = await fetchUser(currentUser.email);
-    setCurrUser({ ...user, birthdate: currentUser.birthdate });
+    console.log("CURR", currUser);
+    setCurrUser(currentUser);
   };
 
   const fetchImage = async () => {
@@ -98,7 +99,7 @@ const Profile = () => {
                 }}
               >
                 <Ionicons name="star" size={18} color={COLORS.secondary} />
-                <Text style={styles.profileTextAge}>{Number(currUser?.rating).toFixed(1)}</Text>
+                <Text style={styles.profileTextAge}> {Number(currUser?.rating).toFixed(1)}</Text>
               </View>
               <Text style={styles.profileTextLocation}>
                 {currUser?.count} partidos
@@ -137,8 +138,7 @@ const Profile = () => {
               <Text style={styles.bodyText}>Mis Deportes</Text>
               <Divider width={3} style={{ width: "100%", marginBottom: 16 }} />
               <View style={styles.chipContainer}>
-                {currUser?.sports &&
-                currUser.sports.every((sport) => sport !== null) ? (
+                {currUser?.sports.length != 0 ? (
                   currUser.sports.map((sport, idx) => {
                     return (
                       <Chip
@@ -149,11 +149,7 @@ const Profile = () => {
                     );
                   })
                 ) : (
-                  <Chip
-                    title="No hay deportes registrados"
-                    key={1}
-                    color={COLORS.primary}
-                  />
+                  <NoContentMessage message="No elegiste ningun deporte"/>
                 )}
               </View>
             </View>
@@ -161,19 +157,16 @@ const Profile = () => {
               <Text style={styles.bodyText}>Mis Ubicaciones</Text>
               <Divider width={3} style={{ width: "100%", marginBottom: 16 }} />
               <View style={styles.chipContainer}>
-                {currUser?.locations &&
-                currUser.locations.every((location) => location !== null) ? (
+                {currUser?.locations.length && 
+                currUser.locations.every((location) => location !== null) != 0 ?
+                 (
                   currUser.locations.map((location, idx) => {
                     return (
                       <Chip title={location} key={idx} color={COLORS.primary} />
                     );
                   })
                 ) : (
-                  <Chip
-                    title="No hay ubicaciones registrados"
-                    key={1}
-                    color={COLORS.primary}
-                  />
+                  <NoContentMessage message="No elegiste ninguna ubicacion"/>
                 )}
               </View>
             </View>

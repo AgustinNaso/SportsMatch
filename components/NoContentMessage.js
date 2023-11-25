@@ -12,7 +12,7 @@ export const NoContentMessage = ({message}) => {
 const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 24,
-        paddingVertical: 30,
+        paddingVertical: 24,
         backgroundColor: COLORS.primary20,
         borderRadius: 4,
         justifyContent: 'center',
