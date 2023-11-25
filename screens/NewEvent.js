@@ -13,6 +13,9 @@ import { fetchUser, publishEvent } from '../services/eventService'
 import { useNavigation } from '@react-navigation/native'
 import Pill from '../components/Pill'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import DropDownPicker from 'react-native-dropdown-picker'
+import { Dropdown } from 'react-native-element-dropdown'
+import CustomDropdown from '../components/CustomDropdown'
 
 
 const NewEvent = () => {
@@ -23,7 +26,7 @@ const NewEvent = () => {
     const [modalVisible, setModalVisible] = React.useState(false);
     const [customPlayerQty, setCustomPlayerQty] = React.useState('+');
     const eventDuration = ['60', '90', '120'];
-    const playersQty = ['1','2','3',customPlayerQty];
+    const playersQty = ['1','2','3', customPlayerQty];
 
 
     const dateTimeToDate = (date, time) => {
@@ -40,10 +43,6 @@ const NewEvent = () => {
 
     const onSubmit = async (formData) => {
         const { sport, difficulty, location, date, time, description, players, duration } = formData;
-        console.log("FORMDATA: ", formData);
-        const userD = await getCurrentUserData();
-        console.log("USERD: ", userD);
-        console.log("date:", date, "time:", time, "datetime: ", dateTimeToDate(date, time))
         // setIsLoading(!isLoading);
         const data = {
             sportId: SPORT.indexOf(sport) + 1,
@@ -54,7 +53,6 @@ const NewEvent = () => {
             remaining: +players,
             duration: +duration
         }
-        console.log(data);
         try {
             setIsLoading(true);
             await publishEvent(data);
@@ -68,7 +66,7 @@ const NewEvent = () => {
 
 
     return (
-        <SafeAreaView style={{...styles.centeredView, paddingHorizontal: 16, backgroundColor: COLORS.primary10}}>
+        <SafeAreaView style={{...styles.centeredView, paddingHorizontal: 16, paddingVertical: 16, backgroundColor: COLORS.primary10}}>
              <Modal
             transparent={true}
             visible={modalVisible}
@@ -99,43 +97,35 @@ const NewEvent = () => {
               </View>
             </Pressable>
           </Modal>
-            <View >
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' , gap: 10}}>
+            <View style={{ flex: 1, alignSelf: 'stretch'}}>
+                <View style={{flexDirection: 'row',  justifyContent: 'center', width: '100%', flex: 1}}>
+                    <Controller control={control} rules={{ required: true }} render={({ field }) => (                        
+                        <CustomDropdown
+                         selected={field.value}
+                         setSelected={field.onChange}
+                         data={SPORT}
+                         label="Deporte"
+                         />
+                    )}
+                        name="sport" /> 
                     <Controller control={control} rules={{ required: true }} render={({ field }) => (
-                        <SelectList
-                            setSelected={field.onChange}
-                            data={SPORT}
-                            save="value"
-                            maxHeight={200}
-                            placeholder='Elija el deporte'
-                            boxStyles={{ marginBottom: 10 }}
-                            dropdownStyles={{ minWidth: '35%' }}
-                            inputStyles={{ minWidth: '35%' }}
-                            search={false}
-                        />)}
-                        name="sport" />
-                    <Controller control={control} rules={{ required: true }} render={({ field }) => (
-                        <SelectList
-                            setSelected={field.onChange}
-                            data={EXPERTISE}
-                            save="value"
-                            placeholder='Elija la dificultad'
-                            boxStyles={{ marginBottom: 10 }}
-                            dropdownStyles={{ minWidth: '35%' }}
-                            inputStyles={{ minWidth: '35%' }}
-                            search={false}
-                        />)}
+                        <CustomDropdown
+                        selected={field.value}
+                        setSelected={field.onChange}
+                        data={EXPERTISE}
+                        label="Nivel"
+                        />
+                        )}
                         name="difficulty" />
                 </View>
                 <Controller control={control} rules={{ required: true }} render={({ field }) => (
-                    <SelectList
-                        setSelected={field.onChange}
-                        data={LOCATIONS}
-                        save="value"
-                        maxHeight={200}
-                        placeholder='Elija el lugar'
-                        boxStyles={{ marginVertical: 10 }}
-                    />)}
+                    <CustomDropdown
+                    selected={field.value}
+                    setSelected={field.onChange}
+                    data={LOCATIONS}
+                    label="Lugar"
+                    />
+                    )}
                     name="location" />
             </View>
             <View style={styles.dateSectionContainer}>
@@ -177,7 +167,6 @@ const NewEvent = () => {
                     <Controller
                             control={control}
                             render={({ field: { onChange, value } }) => {
-                                console.log("VALUE: ", value);
                                 return (
                                     playersQty.map((qty, index) => {
                                         return <Pill key={index} props={{ title: qty}} handlePress={

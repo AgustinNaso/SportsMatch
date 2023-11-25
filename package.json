@@ -34,6 +34,7 @@
     "react-native": "0.71.8",
     "react-native-dotenv": "^3.4.9",
     "react-native-dropdown-select-list": "^2.0.4",
+    "react-native-element-dropdown": "^2.10.0",
     "react-native-ionicons": "^4.6.5",
     "react-native-material-menu": "^2.0.0",
     "react-native-multiple-select": "^0.5.12",
