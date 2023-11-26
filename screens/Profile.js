@@ -12,16 +12,14 @@ import { Avatar, Chip, Divider } from "@rneui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { fetchUserImage } from "../services/userService";
 import { SPORT } from "../constants/data";
-import { useIsFocused } from "@react-navigation/native";
 import DefaultProfile from "../assets/default-profile.png";
 import { NoContentMessage } from "../components/NoContentMessage";
 import { UserContext } from "../contexts/UserContext";
 
 const Profile = () => {
-  const {currUser, setCurrUser} = useContext(UserContext);
+  const { currUser } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
   const [image, setImage] = useState(null);
-  const isFocused = useIsFocused();
 
   const formatPhoneNumber = (phoneNumberString) => {
     if (!phoneNumberString) return;
@@ -31,7 +29,15 @@ const Profile = () => {
     );
     return formatted;
   };
-
+  
+  const fetchImage = async () => {
+    const response = await fetchUserImage(currUser.userid);
+    if (response.status == 200) {
+      setImage(response.imageURL);
+    }
+    setLoading(false);
+  };
+  
   useEffect(() => {
     if (currUser) {
       try {
@@ -43,13 +49,6 @@ const Profile = () => {
   }, [currUser]);
   
 
-  const fetchImage = async () => {
-    const response = await fetchUserImage(currUser.userid);
-    if (response.status == 200) {
-      setImage(response.imageURL);
-    }
-    setLoading(false);
-  };
 
 
   return (
@@ -169,10 +168,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     borderRadius: 22,
     paddingHorizontal: 24,
-    height: "24%",
+    height: 140,
     justifyContent: "space-evenly",
     alignItems: "center",
-    marginBottom: 8,
   },
   profileTextContainer: {
     flexDirection: "column",

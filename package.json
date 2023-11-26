@@ -24,6 +24,7 @@
     "amazon-cognito-identity-js": "^6.3.1",
     "aws-amplify": "5.3.3",
     "aws-amplify-react-native": "^7.0.2",
+    "eas-cli": "^5.9.1",
     "expo": "~48.0.15",
     "expo-image-picker": "^14.5.0",
     "expo-secure-store": "~12.1.1",

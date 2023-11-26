@@ -54,7 +54,7 @@ const NewEvent = () => {
 
 
     return (
-        <SafeAreaView style={{...styles.centeredView, paddingHorizontal: 16, paddingVertical: 16, backgroundColor: COLORS.primary10}}>
+        <View style={{...styles.centeredView, paddingHorizontal: 16, paddingVertical: 16, backgroundColor: COLORS.primary10}}>
              <Modal
             transparent={true}
             visible={modalVisible}
@@ -196,7 +196,7 @@ const NewEvent = () => {
             )}
                 name="description" />
             <CustomButton title="Crear" isLoading={isLoading} onPress={handleSubmit(onSubmit)} />
-        </SafeAreaView>
+        </View>
     )
 }
 
