@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Text, SafeAreaView, FlatList, View } from "react-native";
+import { Text, SafeAreaView, FlatList, View, StyleSheet } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import Card from "../components/Card";
 import {
@@ -25,7 +25,8 @@ const FirstRoute = (myEvents) => (
     <FlatList
       data={myEvents}
       renderItem={(data) => renderList(data)}
-      contentContainerStyle={{flex: 1, alignItems: 'center', justifyContent: 'center' }}
+      style={{ flex: 1 }}
+      contentContainerStyle={ myEvents.length != 0 ? {flexGrow: 1} : styles.noContentContainer}
       keyExtractor={(item, index) => {
         return `${index}`;
       }}
@@ -39,8 +40,9 @@ const SecondRoute = (joinedEvents) => (
     <FlatList
       data={joinedEvents}
       renderItem={renderJoinedItem}
-      contentContainerStyle={{ flexGrow: 1, alignItems: "center", justifyContent: "center" }}
       style={{ flex: 1 }}
+      contentContainerStyle={
+        joinedEvents.length != 0 ? styles.contentContainer : styles.noContentContainer}
       keyExtractor={(item, index) => `${item.event_id}-${index}`}
       ListEmptyComponent={renderEmptyList}
     ></FlatList>
@@ -115,3 +117,18 @@ const MyEvents = () => {
 };
 
 export default MyEvents;
+
+const styles = StyleSheet.create({
+  noContentContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  contentContainer : {
+    flexGrow: 1,
+    justifyContent: "center",
+    paddingHorizontal: 24,
+    gap: 8,
+    paddingTop: 8,
+  }
+});

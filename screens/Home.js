@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -17,6 +17,7 @@ import { SPORT } from "../constants/data";
 import { StyleSheet } from "react-native";
 import { getCurrentUserData } from "../services/LocalStorageService";
 import { NoContentMessage } from "../components/NoContentMessage";
+import { UserContext } from "../contexts/UserContext";
 
 const filterData = [
   { key: 1, sportId: 1, sport: SPORT[0] },
@@ -33,18 +34,11 @@ const Home = ({ navigation, route }) => {
   const [selectedFilter, setSelectedFilter] = useState("");
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
-
-  useEffect(() => {
-    getCurrentUserData().then(async (userData) => {
-      
-    console.log("USER DATA: ", userData);
-      setUser(userData);
-    });
-  }, []);
+  const {currUser, setCurrUser} = useContext(UserContext);
 
   useEffect(() => {
     const getNearEvents = async () => {
-      const mockData = await fetchNearEvents(user.id, JSON.parse(route.params?.filters));
+      const mockData = await fetchNearEvents(currUser.userid, JSON.parse(route.params?.filters));
       setEventList(mockData.items);
       setFilteredEventList(mockData.items);
       setLoading(false);
@@ -54,16 +48,16 @@ const Home = ({ navigation, route }) => {
 
   useEffect(() => {
     const getNearEvents = async () => {
-      const data = await fetchNearEvents(user.id);
+      const data = await fetchNearEvents(currUser.userid);
       setEventList(data.items);
       setFilteredEventList(data.items);
       setLoading(false);
     };
-    print("USER ", user);
-    if (user) {
+    print("USER ", currUser);
+    if (currUser) {
       getNearEvents().catch((err) => console.log(err));
     }
-  }, [user]);
+  }, [currUser]);
 
   const renderItem = ({ item }) => {
     return <Card props={item} />;
@@ -107,7 +101,7 @@ const Home = ({ navigation, route }) => {
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      const jsonData = await fetchNearEvents();
+      const jsonData = await fetchNearEvents(currUser.userid);
       setEventList(jsonData.items);
       setFilteredEventList(jsonData.items);
     } catch (error) {
@@ -117,7 +111,7 @@ const Home = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, minHeight: "100%" }}>
+    <SafeAreaView style={{ flex: 1, minHeight: "100%"}}>
       <FlatList
         data={filterData}
         renderItem={renderItemPill}
@@ -141,7 +135,8 @@ const Home = ({ navigation, route }) => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          contentContainerStyle={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8}}
+          style={{flex: 1}}
+          contentContainerStyle={filteredEventsList.length != 0 ? styles.contentContainer : [styles.noContentContainer, {paddingHorizontal: 24}]}
           keyExtractor={(item) => {
             return item.event_id.toString();
           }}
@@ -159,5 +154,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
     padding: 10,
+  },
+  noContentContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  contentContainer : {
+    flexGrow: 1,
+    paddingHorizontal: 24,
+    paddingTop: 8,
+    gap: 8,
+    alignItems: 'center',
+    paddingBottom: '20%'
   }
 });

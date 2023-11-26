@@ -170,8 +170,7 @@ const Card = ({ props }) => {
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    width: "85%",
-    alignSelf: "center",
+    minWidth: "100%",
     marginVertical: 5,
     borderBottomEndRadius: 8,
     borderBottomLeftRadius: 8,
@@ -179,7 +178,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 3,
     borderColor: COLORS.primary,
-    height: 180,
+    maxHeight: 180,
+    minHeight: 180,
     justifyContent: "space-between",
     gap: 8,
     backgroundColor: COLORS.white,
