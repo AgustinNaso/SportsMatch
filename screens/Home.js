@@ -150,15 +150,11 @@ const Home = ({ navigation, route }) => {
 export default Home;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-    padding: 10,
-  },
   noContentContainer: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
+
   },
   contentContainer : {
     flexGrow: 1,

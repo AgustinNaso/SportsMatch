@@ -88,22 +88,6 @@ const FilterModal = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <Animated.View
-                style={[
-                    {
-                        height: height,
-                        transform: [
-                            {
-                                translateY: current.progress.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [height, height * 0.05],
-                                    extrapolate: 'clamp',
-                                }),
-                            },
-                        ],
-                    },
-                    styles.viewAnimated,
-                ]}>
                 <View style={styles.viewContainer}>
                     <Text style={[styles.bigText, { alignSelf: 'center' }]}>
                         Filtros de búsqueda
@@ -193,21 +177,15 @@ const FilterModal = ({ navigation }) => {
                     </Button>
                     }
                 </View>
-            </Animated.View>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    viewAnimated: {
-        width: '100%',
-        flex: 1,
-    },
     viewContainer: {
         flex: 1,
         flexDirection: 'column',
         padding: 10,
-        backgroundColor: '#DEDEDE',
         borderRadius: 20,
         justifyContent: 'space-evenly',
     },

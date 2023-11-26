@@ -34,7 +34,7 @@ const HomeStackNavigator = () => {
                 <Stack.Screen name="Nuevo Evento" component={NewEvent}
                 />
             </Stack.Group>
-            <Stack.Group screenOptions={{ presentation: 'modal', headerShown: false}}>
+            <Stack.Group screenOptions={{ presentation: 'fullScreenModal', headerShown: false}}>
                 <Stack.Screen name="Filtros" component={FilterModal}/>
             </Stack.Group>
         </Stack.Navigator>
