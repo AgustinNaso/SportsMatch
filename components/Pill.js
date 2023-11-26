@@ -29,7 +29,7 @@ const Pill = ({props, handlePress, currentFilter, customStyle}) => {
 const styles = StyleSheet.create({
     pill : {
         flex: 1,
-        paddingHorizontal: 16,
+        paddingHorizontal: 24,
         borderRadius: 20,
         borderWidth: 2,
         borderColor: COLORS.primary,
