@@ -55,7 +55,7 @@ const Profile = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {!loading && (
-        <ScrollView contentContainerStyle={styles.mainContainer}>
+        <ScrollView contentContainerStyle={styles.mainContainer} showsVerticalScrollIndicator={false}>
           <View style={styles.profileHeader}>
             <Avatar
               size={108}
@@ -161,13 +161,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-evenly",
     paddingVertical: 24,
+    paddingHorizontal: 24
   },
 
   profileHeader: {
     flexDirection: "row",
     backgroundColor: COLORS.primary,
     borderRadius: 22,
-    width: "90%",
+    paddingHorizontal: 24,
     height: "24%",
     justifyContent: "space-evenly",
     alignItems: "center",
@@ -205,12 +206,13 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 20,
     fontWeight: 300,
+    paddingBottom: 2
   },
   profileBody: {
     flexDirection: "column",
     alignItems: "center",
     flex: 1,
-    width: "90%",
+    alignSelf: 'stretch'
   },
   chipContainer: {
     flex: 1,
@@ -230,19 +232,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginTop: 8,
   },
-  Container: {
+  userDataContainer: {
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    marginBottom: 8,
+    marginTop: 2,
+    paddingVertical: 2
   },
   userDataDisplay: {
     flexDirection: "column",
     alignItems: "flex-start",
-    width: "100%",
     marginLeft: 8,
   },
+  
 });
 
 export default Profile;
