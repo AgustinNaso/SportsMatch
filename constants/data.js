@@ -16,3 +16,4 @@ export const LOCATIONS = [
          "Coghlan" ,
          "Colegiales"
     ];
+export const HORARIOS = ["Mañana", "Tarde", "Noche"]

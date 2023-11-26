@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Button, StyleSheet, Animated, useWindowDimensions, Platform, TouchableOpacity } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { SelectList } from "react-native-dropdown-select-list";
-import { EXPERTISE } from "../constants/data";
+import { EXPERTISE, HORARIOS, LOCATIONS } from "../constants/data";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { formatDate, showDatepicker } from "../utils/datetime";
 import { Chip } from "@rneui/themed";
@@ -11,28 +11,20 @@ import { COLORS } from "../constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from '../components/CustomButton'
+import CustomDropdown from "../components/CustomDropdown";
 
 
 const FilterModal = ({ navigation }) => {
 
-    const LOCATIONS = [
-        { key: 0, value: "Mis ubicaciones"},
-        { key: 1, value: "Agronomía" },
-        { key: 2, value: "Almagro" },
-        { key: 3, value: "Balvanera" },
-        { key: 4, value: "Barracas" },
-        { key: 5, value: "Belgrano" },
-        { key: 6, value: "Boedo" },
-        { key: 7, value: "Caballito" },
-        { key: 8, value: "Chacarita" },
-        { key: 9, value: "Coghlan" },
-        { key: 10, value: "Colegiales", },
-    ];
-    const HORARIOS = ["Mañana", "Tarde", "Noche"]
     const STORAGE_KEY = 'selectedChips';
-    const { height } = useWindowDimensions();
-    const { current } = useCardAnimation();
-    const { control, handleSubmit, formState: { errors }, getValues, setValue } = useForm();
+    const { control, handleSubmit, formState: { isDirty, errors }, setValue, reset } = useForm(
+        {defaultValues: {
+            schedule: [],
+            date: "",
+            expertise: "",
+            location: "",
+        }}
+    );
     useEffect(() => {
         const loadFilterData = async () => {
             try {
@@ -56,6 +48,7 @@ const FilterModal = ({ navigation }) => {
     }, []);
     
     const onSubmit = (data) => {
+        console.log(data);
         navigation.navigate("Inicio", { filters: JSON.stringify(data) });
         try {
             AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -71,10 +64,7 @@ const FilterModal = ({ navigation }) => {
 
 
     const cleanFilters = () => {
-        setValue("location", 'Elija una ubicacion');
-        setValue("expertise", 'Elija el nivel');
-        setValue("date", null);
-        setValue("schedule", []);
+       reset();
         AsyncStorage.removeItem(STORAGE_KEY);
     }
 
@@ -87,56 +77,55 @@ const FilterModal = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primary10 }}>
                 <View style={styles.viewContainer}>
                     <Text style={[styles.bigText, { alignSelf: 'center' }]}>
                         Filtros de búsqueda
                     </Text>
                     <View style={styles.section}>
-                        <Text>Ubicacion: </Text>
+                        <Text style={styles.sectionTitle}>Ubicacion: </Text>
                         <Controller control={control} rules={{ required: false }} render={({ field }) => {
                             return (
-                                <SelectList
+                                <CustomDropdown
                                     setSelected={field.onChange}
-                                    data={LOCATIONS}
-                                    save="value"
-                                    maxHeight={200}
-                                    placeholder='Elija la ubicacion'
-                                    boxStyles={{ marginVertical: 10 }}
-                                    dropdownStyles={{ minWidth: '35%' }}
-                                    inputStyles={{ minWidth: '35%' }}
+                                    selected={field.value}
+                                    data={LOCATIONS} 
                                     search={false}
-                                    defaultOption={{ key: field.value, value: field.value }}
+                                    name="ubicacion"
+                                    showLabel={false}
                                 />)
                         }}
                             name="location" />
                     </View>
+                    {/* <CustomDropdown
+                    selected={field.value}
+                    setSelected={field.onChange}
+                    data={LOCATIONS}
+                    label="Lugar"
+                    search={true}
+                    />
+                    )} */}
                     <View style={styles.section}>
-                        <Text>Nivel de juego: </Text>
+                        <Text style={styles.sectionTitle}>Nivel de juego: </Text>
                         <Controller control={control} rules={{ required: false }} render={({ field }) => (
-                            <SelectList
+                            <CustomDropdown
                                 setSelected={field.onChange}
+                                selected={field.value}
                                 data={EXPERTISE}
-                                save="value"
-                                maxHeight={200}
-                                placeholder='Elija el nivel'
-                                boxStyles={{ marginVertical: 10 }}
-                                dropdownStyles={{ minWidth: '35%' }}
-                                inputStyles={{ minWidth: '35%' }}
-                                search={false}
-                                defaultOption={{ key: field.value, value: field.value }}
+                                name="Nivel"
+                                showLabel={false}                               
                             />)}
                             name="expertise" />
                     </View>
                     <View>
-                        <Text>Fecha:</Text>
+                        <Text style={styles.sectionTitle}>Fecha:</Text>
                         <Controller control={control} rules={{ required: false }} render={({ field }) => {
                             if (!field.value)
                                 field.value = new Date();
                             return (
                                 Platform.OS === 'ios' ?
                                     <RNDateTimePicker mode="date"
-                                        style={{ alignSelf: 'flex-start' }}
+                                        style={{ alignSelf: 'flex-start', marginTop: 8 }}
                                         onChange={(event, selectedDate) => field.onChange(selectedDate)}
                                         value={field.value} minimumDate={new Date()} />
                                     :
@@ -148,14 +137,16 @@ const FilterModal = ({ navigation }) => {
                         }} name="date" />
                     </View>
                     <View>
-                        <Text>Horario:</Text>
+                        <Text style={styles.sectionTitle}>Horario:</Text>
                         <View style={{ flexDirection: 'row', gap: 12, justifyContent: 'center', marginVertical: 8 }}>
                             <Controller control={control} rules={{ required: false }} defaultValue={[]} render={({ field }) =>
                             (
                                 HORARIOS.map((horario, idx) => {
                                     const isSelected = field.value.includes(idx)
                                     return (
-                                        <Chip title={horario} buttonStyle={{ borderColor: COLORS.primary, borderWidth: 1 }} titleStyle={{ color: !isSelected ? COLORS.primary : COLORS.white }} key={idx} color={COLORS.primary} type={isSelected ? 'solid' : 'outline'} onPress={() => toggleChipSelection(idx, field.value, field.onChange)} />
+                                        <Chip title={horario} buttonStyle={{ borderColor: COLORS.primary, borderWidth: 1 }} 
+                                        titleStyle={{ color: !isSelected ? COLORS.primary : COLORS.white }} key={idx} color={COLORS.primary} 
+                                        type={isSelected ? 'solid' : 'outline'} onPress={() => toggleChipSelection(idx, field.value, field.onChange)} />
                                     )
                                 })
                             )
@@ -168,14 +159,8 @@ const FilterModal = ({ navigation }) => {
                         <CustomButton title={"Cancelar"} color='red' onPress={closeFilters}/>
                         <CustomButton title={"Guardar"} color={COLORS.primary} onPress={handleSubmit(onSubmit)} />
                     </View>
-                    {/* //TODO: Agregar un useState para mostrar el boton si cambian los inputs */}
-                    {false && <Button
-                        color={COLORS.primary}
-                        mode="contained"
-                        onPress={cleanFilters}
-                        title="Limpiar">
-                    </Button>
-                    }
+                    {isDirty && <CustomButton title={"Limpiar"} color={COLORS.primary} onPress={cleanFilters} filled={false}/>}
+                    
                 </View>
         </SafeAreaView>
     );
@@ -185,9 +170,9 @@ const styles = StyleSheet.create({
     viewContainer: {
         flex: 1,
         flexDirection: 'column',
-        padding: 10,
-        borderRadius: 20,
+        paddingHorizontal: 24,
         justifyContent: 'space-evenly',
+        backgroundColor: COLORS.primary10
     },
     bigText: {
         fontSize: 20,
@@ -205,8 +190,12 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        margin: 24,
-    }
+        alignSelf: 'stretch',
+    },
+    sectionTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 });
 
 

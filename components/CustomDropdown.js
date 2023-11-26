@@ -4,12 +4,12 @@ import React, { useState } from 'react';
 import { COLORS } from '../constants';
 
 
-const CustomDropdown = ({data, selected,setSelected, label, search = false}) => {
+const CustomDropdown = ({data, selected,setSelected, name, showLabel = true, search = false}) => {
     const [isFocus, setIsFocus] = useState(false);
 
     return (
       <View style={styles.container}>
-        <Text style={styles.label}>{label}</Text>
+        {showLabel && <Text style={styles.label}>{name}</Text>}
         <Dropdown
           style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
           placeholderStyle={styles.placeholderStyle}
@@ -21,7 +21,7 @@ const CustomDropdown = ({data, selected,setSelected, label, search = false}) => 
           maxHeight={300}
           labelField="label"
           valueField="value"
-          placeholder={!isFocus ? `Seleccione ${label}`  : '...'}
+          placeholder={!isFocus ? `Seleccione ${name}`  : '...'}
           value={selected}
           search={search}
           searchPlaceholder='Buscar...'

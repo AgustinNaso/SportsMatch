@@ -68,6 +68,7 @@ const Login = () => {
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 style={styles.input}
+                keyboardType="email-address"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
