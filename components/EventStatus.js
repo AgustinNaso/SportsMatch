@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         height: 30,
-        marginRight: 8
     },
     recruiting: {
         backgroundColor: COLORS.secondary, // Yellow with 50% transparency

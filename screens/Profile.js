@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -17,10 +17,11 @@ import { getCurrentUserData } from "../services/LocalStorageService";
 import { useIsFocused } from "@react-navigation/native";
 import DefaultProfile from "../assets/default-profile.png";
 import { NoContentMessage } from "../components/NoContentMessage";
+import { UserContext } from "../contexts/UserContext";
 
 const Profile = () => {
+  const {currUser, setCurrUser} = useContext(UserContext);
   const [loading, setLoading] = useState(true);
-  const [currUser, setCurrUser] = useState();
   const [image, setImage] = useState(null);
   const isFocused = useIsFocused();
 
@@ -43,20 +44,6 @@ const Profile = () => {
     }
   }, [currUser]);
   
-  useEffect(() => {
-    setLoading(true);
-    try {
-      fetchUserData();
-    } catch (err) {
-      console.error("ERROR fetching user data", err);
-    }
-  }, [isFocused]);
-
-  const fetchUserData = async () => {
-    const currentUser = await getCurrentUserData();
-    console.log("CURR", currUser);
-    setCurrUser(currentUser);
-  };
 
   const fetchImage = async () => {
     const response = await fetchUserImage(currUser.userid);
@@ -66,14 +53,6 @@ const Profile = () => {
     setLoading(false);
   };
 
-
-  useEffect(() => {
-    try {
-      fetchUserData();
-    } catch (err) {
-      console.error("ERROR fetching user data", err);
-    }
-  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -236,10 +215,12 @@ const styles = StyleSheet.create({
     width: "90%",
   },
   chipContainer: {
+    flex: 1,
     flexDirection: "row",
+    alignSelf: 'stretch',
     flexWrap: "wrap",
-    justifyContent: "space-around",
     alignItems: "center",
+    justifyContent: 'center',
     gap: 8,
     paddingHorizontal: 16,
   },

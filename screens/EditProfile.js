@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { COLORS, FONTS } from "../constants";
 import { TextInput } from "react-native-gesture-handler";
 import { validateEmail } from "../utils/validations";
@@ -31,6 +31,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import PhoneInput from "react-native-phone-number-input";
 import { PhoneNumberUtil } from "google-libphonenumber";
+import { UserContext } from "../contexts/UserContext";
 
 const sports = [
   { key: 1, sportId: 1, title: SPORT[0] },
@@ -49,7 +50,7 @@ const EditProfile = () => {
     watch,
   } = useForm();
   const [selectedSports, setSelectedSports] = useState([]);
-  const [currUser, setCurrUser] = useState();
+  const {currUser, setCurrUser} = useContext(UserContext);
   const [loading, setLoading] = useState(true);
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -90,22 +91,15 @@ const EditProfile = () => {
   }, [currUser]);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const currentUser = await getCurrentUserData();
-      const { code, national_number } = parsePhoneNumber(currentUser.phonenumber);
+      const { code, national_number } = parsePhoneNumber(currUser.phonenumber);
       setCurrUser({
-        ...currentUser,
+        ...currUser,
         country_code: code,
         national_number: national_number,
       });
-      setSelectedSports(currentUser.sports);
-      setSelectedLocations(currentUser.locations);
-    };
-    try {
-      fetchUserData();
-    } catch (err) {
-      console.error("ERROR fetching user data", err);
-    }
+      setSelectedSports(currUser.sports);
+      setSelectedLocations(currUser.locations);
+
   }, []);
 
   const validatePhone = (phone) => {
@@ -149,7 +143,6 @@ const EditProfile = () => {
     if (dataChanged(data)) {
       userUpdatedRes = await updateUser(currUser.userid, formData);
     }
-
     if (userUpdatedRes && userUpdatedRes.status !== 200) {
       setError(userUpdatedRes.message);
     } else if (imageChanged) {
@@ -157,9 +150,14 @@ const EditProfile = () => {
         currUser.userid,
         selectedImage
       );
-      if (imgUpdatedRes.status == 200) navigator.navigate("MyProfile");
+      if (imgUpdatedRes.status == 200) {
+        setCurrUser({...currUser, ...formData, phonenumber: formData.phone_number})
+
+        navigator.navigate("MyProfile");
+      }
       setError(imgUpdatedRes.message);
     } else {
+      setCurrUser({...currUser, ...formData, phonenumber: formData.phone_number})
       navigator.navigate("MyProfile");
     }
   };

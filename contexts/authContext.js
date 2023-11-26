@@ -42,9 +42,9 @@ export const useAuthContext = () => {
 
   const signIn = async data => {
     const [userToken, userData] = await login(data.email, data.password);
+    console.log("DAX" + JSON.stringify(userData));
     await save('userToken', userToken);
     await save('userData', JSON.stringify(userData));
-    console.log("DAX" + JSON.stringify(userData));
     dispatch({ type: 'SIGN_IN', token: userToken });
   };
 

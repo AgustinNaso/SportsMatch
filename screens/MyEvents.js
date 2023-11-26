@@ -5,9 +5,6 @@ import Card from "../components/Card";
 import {
   fetchJoinedEvents,
   fetchMyEvents,
-  fetchNearEvents,
-  fetchUser,
-  removeParticipant,
 } from "../services/eventService";
 import { getCurrentUserData } from "../services/LocalStorageService";
 import { COLORS } from "../constants";
@@ -28,10 +25,11 @@ const FirstRoute = (myEvents) => (
     <FlatList
       data={myEvents}
       renderItem={(data) => renderList(data)}
-      style={{ flex: 1 }}
+      contentContainerStyle={{flex: 1, alignItems: 'center', justifyContent: 'center' }}
       keyExtractor={(item, index) => {
         return `${index}`;
       }}
+      ListEmptyComponent={<NoContentMessage message={"Aún no creaste ningún evento"}/>}
     ></FlatList>
   </SafeAreaView>
 );
@@ -69,7 +67,7 @@ const MyEvents = () => {
   const renderScene = ({ route }) => {
     switch (route.key) {
       case "first":
-        return myEvents.length > 0 ? FirstRoute(myEvents) : null;
+        return FirstRoute(myEvents);
       case "second":
         return SecondRoute(joinedEvents);
       default:
@@ -85,11 +83,12 @@ const MyEvents = () => {
 
   useEffect(() => {
     const getMyEvents = async () => {
-      const data = await fetchMyEvents(user.id);
+      const data = await fetchMyEvents(user.userid);
+      console.log(user)
       setMyEvents(data.items);
     };
     const getJoinedEvents = async () => {
-      const mockData = await fetchJoinedEvents(user.id);
+      const mockData = await fetchJoinedEvents(user.userid);
       setJoinedEvents(mockData.items);
     };
     if (user && isFocused) {

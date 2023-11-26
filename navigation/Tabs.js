@@ -4,20 +4,35 @@ import HomeStackNavigator from "./HomeStackNavigator";
 import ProfileStackNavigator from "./ProfileStackNavigator";
 import { COLORS } from "../constants";
 import { MyEvents } from "../screens";
-import { View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Menu, MenuItem, MenuDivider } from "react-native-material-menu";
 import { TouchableOpacity } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/authContext";
+import { UserContext } from "../contexts/UserContext";
+import { getCurrentUserData } from "../services/LocalStorageService";
 const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
   const navigator = useNavigation();
+  const [currUser, setCurrUser] = useState();
   const [visible, setVisible] = useState(false);
   const authContext = useContext(AuthContext);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getCurrentUserData().then((user) => {
+      console.log("USER", user);
+      setCurrUser(user);
+      setLoading(false);
+    })
+  }, []);
+
+
 
   return (
+    loading ? null :
+    <UserContext.Provider value={{currUser, setCurrUser}}>
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: COLORS.primary,
@@ -91,6 +106,7 @@ const Tabs = () => {
         component={ProfileStackNavigator}
       />
     </Tab.Navigator>
+    </UserContext.Provider>
   );
 };
 export default Tabs;
