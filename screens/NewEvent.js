@@ -92,7 +92,7 @@ const NewEvent = () => {
                          selected={field.value}
                          setSelected={field.onChange}
                          data={SPORT}
-                         label="Deporte"
+                         name="Deporte"
                          />
                     )}
                         name="sport" /> 
@@ -101,7 +101,7 @@ const NewEvent = () => {
                         selected={field.value}
                         setSelected={field.onChange}
                         data={EXPERTISE}
-                        label="Nivel"
+                        name="Nivel"
                         />
                         )}
                         name="difficulty" />
@@ -111,7 +111,7 @@ const NewEvent = () => {
                     selected={field.value}
                     setSelected={field.onChange}
                     data={LOCATIONS}
-                    label="Lugar"
+                    name="Lugar"
                     search={true}
                     />
                     )}

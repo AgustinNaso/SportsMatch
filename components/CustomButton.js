@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: 14,
     borderRadius: 5,
-    minWidth: '40%',
+    minWidth: '45%',
     alignSelf: 'stretch',
   },
   buttonText: {

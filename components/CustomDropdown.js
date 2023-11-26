@@ -11,10 +11,12 @@ const CustomDropdown = ({data, selected,setSelected, name, showLabel = true, sea
       <View style={styles.container}>
         {showLabel && <Text style={styles.label}>{name}</Text>}
         <Dropdown
-          style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+          style={[styles.dropdown, isFocus && { borderColor: COLORS.primary20 }]}
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
+          itemContainerStyle={{backgroundColor: COLORS.primary10}}
+          containerStyle={{backgroundColor: COLORS.primary10, borderRadius: 10}}
           itemTextStyle={{fontSize: 14}}
           iconStyle={styles.iconStyle}
           data={data.map((item) => ({ label: item, value: item }))}
