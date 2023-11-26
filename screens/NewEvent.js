@@ -1,24 +1,20 @@
 import React, { useEffect } from 'react'
 import { Keyboard, StyleSheet, TextInput, Text, TouchableOpacity, View, Platform, Modal, Pressable } from 'react-native'
-import { SelectList } from 'react-native-dropdown-select-list'
 import CustomButton from '../components/CustomButton'
 import { Controller, useForm } from 'react-hook-form'
 import { EXPERTISE, LOCATIONS, SPORT } from '../constants/data'
 import { COLORS } from '../constants'
 import RNDateTimePicker from '@react-native-community/datetimepicker'
 import { formatDate, formatTime, showDatepicker, showTimepicker } from '../utils/datetime'
-import { fetchUser, publishEvent } from '../services/eventService'
+import { publishEvent } from '../services/eventService'
 import { useNavigation } from '@react-navigation/native'
 import Pill from '../components/Pill'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Dropdown } from 'react-native-element-dropdown'
 import CustomDropdown from '../components/CustomDropdown'
-import { getCurrentUserData } from '../services/LocalStorageService'
 
 
 const NewEvent = () => {
     const navigation = useNavigation();
-    const [user, setUser] = React.useState(null);
     const [isLoading, setIsLoading] = React.useState(false);
     const { control, handleSubmit, formState: { errors }, watch, setValue } = useForm();
     const [modalVisible, setModalVisible] = React.useState(false);
@@ -31,12 +27,6 @@ const NewEvent = () => {
         //Months are 0 indexed
         return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${time.getHours()}:${time.getMinutes().toString().padStart(2, '0')}`
     }
-
-    useEffect(() => {
-        getCurrentUserData().then((data) => {
-            setUser(data);
-        });
-    }, []);
 
 
     const onSubmit = async (formData) => {

@@ -17,12 +17,11 @@ const Tabs = () => {
   const navigator = useNavigation();
   const [currUser, setCurrUser] = useState();
   const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(true); 
   const authContext = useContext(AuthContext);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getCurrentUserData().then((user) => {
-      console.log("USER", user);
       setCurrUser(user);
       setLoading(false);
     })

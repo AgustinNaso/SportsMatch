@@ -1,16 +1,16 @@
-import React, { useEffect } from "react";
-import { Text, SafeAreaView, FlatList, View, StyleSheet } from "react-native";
+import React, { useContext, useEffect } from "react";
+import { SafeAreaView, FlatList, View, StyleSheet } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import Card from "../components/Card";
 import {
   fetchJoinedEvents,
   fetchMyEvents,
 } from "../services/eventService";
-import { getCurrentUserData } from "../services/LocalStorageService";
 import { COLORS } from "../constants";
 import { useIsFocused } from "@react-navigation/native";
 import MyEventList from "../components/MyEventList";
 import { NoContentMessage } from "../components/NoContentMessage";
+import { UserContext } from "../contexts/UserContext";
 
 const renderList = (data) => {
   return <MyEventList data={data} />;
@@ -61,9 +61,9 @@ const MyEvents = () => {
     { key: "first", title: "Creados" },
     { key: "second", title: "Anotado" },
   ]);
+  const {currUser } = useContext(UserContext);
   const [myEvents, setMyEvents] = React.useState([]);
   const [joinedEvents, setJoinedEvents] = React.useState([]);
-  const [user, setUser] = React.useState(null);
   const isFocused = useIsFocused();
 
   const renderScene = ({ route }) => {
@@ -78,26 +78,20 @@ const MyEvents = () => {
   };
 
   useEffect(() => {
-    getCurrentUserData().then(async (userData) => {
-      setUser(userData);
-    });
-  }, []);
-
-  useEffect(() => {
     const getMyEvents = async () => {
-      const data = await fetchMyEvents(user.userid);
-      console.log(user)
+      const data = await fetchMyEvents(currUser.userid);
       setMyEvents(data.items);
     };
+
     const getJoinedEvents = async () => {
-      const mockData = await fetchJoinedEvents(user.userid);
+      const mockData = await fetchJoinedEvents(currUser.userid);
       setJoinedEvents(mockData.items);
     };
-    if (user && isFocused) {
+    if (currUser && isFocused) {
       getMyEvents().catch((err) => console.log(err));
       getJoinedEvents().catch((err) => console.log(err));
     }
-  }, [user, isFocused]);
+  }, [isFocused]);
 
   return (
     <TabView

@@ -10,10 +10,8 @@ import {
 import { COLORS } from "../constants";
 import { Avatar, Chip, Divider } from "@rneui/themed";
 import { Ionicons } from "@expo/vector-icons";
-import { fetchUser } from "../services/eventService";
 import { fetchUserImage } from "../services/userService";
 import { SPORT } from "../constants/data";
-import { getCurrentUserData } from "../services/LocalStorageService";
 import { useIsFocused } from "@react-navigation/native";
 import DefaultProfile from "../assets/default-profile.png";
 import { NoContentMessage } from "../components/NoContentMessage";
@@ -232,7 +230,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginTop: 8,
   },
-  userDataContainer: {
+  Container: {
     width: "100%",
     flexDirection: "row",
     alignItems: "center",

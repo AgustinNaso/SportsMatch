@@ -4,18 +4,14 @@ import {
   FlatList,
   SafeAreaView,
   RefreshControl,
-  Modal,
   View,
-  Text,
-  Pressable,
 } from "react-native";
 import Card from "../components/Card";
 import Pill from "../components/Pill";
-import { fetchNearEvents, fetchUser } from "../services/eventService";
+import { fetchNearEvents } from "../services/eventService";
 import { COLORS } from "../constants";
 import { SPORT } from "../constants/data";
 import { StyleSheet } from "react-native";
-import { getCurrentUserData } from "../services/LocalStorageService";
 import { NoContentMessage } from "../components/NoContentMessage";
 import { UserContext } from "../contexts/UserContext";
 
@@ -28,7 +24,6 @@ const filterData = [
 ];
 
 const Home = ({ navigation, route }) => {
-  const [user, setUser] = useState();
   const [eventsList, setEventList] = useState(null);
   const [filteredEventsList, setFilteredEventList] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState("");

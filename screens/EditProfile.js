@@ -16,8 +16,6 @@ import { validateEmail } from "../utils/validations";
 import { useNavigation } from "@react-navigation/native";
 import Pill from "../components/Pill";
 import { SPORT } from "../constants/data";
-import { fetchUser } from "../services/eventService";
-import { getCurrentUserData } from "../services/LocalStorageService";
 import MultiSelect from "react-native-multiple-select";
 import {
   updateUser,

@@ -1,27 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import CustomButton from "../components/CustomButton";
 import { EVENT_STATUS, EXPERTISE, SPORT, USER_STATUS } from "../constants/data";
 import {
-  fetchEventById,
   fetchParticipants,
   joinNewEvent,
   removeParticipant,
 } from "../services/eventService";
-import { getCurrentUserData } from "../services/LocalStorageService";
 import { Avatar, Divider } from "@rneui/themed";
 import { COLORS } from "../constants";
 import { MONTHS } from "../constants/data";
 import { getDateComponents } from "../utils/datetime";
 import { fetchUserImage } from "../services/userService";
 import DefaultProfile from "../assets/default-profile.png";
+import { UserContext } from "../contexts/UserContext";
 
 const Event = ({ route }) => {
   const { props } = route.params;
   const [eventParticipants, setEventParticipants] = useState([]);
   const [userStatus, setUserStatus] = useState(USER_STATUS.UNENROLLED);
-  const [user, setUser] = useState(null);
+  const {currUser, setCurrUser} = useContext(UserContext);
   const [image, setImage] = useState(null);
 
   useEffect(() => {
@@ -39,16 +38,11 @@ const Event = ({ route }) => {
     fetchParticipants(props.event_id).then((data) => {
       setEventParticipants(data);
     });
-    getCurrentUserData()
-      .then((data) => {
-        setUser(data);
-      })
-      .catch((err) => console.log("Error getting current user ", err));
   }, []);
 
   useEffect(() => {
     eventParticipants.forEach((participant) => {
-      if (participant.id == user.id) {
+      if (participant.id == currUser.userid) {
         if (participant.participant_status === true) {
           setUserStatus(USER_STATUS.ENROLLED);
         } else {
@@ -56,7 +50,7 @@ const Event = ({ route }) => {
         }
       }
     });
-  }, [eventParticipants, user]);
+  }, [eventParticipants, currUser]);
 
   const quitEvent = async () => {
     try {
@@ -69,7 +63,7 @@ const Event = ({ route }) => {
 
   const joinEvent = async () => {
     try {
-      await joinNewEvent(props.event_id, user?.id);
+      await joinNewEvent(props.event_id, currUser.userid);
       setUserStatus(USER_STATUS.REQUESTING);
     } catch (error) {
       console.log(error);
