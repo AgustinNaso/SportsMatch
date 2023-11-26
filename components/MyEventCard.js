@@ -173,8 +173,7 @@ export default MyEventCard;
 const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
-    width: "85%",
-    alignSelf: "center",
+    alignSelf: "stretch",
     height: 110,
     marginVertical: 4,
     alignItems: "center",

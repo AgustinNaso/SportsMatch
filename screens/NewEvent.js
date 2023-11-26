@@ -130,7 +130,8 @@ const NewEvent = () => {
                                 </TouchableOpacity>
                             )
                                 :
-                                <RNDateTimePicker value={new Date(field.value)} mode="date" onChange={(event, selecteDate) => field.onChange(selecteDate)} minimumDate={new Date()} />
+                                <RNDateTimePicker style={{alignSelf: 'center', minWidth: '40%'}} 
+                                value={new Date(field.value)} mode="date" onChange={(event, selecteDate) => field.onChange(selecteDate)} minimumDate={new Date()} />
                         )
                     }} name="date" />
                 </View>
@@ -144,7 +145,7 @@ const NewEvent = () => {
                                 <Text style={{textAlign: 'center'}}>{formatTime(field.value)}</Text>
                             </TouchableOpacity>
                         ) :
-                            <RNDateTimePicker value={field.value} mode="time" onChange={(event, selecteDate) => field.onChange(selecteDate)} minimumDate={new Date()} />
+                            <RNDateTimePicker style={{alignSelf: 'center', marginRight: 8}} value={field.value} mode="time" onChange={(event, selecteDate) => field.onChange(selecteDate)} minimumDate={new Date()} />
                         )
                     }} name="time" />
                 </View>
@@ -170,7 +171,7 @@ const NewEvent = () => {
                 </View>
                 <View style={{ ...styles.qtyInputContainer}}>
                     <Text style={styles.label}>Duración (min)</Text>
-                    <View style={{flexDirection: 'row', maxWidth: '80%', alignItems: 'center'}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center', maxWidth: '90%'}}>
                         <Controller
                             control={control}
                             render={({ field: { onChange, value } }) => {
@@ -227,6 +228,7 @@ const styles = StyleSheet.create({
     },
     dateTimeContainer: {
         borderWidth: 1,
+        borderColor: COLORS.primary20,
         borderRadius: 5,
         paddingVertical: 8,
         paddingHorizontal: 15,
@@ -235,13 +237,16 @@ const styles = StyleSheet.create({
     dateSectionContainer: {
         flexDirection: 'row',
         minHeight: 28,
-        alignSelf: 'center',
+        alignSelf: 'stretch',
+        justifyContent: 'space-around',
         marginTop: 10,
-        gap: 20
     },
     dateTimeLabelContainer: {
         flexDirection: 'column',
         alignItems: 'center',
+        justifyContent: 'center',
+        minWidth: '40%',
+
     },
     label: {
         marginBottom: 10,
