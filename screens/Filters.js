@@ -197,8 +197,8 @@ const styles = StyleSheet.create({
     },
     dateTimeContainer: {
         borderRadius: 10,
-        paddingVertical: 16,
-        paddingHorizontal: 6,
+        paddingVertical: 20,
+        paddingHorizontal: 8,
 
         marginVertical: 10,
         borderColor: '#aeaeae',
