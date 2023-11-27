@@ -28,8 +28,7 @@ const Home = ({ navigation, route }) => {
   const [filteredEventsList, setFilteredEventList] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState("");
   const [loading, setLoading] = useState(true);
-  const [showFilters, setShowFilters] = useState(false);
-  const {currUser, setCurrUser} = useContext(UserContext);
+  const {currUser} = useContext(UserContext);
 
   useEffect(() => {
     const getNearEvents = async () => {
@@ -129,7 +128,7 @@ const Home = ({ navigation, route }) => {
           data={filteredEventsList}
           renderItem={renderItem}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            <RefreshControl tintColor={COLORS.primary} refreshing={refreshing} onRefresh={onRefresh} />
           }
           style={{flex: 1}}
           contentContainerStyle={filteredEventsList?.length == 0 ?  [styles.noContentContainer, {paddingHorizontal: 24}] : styles.contentContainer}
