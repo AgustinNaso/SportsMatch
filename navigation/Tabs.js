@@ -14,11 +14,9 @@ import { getCurrentUserData } from "../services/LocalStorageService";
 const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
-  const navigator = useNavigation();
   const [currUser, setCurrUser] = useState();
-  const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(true); 
-  const authContext = useContext(AuthContext);
+
 
   useEffect(() => {
     getCurrentUserData().then((user) => {
@@ -63,43 +61,7 @@ const Tabs = () => {
       }} />
       <Tab.Screen
         options={{
-          headerTintColor: COLORS.white, headerStyle: {backgroundColor: COLORS.primary },
-          headerRight: () => {
-            return (
-              <Menu
-                visible={visible}
-                anchor={
-                  <TouchableOpacity onPress={() => setVisible(!visible)}>
-                    <Ionicons
-                      name="menu"
-                      style={{ marginRight: 10, marginTop: 1 }}
-                      size={24}
-                      color={COLORS.white}
-                    />
-                  </TouchableOpacity>
-                }
-                onRequestClose={() => setVisible(!visible)}
-              >
-                <MenuItem
-                  onPress={() => {
-                    navigator.navigate("Edit Profile");
-                    setVisible(!visible);
-                  }}
-                >
-                  Editar perfil
-                </MenuItem>
-                <MenuDivider />
-                <MenuItem
-                  onPress={() => {
-                    authContext.signOut();
-                    setVisible(!visible);
-                  }}
-                >
-                  Cerrar sesión
-                </MenuItem>
-              </Menu>
-            );
-          },
+          headerShown: false
         }}
         name="Perfil"
         component={ProfileStackNavigator}
