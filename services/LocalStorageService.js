@@ -7,7 +7,6 @@ const save = async (key, value) => {
 const getValueFor = async key => {
     let result = await SecureStore.getItemAsync(key);
     if (result) {
-        console.info("Value: " + result);
         return result;
     } else {
         console.log("No values stored under key: " + key);

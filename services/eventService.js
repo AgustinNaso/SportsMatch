@@ -18,7 +18,7 @@ export const authenticatedFetch = async (url, options = {}) => {
       if (response.status === 401 && body.internalStatus === "TOKEN_EXPIRED") {
         // await refreshSession();
         // return await authenticatedFetch(url, options);
-      } else throw new Error("Bad response from server");
+      } else throw new Error("Bad response from server: " +  JSON.stringify(body));
     }
     return response;
   } catch (err) {
@@ -76,8 +76,6 @@ export const fetchMyEvents = async (userId) => {
   const events = await fetch(API_URL + `/events?userId=${userId}`);
   const json = await events.json();
   const response = json;
-
-  console.log("MIS EVENTOS : ", response.items);
   for (let i = 0; i < response.items.length; i++)
     response.items[i].participants = await fetchParticipants(
       response.items[i].event_id
@@ -89,9 +87,7 @@ export const fetchMyEvents = async (userId) => {
 export const fetchNearEvents = async (userId, filters = undefined) => {
   try {
     const response = await fetchEvents(userId, filters);
-    console.log("RESPONSE: ", response.status);
     let jsonRes = await response.json();
-    console.log("EVENTOS CERCANOS: ", jsonRes.items);
     jsonRes.items = jsonRes.items?.filter(
       (event) =>
         event.remaining > 0 && event.event_status !== EVENT_STATUS.FINALIZED
@@ -132,10 +128,10 @@ export const joinNewEvent = async (eventId, userId) => {
   });
 };
 
-export const acceptParticipant = async (eventId, email) => {
+export const acceptParticipant = async (eventId, userId) => {
   await authenticatedFetch("/events/" + eventId + "/owner/participants", {
     method: "PUT",
-    body: JSON.stringify({ email: email }),
+    body: JSON.stringify({ participantId: userId.toString() }),
     headers: {
       "Content-Type": "application/json",
     },
@@ -163,11 +159,11 @@ export const removeParticipant = async (eventId) => {
   return res;
 };
 
-export const removeParticipantAsOwner = async (eventId, userEmail) => {
+export const removeParticipantAsOwner = async (eventId, userId) => {
   console.log("REMOVING PARTICIPANT FROM EVENT: " + eventId);
   await authenticatedFetch("/events/" + eventId + "/owner/participants", {
     method: "DELETE",
-    body: JSON.stringify({ email: userEmail }),
+    body: JSON.stringify({ participantId: userId.toString() }),
     headers: {
       "Content-Type": "application/json",
     },

@@ -30,7 +30,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
 
   useEffect(() => {
     const fetchImage = async () => {
-      const response = await fetchUserImage(props.id);
+      const response = await fetchUserImage(props.user_id);
       if (response.status == 200) {
         console.log("Response: ", response.imageURL);
         setImage(response.imageURL);
@@ -45,7 +45,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
 
   const postUserRating = async () => {
     try {
-      await rateUser(eventId, userRate, props.id);
+      await rateUser(eventId, userRate, props.user_id);
       setModalVisible(false);
     } catch (error) {
       console.log(error);
@@ -54,8 +54,9 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
   };
 
   const acceptUser = async () => {
+    console.log(props);
     try {
-      await acceptParticipant(eventId, props.email);
+      await acceptParticipant(eventId, props.user_id);
       setUserAccepted(true);
     } catch (error) {
       console.log(error);
@@ -149,7 +150,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
               name="close"
               size={40}
               color="red"
-              onPress={() => handleRemoveParticipant(eventId, props.email)}
+              onPress={() => handleRemoveParticipant(eventId, props.user_id)}
             />
           </TouchableOpacity>
           <TouchableOpacity>

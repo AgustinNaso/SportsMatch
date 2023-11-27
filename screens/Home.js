@@ -48,7 +48,6 @@ const Home = ({ navigation, route }) => {
       setFilteredEventList(data.items);
       setLoading(false);
     };
-    print("USER ", currUser);
     if (currUser) {
       getNearEvents().catch((err) => console.log(err));
     }
@@ -79,16 +78,18 @@ const Home = ({ navigation, route }) => {
   };
 
   const handleFilter = (sport) => {
+    setLoading(true);
+
     if (selectedFilter == sport) {
       setSelectedFilter("");
       setFilteredEventList(eventsList);
     } else {
       setSelectedFilter(sport);
       //TODO: FIX this should be done in the backend
-      setFilteredEventList(
-        eventsList?.filter((e) => SPORT[e.sport_id - 1] == sport)
-      );
+      const filteredList  = eventsList?.filter((e) => SPORT[e.sport_id - 1] == sport);
+      setFilteredEventList(filteredList);
     }
+    setLoading(false);
   };
 
   const [refreshing, setRefreshing] = React.useState(false);

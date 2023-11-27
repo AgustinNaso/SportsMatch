@@ -43,7 +43,7 @@ const Event = ({ route }) => {
 
   useEffect(() => {
     eventParticipants.forEach((participant) => {
-      if (participant.id == currUser.userid) {
+      if (participant.user_id == currUser.userid) {
         if (participant.participant_status === true) {
           setUserStatus(USER_STATUS.ENROLLED);
         } else {
@@ -251,5 +251,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "center",
     marginTop: 16,
+    textAlign: 'center'
   },
 });

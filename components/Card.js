@@ -23,7 +23,6 @@ const Card = ({ props }) => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [userRate, setUserRate] = React.useState(3);
   const [loading, setLoading] = React.useState(true);
-  console.log("PROPS DE CARD", props);
 
   const handlePress = () => {
     navigation.navigate("Evento", { props: props });
