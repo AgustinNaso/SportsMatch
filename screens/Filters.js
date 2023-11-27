@@ -12,18 +12,21 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomButton from '../components/CustomButton'
 import CustomDropdown from "../components/CustomDropdown";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 
 const FilterModal = ({ navigation }) => {
-
+    const [modalVisible, setModalVisible] = useState(false);
     const STORAGE_KEY = 'selectedChips';
     const { control, handleSubmit, formState: { isDirty, errors }, setValue, reset } = useForm(
-        {defaultValues: {
-            schedule: [],
-            date: "",
-            expertise: "",
-            location: "",
-        }}
+        {
+            defaultValues: {
+                schedule: [],
+                date: "",
+                expertise: "",
+                location: "",
+            }
+        }
     );
     useEffect(() => {
         const loadFilterData = async () => {
@@ -34,7 +37,7 @@ const FilterModal = ({ navigation }) => {
                     Object.entries(formValues).forEach(([fieldName, fieldValue]) => {
                         if (fieldValue !== undefined) {
                             if (fieldName === "date") {
-                                fieldValue = new Date(fieldValue);
+                                fieldValue = fieldValue !== "" ? new Date(fieldValue) : new Date();
                             }
                             setValue(fieldName, fieldValue);
                         }
@@ -46,7 +49,7 @@ const FilterModal = ({ navigation }) => {
         };
         loadFilterData();
     }, []);
-    
+
     const onSubmit = (data) => {
         console.log(data);
         navigation.navigate("Inicio", { filters: JSON.stringify(data) });
@@ -64,7 +67,7 @@ const FilterModal = ({ navigation }) => {
 
 
     const cleanFilters = () => {
-       reset();
+        reset();
         AsyncStorage.removeItem(STORAGE_KEY);
     }
 
@@ -78,26 +81,26 @@ const FilterModal = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primary10 }}>
-                <View style={styles.viewContainer}>
-                    <Text style={[styles.bigText, { alignSelf: 'center' }]}>
-                        Filtros de búsqueda
-                    </Text>
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Ubicacion: </Text>
-                        <Controller control={control} rules={{ required: false }} render={({ field }) => {
-                            return (
-                                <CustomDropdown
-                                    setSelected={field.onChange}
-                                    selected={field.value}
-                                    data={LOCATIONS} 
-                                    search={false}
-                                    name="ubicacion"
-                                    showLabel={false}
-                                />)
-                        }}
-                            name="location" />
-                    </View>
-                    {/* <CustomDropdown
+            <View style={styles.viewContainer}>
+                <Text style={[styles.bigText, { alignSelf: 'center' }]}>
+                    Filtros de búsqueda
+                </Text>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Ubicacion: </Text>
+                    <Controller control={control} rules={{ required: false }} render={({ field }) => {
+                        return (
+                            <CustomDropdown
+                                setSelected={field.onChange}
+                                selected={field.value}
+                                data={LOCATIONS}
+                                search={false}
+                                name="ubicacion"
+                                showLabel={false}
+                            />)
+                    }}
+                        name="location" />
+                </View>
+                {/* <CustomDropdown
                     selected={field.value}
                     setSelected={field.onChange}
                     data={LOCATIONS}
@@ -105,63 +108,76 @@ const FilterModal = ({ navigation }) => {
                     search={true}
                     />
                     )} */}
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Nivel de juego: </Text>
-                        <Controller control={control} rules={{ required: false }} render={({ field }) => (
-                            <CustomDropdown
-                                setSelected={field.onChange}
-                                selected={field.value}
-                                data={EXPERTISE}
-                                name="Nivel"
-                                showLabel={false}                               
-                            />)}
-                            name="expertise" />
-                    </View>
-                    <View>
-                        <Text style={styles.sectionTitle}>Fecha:</Text>
-                        <Controller control={control} rules={{ required: false }} render={({ field }) => {
-                            if (!field.value)
-                                field.value = new Date();
-                            return (
-                                Platform.OS === 'ios' ?
-                                    <RNDateTimePicker mode="date"
-                                        style={{ alignSelf: 'flex-start', marginTop: 8 }}
-                                        onChange={(event, selectedDate) => field.onChange(selectedDate)}
-                                        value={field.value} minimumDate={new Date()} />
-                                    :
-                                    <TouchableOpacity onPress={() => showDatepicker(field)} style={styles.dateTimeContainer}>
-                                        <Text>{formatDate(field.value)}</Text>
-                                    </TouchableOpacity>
-
-                            )
-                        }} name="date" />
-                    </View>
-                    <View>
-                        <Text style={styles.sectionTitle}>Horario:</Text>
-                        <View style={{ flexDirection: 'row', gap: 12, justifyContent: 'center', marginVertical: 8 }}>
-                            <Controller control={control} rules={{ required: false }} defaultValue={[]} render={({ field }) =>
-                            (
-                                HORARIOS.map((horario, idx) => {
-                                    const isSelected = field.value.includes(idx)
-                                    return (
-                                        <Chip title={horario} buttonStyle={{ borderColor: COLORS.primary, borderWidth: 1 }} 
-                                        titleStyle={{ color: !isSelected ? COLORS.primary : COLORS.white }} key={idx} color={COLORS.primary} 
-                                        type={isSelected ? 'solid' : 'outline'} onPress={() => toggleChipSelection(idx, field.value, field.onChange)} />
-                                    )
-                                })
-                            )
-                            }
-                                name="schedule" />
-                        </View>
-
-                    </View>
-                    <View style={styles.buttonContainer}>
-                        <CustomButton title={"Cancelar"} color='red' onPress={closeFilters}/>
-                        <CustomButton title={"Guardar"} color={COLORS.primary} onPress={handleSubmit(onSubmit)} />
-                    </View>
-                    {isDirty && <CustomButton title={"Limpiar"} color={COLORS.primary} onPress={cleanFilters} filled={false}/>}
-                    
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Nivel de juego: </Text>
+                    <Controller control={control} rules={{ required: false }} render={({ field }) => (
+                        <CustomDropdown
+                            setSelected={field.onChange}
+                            selected={field.value}
+                            data={EXPERTISE}
+                            name="Nivel"
+                            showLabel={false}
+                        />)}
+                        name="expertise" />
                 </View>
+                <View>
+                    <Text style={styles.sectionTitle}>Fecha:</Text>
+                    <Controller control={control} rules={{ required: false }} render={({ field }) => {
+                        return (
+                            Platform.OS === 'ios' ?
+                                <>
+                                    <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.dateTimeContainer}>
+                                        <Text>{ field.value == ""? "Elija una fecha" : formatDate(field.value)}</Text>
+                                    </TouchableOpacity>
+                                    <DateTimePickerModal
+                                        isVisible={modalVisible}
+                                        date={field.value == "" ? new Date() : field.value}
+                                        minimumDate={new Date()}
+                                        backdropStyleIOS={{backgroundColor: COLORS.primary10}}
+                                        style={{backgroundColor: COLORS.primary10}}
+                                        headerTextIOS="Selecciona una fecha"
+                                        onConfirm={(date) => {
+                                            setModalVisible(false); 
+                                            field.onChange(date);
+                                        }}
+                                        onCancel={() => setModalVisible(false)}
+                                    />
+                                </>
+                               
+                                :
+                                <TouchableOpacity onPress={() => showDatepicker(field)} style={styles.dateTimeContainer}>
+                                        <Text>{ field.value == "" ? "Elija una fecha" : formatDate(field.value)}</Text>
+                                </TouchableOpacity>
+
+                        )
+                    }} name="date" />
+                </View>
+                <View>
+                    <Text style={styles.sectionTitle}>Horario:</Text>
+                    <View style={{ flexDirection: 'row', gap: 12, justifyContent: 'center', marginVertical: 8 }}>
+                        <Controller control={control} rules={{ required: false }} defaultValue={[]} render={({ field }) =>
+                        (
+                            HORARIOS.map((horario, idx) => {
+                                const isSelected = field.value.includes(idx)
+                                return (
+                                    <Chip title={horario} buttonStyle={{ borderColor: COLORS.primary, borderWidth: 1 }}
+                                        titleStyle={{ color: !isSelected ? COLORS.primary : COLORS.white }} key={idx} color={COLORS.primary}
+                                        type={isSelected ? 'solid' : 'outline'} onPress={() => toggleChipSelection(idx, field.value, field.onChange)} />
+                                )
+                            })
+                        )
+                        }
+                            name="schedule" />
+                    </View>
+
+                </View>
+                <View style={styles.buttonContainer}>
+                    <CustomButton title={"Cancelar"} color='red' onPress={closeFilters} />
+                    <CustomButton title={"Guardar"} color={COLORS.primary} onPress={handleSubmit(onSubmit)} />
+                </View>
+                {isDirty && <CustomButton title={"Limpiar"} color={COLORS.primary} onPress={cleanFilters} filled={false} />}
+
+            </View>
         </SafeAreaView>
     );
 }
@@ -181,9 +197,9 @@ const styles = StyleSheet.create({
     },
     dateTimeContainer: {
         borderRadius: 10,
-        padding: 10,
+        paddingVertical: 16,
+        paddingHorizontal: 6,
         marginVertical: 10,
-        minWidth: '35%',
         borderColor: '#aeaeae',
         borderWidth: 1,
     },

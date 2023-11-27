@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Keyboard, StyleSheet, TextInput, Text, TouchableOpacity, View, Platform, Modal, Pressable } from 'react-native'
+import { Keyboard, StyleSheet, TextInput, Text, TouchableOpacity, View, Platform, Modal, Pressable, KeyboardAvoidingView } from 'react-native'
 import CustomButton from '../components/CustomButton'
 import { Controller, useForm } from 'react-hook-form'
 import { EXPERTISE, LOCATIONS, SPORT } from '../constants/data'
@@ -9,7 +9,6 @@ import { formatDate, formatTime, showDatepicker, showTimepicker } from '../utils
 import { publishEvent } from '../services/eventService'
 import { useNavigation } from '@react-navigation/native'
 import Pill from '../components/Pill'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomDropdown from '../components/CustomDropdown'
 
 
@@ -59,19 +58,22 @@ const NewEvent = () => {
 
     return (
         <View style={{...styles.centeredView, paddingHorizontal: 16, paddingVertical: 16, backgroundColor: COLORS.primary10}}>
-             <Modal
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(false);
-            }}
-          >
-            <Pressable
-              style={styles.centeredView}
-              onPress={(e) =>
-                e.target == e.currentTarget && setModalVisible(false)
-              }
+        <KeyboardAvoidingView 
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+            <Modal
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(false);
+                }}
             >
+                <Pressable
+                style={styles.centeredView}
+                onPress={(e) =>
+                    e.target == e.currentTarget && setModalVisible(false)
+                }
+                >
               <View style={styles.modalView}>
                 <Text style={styles.modalText}>
                   ¿Cuantos jugadores faltan?
@@ -203,6 +205,7 @@ const NewEvent = () => {
             )}
                 name="description" />
             <CustomButton title="Crear" isLoading={isLoading} onPress={handleSubmit(onSubmit)} />
+            </KeyboardAvoidingView>
         </View>
     )
 }

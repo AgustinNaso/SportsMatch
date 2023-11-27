@@ -132,7 +132,7 @@ const Home = ({ navigation, route }) => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           style={{flex: 1}}
-          contentContainerStyle={filteredEventsList.length != 0 ? styles.contentContainer : [styles.noContentContainer, {paddingHorizontal: 24}]}
+          contentContainerStyle={filteredEventsList?.length == 0 ?  [styles.noContentContainer, {paddingHorizontal: 24}] : styles.contentContainer}
           keyExtractor={(item) => {
             return item.event_id.toString();
           }}

@@ -11,7 +11,7 @@ const formatDate = (date) => {
 const showMode = (currentMode, field) => {
     let currentDate = new Date();
     DateTimePickerAndroid.open({
-        value: field.value !== undefined ? field.value : currentDate,
+        value: field.value !== undefined && field.value !== "" ? field.value : currentDate,
         onChange: (event, selectedDate) => {
             field.onChange(selectedDate)
         },
