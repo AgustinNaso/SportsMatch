@@ -16,7 +16,11 @@ import CustomDropdown from '../components/CustomDropdown'
 const NewEvent = () => {
     const navigation = useNavigation();
     const [isLoading, setIsLoading] = React.useState(false);
-    const { control, handleSubmit, formState: { errors }, watch, setValue } = useForm();
+    const { control, handleSubmit, formState: { errors }, watch, setValue } = useForm({
+        defaultValues: {
+            date: new Date(),
+        }
+    });
     const [modalVisible, setModalVisible] = React.useState(false);
     const [customPlayerQty, setCustomPlayerQty] = React.useState('+');
     const eventDuration = ['60', '90', '120'];
@@ -72,7 +76,9 @@ const NewEvent = () => {
                 <Text style={styles.modalText}>
                   ¿Cuantos jugadores faltan?
                 </Text>
-                <TextInput style={{width: 50, backgroundColor: COLORS.primary10, borderColor: COLORS.primary, borderWidth: 1, borderRadius: 4}}
+                <TextInput 
+                style={{width: 50, backgroundColor: COLORS.primary10,
+                     borderColor: COLORS.primary, borderWidth: 1, borderRadius: 4, padding: 8}}
                 textAlign='center' autoFocus={true}
                  keyboardType='number-pad' onChangeText={(text) => setCustomPlayerQty(text)}/>
                 <CustomButton
