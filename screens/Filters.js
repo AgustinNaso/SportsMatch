@@ -85,7 +85,7 @@ const FilterModal = ({ navigation }) => {
                 <Text style={[styles.bigText, { alignSelf: 'center' }]}>
                     Filtros de búsqueda
                 </Text>
-                <View style={styles.section}>
+                <View>
                     <Text style={styles.sectionTitle}>Ubicacion: </Text>
                     <Controller control={control} rules={{ required: false }} render={({ field }) => {
                         return (
@@ -108,7 +108,7 @@ const FilterModal = ({ navigation }) => {
                     search={true}
                     />
                     )} */}
-                <View style={styles.section}>
+                <View>
                     <Text style={styles.sectionTitle}>Nivel de juego: </Text>
                     <Controller control={control} rules={{ required: false }} render={({ field }) => (
                         <CustomDropdown
@@ -199,6 +199,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         paddingVertical: 16,
         paddingHorizontal: 6,
+
         marginVertical: 10,
         borderColor: '#aeaeae',
         borderWidth: 1,

@@ -42,9 +42,9 @@ const CustomDropdown = ({data, selected,setSelected, name, showLabel = true, sea
 
   const styles = StyleSheet.create({
     container: {
-      paddingHorizontal: 6,
       paddingVertical: 12,
-      minWidth: '50%',
+      flex: 1,
+      alignSelf: 'stretch'
     },
     dropdown: {
       height: 50,
@@ -52,7 +52,7 @@ const CustomDropdown = ({data, selected,setSelected, name, showLabel = true, sea
       borderWidth: 0.5,
       borderRadius: 8,
       paddingHorizontal: 8,
-      width: '100%',
+      minWidth: '100%',
     },
     icon: {
       marginRight: 5,
