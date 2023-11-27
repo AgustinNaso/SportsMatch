@@ -442,8 +442,8 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingVertical: 12,
-    borderWidth: 2,
-    borderRadius: 20,
+    borderWidth: 1,
+    borderRadius: 5,
     borderColor: COLORS.primary,
     color: COLORS.primary,
     fontSize: 16
@@ -462,8 +462,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    borderRadius: 20,
-    borderWidth: 2,
+    borderRadius: 5,
+    borderWidth: 1,
     borderColor: COLORS.primary,
     backgroundColor: COLORS.transparent,
 

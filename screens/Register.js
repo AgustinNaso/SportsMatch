@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
   KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { COLORS, FONTS } from "../constants";
 import { TextInput } from "react-native-gesture-handler";
@@ -16,6 +17,7 @@ import { AuthContext } from "../contexts/authContext";
 import PhoneInput from "react-native-phone-number-input";
 import { PhoneNumberUtil } from "google-libphonenumber";
 import CustomButton from "../components/CustomButton";
+import { StatusBar } from "expo-status-bar";
 
 const Register = ({ navigation }) => {
   const {
@@ -66,14 +68,10 @@ const Register = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-      }}
-    >
+    <SafeAreaView style={Platform.OS !== "ios"? {paddingTop: 40} : {flex: 1}}>
+      <StatusBar backgroundColor={COLORS.primary} style="light" />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text
@@ -241,7 +239,7 @@ const Register = ({ navigation }) => {
           {errors.password && (
             <Text style={styles.error}>Ingrese una contraseña válida</Text>
           )}
-          <View style={styles.inputContainer}>
+          <View style={[styles.inputContainer, {marginBottom: 10}]}>
             <Text style={styles.inputText}>Confirmar contraseña</Text>
             <Controller
               control={control}
@@ -265,6 +263,7 @@ const Register = ({ navigation }) => {
           {errors.confPassword && (
             <Text style={styles.error}>Las contraseñas no son iguales</Text>
           )}
+
           <CustomButton title="Registrarse" onPress={handleSubmit(submit)} />
           {signUpError && (
             <Text style={styles.error}>
@@ -294,9 +293,9 @@ const styles = StyleSheet.create({
   },
   input: {
     paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderWidth: 2,
-    borderRadius: 20,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderRadius: 5,
     borderColor: COLORS.primary,
     color: COLORS.primary,
     fontSize: 16
@@ -315,8 +314,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    borderRadius: 20,
-    borderWidth: 2,
+    borderRadius: 5,
+    borderWidth: 1,
     borderColor: COLORS.primary,
     backgroundColor: COLORS.transparent,
 
@@ -326,7 +325,7 @@ const styles = StyleSheet.create({
     },
     input: {
       backgroundColor: COLORS.transparent,
-      paddingVertical: 9
+      paddingVertical: 12
      
     },
   },

@@ -15,6 +15,7 @@ import { AuthContext } from "../contexts/authContext";
 import { useNavigation } from "@react-navigation/native";
 import CustomButton from "../components/CustomButton";
 import { Image } from "@rneui/base";
+import { StatusBar } from "expo-status-bar";
 
 
 const Login = () => {
@@ -36,6 +37,7 @@ const Login = () => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
+      <StatusBar backgroundColor={COLORS.primary} style="light" />
       <View
        style={{
         flex: 1,
@@ -108,7 +110,7 @@ const Login = () => {
           {errors.password && (
             <Text style={styles.error}>Por favor ingrese una contraseña válida</Text>
           )}
-          <View style={{ height: 30 }}></View>
+          <View style={{ height: 50 }}></View>
           <CustomButton
             title="Iniciar sesion"
             onPress={handleSubmit(onSubmit)}
