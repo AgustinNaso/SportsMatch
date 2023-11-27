@@ -88,6 +88,7 @@ const Register = ({ navigation }) => {
           </Text>
           <View style={styles.inputContainer}>
             <Text style={styles.inputText}>Nombre</Text>
+            <Text style={styles.inputText}>Nombre</Text>
             <Controller
               control={control}
               rules={{
@@ -111,6 +112,7 @@ const Register = ({ navigation }) => {
           )}
           <View style={styles.inputContainer}>
             <Text style={styles.inputText}>Apellido</Text>
+            <Text style={styles.inputText}>Apellido</Text>
             <Controller
               control={control}
               rules={{
@@ -130,6 +132,7 @@ const Register = ({ navigation }) => {
             />
           </View>
           {errors.lastName && (
+            <Text style={styles.error}>Este campo no puede estar vacío</Text>
             <Text style={styles.error}>Este campo no puede estar vacío</Text>
           )}
           <View style={styles.inputContainer}>
@@ -154,6 +157,7 @@ const Register = ({ navigation }) => {
             />
           </View>
           {errors.email && (
+            <Text style={styles.error}>Por favor ingrese un email válido</Text>
             <Text style={styles.error}>Por favor ingrese un email válido</Text>
           )}
           {emailConflict && (
@@ -211,14 +215,17 @@ const Register = ({ navigation }) => {
               />
             </View>
           {errors.phoneNumber && (
+            <Text style={styles.error}>Por favor ingrese un número de teléfono válido</Text>
             <Text style={styles.error}>Por favor ingrese un numero valido</Text>
           )}
           {phoneConflict && (
             <Text style={styles.error}>
+              Este número de teléfono ya fue registrado
               El numero de telefono ya esta en uso
             </Text>
           )}
           <View style={styles.inputContainer}>
+            <Text style={styles.inputText}>Contraseña</Text>
             <Text style={styles.inputText}>Contraseña</Text>
             <Controller
               control={control}
@@ -242,6 +249,7 @@ const Register = ({ navigation }) => {
             <Text style={styles.error}>Ingrese una contraseña válida</Text>
           )}
           <View style={styles.inputContainer}>
+            <Text style={styles.inputText}>Confirmar contraseña</Text>
             <Text style={styles.inputText}>Confirmar contraseña</Text>
             <Controller
               control={control}
