@@ -6,7 +6,7 @@ import { EVENT_STATUS, EXPERTISE, SPORT, USER_STATUS } from "../constants/data";
 import {
   fetchParticipants,
   joinNewEvent,
-  removeParticipant,
+  quitEvent,
 } from "../services/eventService";
 import { Avatar, Divider } from "@rneui/themed";
 import { COLORS } from "../constants";
@@ -53,9 +53,9 @@ const Event = ({ route }) => {
     });
   }, [eventParticipants, currUser]);
 
-  const quitEvent = async () => {
+  const handleQuitEvent = async () => {
     try {
-      const res = await removeParticipant(props.event_id);
+      const res = await quitEvent(props.event_id);
       setUserStatus(USER_STATUS.UNENROLLED);
     } catch (error) {
       console.log("Error quitting event. ", error);
@@ -115,7 +115,7 @@ const Event = ({ route }) => {
           <CustomButton
             title={"Desanotarme"}
             color={"red"}
-            onPress={quitEvent}
+            onPress={handleQuitEvent}
             isLoading={loading}
           />
         );
