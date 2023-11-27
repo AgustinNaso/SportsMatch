@@ -224,7 +224,6 @@ const EditProfile = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
       >
         {!loading && (
           <ScrollView contentContainerStyle={styles.scrollContainer}>

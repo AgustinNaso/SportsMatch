@@ -15,46 +15,8 @@ const ProfileStackNavigator = () => {
 
   const [visible, setVisible] = useState(false);
   const navigator = useNavigation();
-
   const authContext = useContext(AuthContext);
 
-  const CustomMenu = () => {
-    return (
-      <Menu
-        visible={visible}
-        anchor={
-          <TouchableOpacity onPress={() => setVisible(!visible)}>
-            <Ionicons
-              name="menu"
-              style={{ marginRight: 10, marginTop: 1 }}
-              size={24}
-              color={COLORS.white}
-            />
-          </TouchableOpacity>
-        }
-        onRequestClose={() => setVisible(!visible)}
-      >
-        <MenuItem
-          onPress={() => {
-            navigator.navigate("Edit Profile");
-            setVisible(!visible);
-          }}
-        >
-          Editar perfil
-        </MenuItem>
-        <MenuDivider />
-
-        <MenuItem
-          onPress={() => {
-            authContext.signOut();
-            setVisible(!visible);
-          }}
-        >
-          Cerrar sesión
-        </MenuItem>
-      </Menu>
-    );
-  }
   return (
     <Stack.Navigator screenOptions={{ statusBarColor: COLORS.primary }}>
       <Stack.Group>
@@ -62,7 +24,39 @@ const ProfileStackNavigator = () => {
           options={{
             headerTintColor: COLORS.white, headerStyle: { backgroundColor: COLORS.primary },
             headerRight: () => {
-              return <CustomMenu />;
+              return (
+                <Menu
+                  visible={visible}
+                  anchor={
+                    <TouchableOpacity onPress={() => setVisible(!visible)}>
+                      <Ionicons
+                        name="menu"
+                        size={24}
+                        color={COLORS.white}
+                      />
+                    </TouchableOpacity>
+                  }
+                  onRequestClose={() => setVisible(!visible)}
+                >
+                  <MenuItem
+                    onPress={() => {
+                      navigator.navigate("Edit Profile");
+                      setVisible(!visible);
+                    }}
+                  >
+                    Editar perfil
+                  </MenuItem>
+                  <MenuDivider />
+                  <MenuItem
+                    onPress={() => {
+                      authContext.signOut();
+                      setVisible(!visible);
+                    }}
+                  >
+                    Cerrar sesión
+                  </MenuItem>
+                </Menu>
+              );
             },
             headerTitle: "Perfil"
           }}
