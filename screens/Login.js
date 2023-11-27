@@ -13,6 +13,8 @@ import { COLORS, FONTS } from "../constants";
 import { validateEmail } from "../utils/validations";
 import { AuthContext } from "../contexts/authContext";
 import { useNavigation } from "@react-navigation/native";
+import CustomButton from "../components/CustomButton";
+import { Image } from "@rneui/base";
 
 
 const Login = () => {
@@ -25,7 +27,7 @@ const Login = () => {
     setLoading(true);
     try {
       await authContext.signIn(data)
-    } 
+    }
     catch (err) {
       setLoading(false);
       console.error('Error signing in', err);
@@ -33,108 +35,113 @@ const Login = () => {
   }
 
   return (
-    <SafeAreaView
-      style={{
+    <SafeAreaView style={{flex: 1}}>
+      <View
+       style={{
+        flex: 1,
         alignItems: "center",
-        justifyContent: "center",
-        paddingBottom: 100,
-      }}
-    >
-      {loading ? <ActivityIndicator
-        size="large"
-        color={COLORS.primary}
-        style={{ alignSelf: "center", marginTop: "50%" }}
-      /> : <>
-        <Text
-          style={{
-            ...FONTS.h1,
-            fontSize: 40,
-            color: COLORS.primary,
-            paddingTop: 50,
-          }}
-        >
-          SportsMatch
-        </Text>
-        {errors.email && <Text style={styles.error}>Email o contraseña incorrecta</Text>}
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputText}>Email</Text>
-          <Controller control={control}
-            rules={{
-              required: true,
-              validate: {
-                matchPattern: v => validateEmail(v),
-              }
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={styles.input}
-                keyboardType="email-address"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />)}
-            name="email"
-          />
+        justifyContent: "space-around",
+        paddingHorizontal: 24,
+      }}>
+
+        {loading ? <ActivityIndicator
+          size="large"
+          color={COLORS.primary}
+          style={{ alignSelf: "center", marginTop: "50%" }}
+        /> : 
+        <>
+        <View style={{ alignSelf: 'stretch', 
+        alignItems: 'center', flex: 1, maxHeight: '30%', justifyContent: 'flex-end'}}>
+          <Image
+            style={{ height: 200,width: 200, }}
+            resizeMode="contain"
+            source={require("../assets/logo.png")}
+            />
         </View>
-        {errors.email && (
-          <Text style={styles.error}>Por favor ingrese un email válido</Text>
-        )}
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputText}>Contraseña</Text>
-          <Controller control={control}
-            rules={{
-              minLength: 8,
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                secureTextEntry={true}
-              />)}
-            name="password"
+
+          {errors.email && <Text style={styles.error}>Email o contraseña incorrecta</Text>}
+
+          <View style={{alignSelf: 'stretch', gap: 14}}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputText}>Email</Text>
+            <Controller control={control}
+              rules={{
+                required: true,
+                validate: {
+                  matchPattern: v => validateEmail(v),
+                }
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  style={styles.input}
+                  keyboardType="email-address"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                />)}
+              name="email"
+            />
+          </View>
+          {errors.email && (
+            <Text style={styles.error}>Por favor ingrese un email válido</Text>
+          )}
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputText}>Contraseña</Text>
+            <Controller control={control}
+              rules={{
+                minLength: 8,
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  style={styles.input}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  secureTextEntry={true}
+                  />)}
+              name="password"
+              />
+          </View>
+          </View>
+          {errors.password && (
+            <Text style={styles.error}>Por favor ingrese una contraseña válida</Text>
+          )}
+          <View style={{ height: 30 }}></View>
+          <CustomButton
+            title="Iniciar sesion"
+            onPress={handleSubmit(onSubmit)}
+            loading={loading}
           />
-        </View>
-        {errors.password && (
-          <Text style={styles.error}>Por favor ingrese una contraseña válida</Text>
-        )}
-        <TouchableOpacity
-          style={styles.loginBtn}
-          onPress={handleSubmit(onSubmit)}
-          loading={loading}
-        >
-          <Text style={{ ...FONTS.h3, color: COLORS.white }}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{ marginTop: 10 }}
-          onPress={() => navigation.navigate("Register")}
-        >
-          <Text style={styles.referal}>Todavía no tenes una cuenta? Registrate</Text>
-        </TouchableOpacity>
-      </>}
+          <TouchableOpacity
+            style={{ marginTop: 10 }}
+            onPress={() => navigation.navigate("Register")}
+          >
+            <Text style={styles.referal}>Todavía no tenes una cuenta? Registrate</Text>
+          </TouchableOpacity>
+        </>}
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   input: {
-    height: 40,
-    paddingLeft: 20,
-    paddingRight: 20,
-    borderWidth: 3,
-    borderRadius: 20,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingVertical: 12,
     borderColor: COLORS.primary,
     color: COLORS.primary,
+    fontSize: 16
   },
   inputContainer: {
-    marginTop: 20,
-    width: "65%",
-    gap: 5,
+    alignSelf: 'stretch',
+    gap: 8,
   },
   inputText: {
-    ...FONTS.body3,
+    ...FONTS.body2,
     marginLeft: 10,
     color: COLORS.primary,
   },
@@ -142,15 +149,6 @@ const styles = StyleSheet.create({
     ...FONTS.body3,
     color: "#F00",
     fontWeight: "700",
-  },
-  loginBtn: {
-    margin: 10,
-    backgroundColor: COLORS.primary,
-    width: 150,
-    alignItems: "center",
-    borderRadius: 15,
-    padding: 8,
-    marginTop: 30,
   },
   referal: {
     color: COLORS.primary,

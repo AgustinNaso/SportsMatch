@@ -16,7 +16,7 @@ export default CustomButton;
 
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: 14,
+    paddingVertical: 16,
     borderRadius: 5,
     minWidth: '45%',
     alignSelf: 'stretch',
