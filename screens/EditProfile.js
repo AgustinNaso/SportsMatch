@@ -337,7 +337,6 @@ const EditProfile = () => {
                     defaultValue={currUser.national_number}
                     defaultCode={currUser.country_code}
                     layout="first"
-                    autoFocus
                     containerStyle={styles.phoneContainer}
                     textContainerStyle={styles.phoneContainer.input}
                     flagButtonStyle={styles.phoneContainer.flag}
@@ -422,9 +421,7 @@ const EditProfile = () => {
             {error && (
               <Text style={{ color: "red", paddingTop: 15 }}>{error}</Text>
             )}
-            <View style={{marginTop: 40}}>
             <CustomButton title="Guardar" onPress={handleSubmit(submit)}/>
-            </View>
           </ScrollView>
         )}
       </KeyboardAvoidingView>
@@ -437,25 +434,27 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingBottom: 100,
+    paddingBottom: 24,
     paddingTop: 20,
+    paddingHorizontal: 36,
+    gap: 12
   },
   input: {
-    height: 40,
     paddingLeft: 20,
     paddingRight: 20,
-    borderWidth: 3,
+    paddingVertical: 12,
+    borderWidth: 2,
     borderRadius: 20,
     borderColor: COLORS.primary,
     color: COLORS.primary,
+    fontSize: 16
   },
   inputContainer: {
-    marginTop: 20,
-    width: "65%",
+    alignSelf: 'stretch',
     gap: 5,
   },
   inputText: {
-    ...FONTS.body3,
+    ...FONTS.body2,
     color: COLORS.primary,
     marginLeft: 10,
   },
@@ -465,13 +464,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     borderRadius: 20,
+    borderWidth: 2,
+    borderColor: COLORS.primary,
+    backgroundColor: COLORS.transparent,
 
     flag: {
       width: 55,
     },
     input: {
-      borderRadius: 20,
-      width: "90%",
+      backgroundColor: COLORS.transparent,
+      paddingVertical: 12
+     
     },
   },
   sportsContainer: {
