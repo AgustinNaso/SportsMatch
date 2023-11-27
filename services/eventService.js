@@ -123,12 +123,9 @@ export const fetchEventById = async (eventId) => {
 };
 
 export const joinNewEvent = async (eventId, userId) => {
-  const data = await SecureStore.getItemAsync("userPayload");
-  const userData = await fetchUser(JSON.parse(data).email);
-
   await authenticatedFetch("/events/" + eventId + "/participants", {
     method: "PUT",
-    body: JSON.stringify({ userId: userData.id }),
+    body: JSON.stringify({ userId: userId }),
     headers: {
       "Content-Type": "application/json",
     },

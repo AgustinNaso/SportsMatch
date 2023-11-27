@@ -18,9 +18,10 @@ import { UserContext } from "../contexts/UserContext";
 
 const Event = ({ route }) => {
   const { props } = route.params;
+  const [loading, setLoading] = useState(false);
   const [eventParticipants, setEventParticipants] = useState([]);
   const [userStatus, setUserStatus] = useState(USER_STATUS.UNENROLLED);
-  const {currUser, setCurrUser} = useContext(UserContext);
+  const { currUser, setCurrUser } = useContext(UserContext);
   const [image, setImage] = useState(null);
 
   useEffect(() => {
@@ -62,25 +63,21 @@ const Event = ({ route }) => {
   };
 
   const joinEvent = async () => {
+    console.log("Joining event", currUser);
     try {
+      setLoading(true);
       await joinNewEvent(props.event_id, currUser.userid);
       setUserStatus(USER_STATUS.REQUESTING);
     } catch (error) {
       console.log(error);
     }
+    setLoading(false);
   };
 
   const renderParticipantStatusMessage = () => {
     if (props.event_status === EVENT_STATUS.FINALIZED)
       return (
-        <Text
-          style={{
-            textAlign: "center",
-            fontSize: 20,
-            fontWeight: 700,
-            alignSelf: "center",
-          }}
-        >
+        <Text style={styles.participantStatusText}>
           Evento finalizado!
         </Text>
       );
@@ -89,32 +86,28 @@ const Event = ({ route }) => {
         return null;
       case USER_STATUS.REQUESTING:
         return (
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 20,
-              fontWeight: 700,
-              alignSelf: "center",
-            }}
-          >
+          <Text style={styles.participantStatusText}>
             Esperando confirmación del creador del evento
           </Text>
         );
       case USER_STATUS.ENROLLED:
         return (
-          <Text style={{ fontSize: 20, fontWeight: 700, alignSelf: "center" }}>
+          <Text style={styles.participantStatusText}>
             Ya estás anotado al evento!
           </Text>
         );
     }
   };
 
-  const renderEventButton = () => {
+  const renderEventButton = (loading) => {
     if (props.event_status === EVENT_STATUS.FINALIZED) return null;
     switch (userStatus) {
       case USER_STATUS.UNENROLLED:
         return (
-          <CustomButton title={"Anotarme"} color="green" onPress={joinEvent} />
+          <CustomButton
+            title={"Anotarme"} 
+            onPress={joinEvent}
+            isLoading={loading} />
         );
       case USER_STATUS.REQUESTING:
       case USER_STATUS.ENROLLED:
@@ -123,6 +116,7 @@ const Event = ({ route }) => {
             title={"Desanotarme"}
             color={"red"}
             onPress={quitEvent}
+            isLoading={loading}
           />
         );
     }
@@ -135,7 +129,7 @@ const Event = ({ route }) => {
       <View style={styles.eventHeader}>
         <Avatar
           rounded
-          size={100}
+          size={110}
           source={image ? { uri: image } : DefaultProfile}
           containerStyle={{ backgroundColor: COLORS.secondary }}
         />
@@ -160,13 +154,12 @@ const Event = ({ route }) => {
           </Text>
         </View>
       </View>
-      <Divider width={4} style={{ width: "90%", marginBottom: 8 }} />
+      <Divider width={4} style={{ width: "100%", marginBottom: -24}} />
       <View style={styles.eventBody}>
         <View style={styles.bodySection}>
           <Text style={styles.bodyBigText}>Fecha:</Text>
-          <Text style={styles.bodyMidText}>{`${day} de ${
-            MONTHS[month - 1]
-          } ${hours}:${minutes} hs`}</Text>
+          <Text style={styles.bodyMidText}>{`${day} de ${MONTHS[month - 1]
+            } ${hours}:${minutes} hs`}</Text>
         </View>
         <Divider width={1} />
         <View style={styles.bodySection}>
@@ -183,8 +176,8 @@ const Event = ({ route }) => {
         <Divider width={1} />
         <View style={{ ...styles.bodySection }}>
           <Text style={styles.bodyBigText}>Descripcion:</Text>
-          <View style={{ width: 150 }}>
-            <ScrollView>
+          <View style={{ width: 160 }}>
+            <ScrollView style={{maxHeight: 110}}>
               <Text style={styles.bodyMidText}>{props.description}</Text>
             </ScrollView>
           </View>
@@ -192,7 +185,7 @@ const Event = ({ route }) => {
         <Divider width={1} />
         {renderParticipantStatusMessage()}
       </View>
-      <View style={{ alignSelf: "center" }}>{renderEventButton()}</View>
+      <View style={{ alignSelf: "stretch" }}>{renderEventButton(loading)}</View>
     </View>
   );
 };
@@ -204,27 +197,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    maxHeight: 130,
+    paddingVertical: 24
   },
   eventContainer: {
     flexDirection: "column",
     alignItems: "center",
     flex: 1,
+    paddingHorizontal: 24,
+    justifyContent: 'space-evenly'
   },
   eventHeader: {
-    height: 150,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    paddingHorizontal: 16,
-    width: "100%",
+    alignSelf: "stretch",
   },
 
   headerData: {
     flexDirection: "column",
     alignItems: "flex-start",
     justifyContent: "space-between",
-    padding: 8,
   },
 
   bigText: {
@@ -250,13 +242,14 @@ const styles = StyleSheet.create({
 
   eventBody: {
     flexDirection: "column",
-    height: "55%",
-    width: "100%",
+    alignSelf: "stretch",
     justifyContent: "space-evenly",
-    paddingHorizontal: 20,
   },
 
-  participantsContainer: {
-    height: "35%",
+  participantStatusText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    alignSelf: "center",
+    marginTop: 16,
   },
 });

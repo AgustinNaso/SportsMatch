@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
     height: 140,
     justifyContent: "space-evenly",
     alignItems: "center",
+    alignSelf: "stretch"
   },
   profileTextContainer: {
     flexDirection: "column",

@@ -157,6 +157,6 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     gap: 8,
     alignItems: 'center',
-    paddingBottom: '20%'
+    paddingBottom: '5%'
   }
 });
