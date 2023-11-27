@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import EventStatus from './EventStatus';
 import { Divider } from '@rneui/base';
 import MyEventCard from './MyEventCard';
-import { EXPERTISE, SPORT } from '../constants/data';
+import { EVENT_STATUS, EXPERTISE, SPORT } from '../constants/data';
 import { getDateComponents } from '../utils/datetime';
 import { removeParticipantAsOwner } from '../services/eventService';
 import { COLORS } from '../constants';
@@ -35,14 +35,14 @@ const MyEventList = ({ data }) => {
                     <EventStatus status={data.item.event_status} />
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                    <Text style={{ fontSize: 16, fontWeight: 600, color: '#828282'}}>{EXPERTISE[data.item.expertise - 1]}</Text>
-                    <Text style={{ fontSize: 16, fontWeight: 600, color: '#828282'}}>{`${day}/${month} ${hours}:${minutes} hs`}</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 600, color: COLORS.darkgray}}>{EXPERTISE[data.item.expertise - 1]}</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 600, color: COLORS.darkgray}}>{`${day}/${month} ${hours}:${minutes} hs`}</Text>
                 </View>
             </View>
             <FlatList
                 data={participantList} renderItem={(listData) => renderItem(listData.item, data.item.event_id, handleRemoveParticipant, data.item.event_status)}
                 style={{ flex: 1 }} keyExtractor={(item, index) => { return `${item.userid} + ${index} + ${item.event_id}}` }}
-                ListEmptyComponent={<Text style={{ fontSize: 20, alignSelf: 'center', marginVertical: 8 }}>Aún no hay participantes</Text>}
+                ListEmptyComponent={data.item.event_status !== EVENT_STATUS.FINALIZED && <Text style={{ fontSize: 20, alignSelf: 'center', marginVertical: 8 }}>Aún no hay participantes</Text>}
             >
             </FlatList>
             <Divider width={3} style={{ width: '100%', marginTop: 10, alignSelf: 'center' }} />

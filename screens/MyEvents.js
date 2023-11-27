@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { SafeAreaView, FlatList, View, StyleSheet } from "react-native";
+import { SafeAreaView, FlatList, View, StyleSheet, ActivityIndicator } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import Card from "../components/Card";
 import {
@@ -20,8 +20,9 @@ const renderJoinedItem = ({ item }) => {
   return <Card props={item} />;
 };
 
-const FirstRoute = (myEvents) => (
+const FirstRoute = (myEvents, loading) => (
   <SafeAreaView style={{ flex: 1 }}>
+    {loading ? <ActivityIndicator size="large" color={COLORS.primary} style={{ alignSelf: "center", marginTop: "50%" }} /> : 
     <FlatList
       data={myEvents}
       renderItem={(data) => renderList(data)}
@@ -31,7 +32,7 @@ const FirstRoute = (myEvents) => (
         return `${index}`;
       }}
       ListEmptyComponent={<NoContentMessage message={"Aún no creaste ningún evento"}/>}
-    ></FlatList>
+    />}
   </SafeAreaView>
 );
 
@@ -62,22 +63,25 @@ const MyEvents = () => {
     { key: "second", title: "Anotado" },
   ]);
   const {currUser } = useContext(UserContext);
+  const [loading, setLoading] = React.useState(true);
   const [myEvents, setMyEvents] = React.useState([]);
   const [joinedEvents, setJoinedEvents] = React.useState([]);
   const isFocused = useIsFocused();
 
   const renderScene = ({ route }) => {
+    console.log(loading);
     switch (route.key) {
       case "first":
-        return FirstRoute(myEvents);
+        return FirstRoute(myEvents, loading);
       case "second":
-        return SecondRoute(joinedEvents);
+        return SecondRoute(joinedEvents, loading);
       default:
         return null;
     }
   };
 
   useEffect(() => {
+    setLoading(true);
     const getMyEvents = async () => {
       const data = await fetchMyEvents(currUser.userid);
       setMyEvents(data.items);
@@ -88,7 +92,7 @@ const MyEvents = () => {
       setJoinedEvents(mockData.items);
     };
     if (currUser && isFocused) {
-      getMyEvents().catch((err) => console.log(err));
+      getMyEvents().then(() => setLoading(false)).catch((err) => console.log(err));
       getJoinedEvents().catch((err) => console.log(err));
     }
   }, [isFocused]);
@@ -120,7 +124,7 @@ const styles = StyleSheet.create({
   },
   contentContainer : {
     flexGrow: 1,
-    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 24,
     gap: 8,
     paddingTop: 8,
