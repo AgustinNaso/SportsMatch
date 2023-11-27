@@ -55,7 +55,7 @@ const Login = () => {
         >
           SportsMatch
         </Text>
-        {errors.email && <Text style={styles.error}>Incorrect email or password</Text>}
+        {errors.email && <Text style={styles.error}>Email o contraseña incorrecta</Text>}
         <View style={styles.inputContainer}>
           <Text style={styles.inputText}>Email</Text>
           <Controller control={control}
@@ -77,10 +77,10 @@ const Login = () => {
           />
         </View>
         {errors.email && (
-          <Text style={styles.error}>Please enter a valid email</Text>
+          <Text style={styles.error}>Por favor ingrese un email válido</Text>
         )}
         <View style={styles.inputContainer}>
-          <Text style={styles.inputText}>Password</Text>
+          <Text style={styles.inputText}>Contraseña</Text>
           <Controller control={control}
             rules={{
               minLength: 8,
@@ -98,7 +98,7 @@ const Login = () => {
           />
         </View>
         {errors.password && (
-          <Text style={styles.error}>Please enter a valid password</Text>
+          <Text style={styles.error}>Por favor ingrese una contraseña válida</Text>
         )}
         <TouchableOpacity
           style={styles.loginBtn}
@@ -111,7 +111,7 @@ const Login = () => {
           style={{ marginTop: 10 }}
           onPress={() => navigation.navigate("Register")}
         >
-          <Text style={styles.referal}>Don't have an account yet? Register</Text>
+          <Text style={styles.referal}>Todavía no tenes una cuenta? Registrate</Text>
         </TouchableOpacity>
       </>}
     </SafeAreaView>

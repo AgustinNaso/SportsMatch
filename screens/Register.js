@@ -86,7 +86,7 @@ const Register = ({ navigation }) => {
             SportsMatch
           </Text>
           <View style={styles.inputContainer}>
-            <Text style={styles.inputText}>Name</Text>
+            <Text style={styles.inputText}>Nombre</Text>
             <Controller
               control={control}
               rules={{
@@ -106,10 +106,10 @@ const Register = ({ navigation }) => {
             />
           </View>
           {errors.name && (
-            <Text style={styles.error}>This field can't be empty</Text>
+            <Text style={styles.error}>Este campo no puede estar vacío</Text>
           )}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputText}>Last Name</Text>
+            <Text style={styles.inputText}>Apellido</Text>
             <Controller
               control={control}
               rules={{
@@ -129,7 +129,7 @@ const Register = ({ navigation }) => {
             />
           </View>
           {errors.lastName && (
-            <Text style={styles.error}>This field can't be empty</Text>
+            <Text style={styles.error}>Este campo no puede estar vacío</Text>
           )}
           <View style={styles.inputContainer}>
             <Text style={styles.inputText}>Email</Text>
@@ -154,10 +154,10 @@ const Register = ({ navigation }) => {
             />
           </View>
           {errors.email && (
-            <Text style={styles.error}>Please enter a valid email</Text>
+            <Text style={styles.error}>Por favor ingrese un email válido</Text>
           )}
           {emailConflict && (
-            <Text style={styles.error}>Email has already been taken</Text>
+            <Text style={styles.error}>Este email ya fue registrado</Text>
           )}
           <View style={styles.inputContainer}>
             <Text style={styles.inputText}>Fecha de nacimiento</Text>
@@ -184,7 +184,7 @@ const Register = ({ navigation }) => {
             </Text>
           )}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputText}>Phone Number</Text>
+            <Text style={styles.inputText}>Número de teléfono</Text>
             <View style={styles.phoneContainer}>
               <Controller
                 control={control}
@@ -213,15 +213,15 @@ const Register = ({ navigation }) => {
             </View>
           </View>
           {errors.phoneNumber && (
-            <Text style={styles.error}>Please enter a valid phone number</Text>
+            <Text style={styles.error}>Por favor ingrese un número de teléfono válido</Text>
           )}
           {phoneConflict && (
             <Text style={styles.error}>
-              Phone number has already been taken
+              Este número de teléfono ya fue registrado
             </Text>
           )}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputText}>Password</Text>
+            <Text style={styles.inputText}>Contraseña</Text>
             <Controller
               control={control}
               rules={{
@@ -241,10 +241,10 @@ const Register = ({ navigation }) => {
             />
           </View>
           {errors.password && (
-            <Text style={styles.error}>Please enter a valid password</Text>
+            <Text style={styles.error}>Por favor ingrese una contraseña válida</Text>
           )}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputText}>Confirm password</Text>
+            <Text style={styles.inputText}>Confirmar contraseña</Text>
             <Controller
               control={control}
               rules={{
@@ -265,24 +265,24 @@ const Register = ({ navigation }) => {
             />
           </View>
           {errors.confPassword && (
-            <Text style={styles.error}>Passwords do not match</Text>
+            <Text style={styles.error}>Contraseñas no coinciden</Text>
           )}
           <TouchableOpacity
             style={styles.loginBtn}
             onPress={handleSubmit(submit)}
           >
-            <Text style={{ ...FONTS.h3, color: COLORS.white }}>Register</Text>
+            <Text style={{ ...FONTS.h3, color: COLORS.white }}>Registrar</Text>
           </TouchableOpacity>
           {signUpError && (
             <Text style={styles.error}>
-              There's been an error, please try again
+              Hubo un error, por favor intente otra vez
             </Text>
           )}
           <TouchableOpacity
             style={{ marginTop: 10 }}
             onPress={() => navigation.navigate("Login")}
           >
-            <Text style={styles.referal}>Already have an account? Login</Text>
+            <Text style={styles.referal}>Ya estás registrado? Inicia sesión</Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
