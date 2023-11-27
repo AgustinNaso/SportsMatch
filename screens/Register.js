@@ -15,6 +15,7 @@ import { getEmailValidator, validateEmail } from "../utils/validations";
 import { AuthContext } from "../contexts/authContext";
 import PhoneInput from "react-native-phone-number-input";
 import { PhoneNumberUtil } from "google-libphonenumber";
+import CustomButton from "../components/CustomButton";
 
 const Register = ({ navigation }) => {
   const {
@@ -185,7 +186,6 @@ const Register = ({ navigation }) => {
           )}
           <View style={styles.inputContainer}>
             <Text style={styles.inputText}>Phone Number</Text>
-            <View style={styles.phoneContainer}>
               <Controller
                 control={control}
                 rules={{
@@ -199,7 +199,6 @@ const Register = ({ navigation }) => {
                     defaultValue={""}
                     defaultCode="AR"
                     layout="first"
-                    autoFocus
                     containerStyle={styles.phoneContainer}
                     textContainerStyle={styles.phoneContainer.input}
                     flagButtonStyle={styles.phoneContainer.flag}
@@ -211,7 +210,6 @@ const Register = ({ navigation }) => {
                 name="phoneNumber"
               />
             </View>
-          </View>
           {errors.phoneNumber && (
             <Text style={styles.error}>Please enter a valid phone number</Text>
           )}
@@ -267,12 +265,7 @@ const Register = ({ navigation }) => {
           {errors.confPassword && (
             <Text style={styles.error}>Passwords do not match</Text>
           )}
-          <TouchableOpacity
-            style={styles.loginBtn}
-            onPress={handleSubmit(submit)}
-          >
-            <Text style={{ ...FONTS.h3, color: COLORS.white }}>Register</Text>
-          </TouchableOpacity>
+          <CustomButton title="Registrarse" onPress={handleSubmit(submit)} />
           {signUpError && (
             <Text style={styles.error}>
               There's been an error, please try again
@@ -296,19 +289,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingBottom: 100,
+    paddingHorizontal: 24,
+    gap: 14
   },
   input: {
-    height: 40,
-    paddingLeft: 20,
-    paddingRight: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
     borderWidth: 3,
     borderRadius: 20,
     borderColor: COLORS.primary,
     color: COLORS.primary,
+    fontSize: 16
   },
   inputContainer: {
-    marginTop: 20,
-    width: "65%",
+    alignSelf: 'stretch',
     gap: 5,
   },
   inputText: {
@@ -322,23 +316,19 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     borderRadius: 20,
+    borderWidth: 3,
+    borderColor: COLORS.primary,
+    backgroundColor: COLORS.transparent,
 
     flag: {
       width: 55,
+      marginLeft: 10
     },
     input: {
-      borderRadius: 20,
-      width: "90%",
+      backgroundColor: COLORS.transparent,
+      paddingVertical: 9
+     
     },
-  },
-  loginBtn: {
-    margin: 10,
-    backgroundColor: COLORS.primary,
-    width: 150,
-    alignItems: "center",
-    borderRadius: 15,
-    padding: 8,
-    marginTop: 30,
   },
   referal: {
     color: COLORS.primary,
