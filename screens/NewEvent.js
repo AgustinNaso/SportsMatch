@@ -85,8 +85,8 @@ const NewEvent = () => {
               </View>
             </Pressable>
           </Modal>
-            <View style={{ flex: 1, alignSelf: 'stretch'}}>
-                <View style={{flexDirection: 'row',  justifyContent: 'center', width: '100%', flex: 1}}>
+            <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'column', justifyContent: 'space-evenly'}}>
+                <View style={{flexDirection: 'row',  justifyContent: 'center', width: '100%'}}>
                     <Controller control={control} rules={{ required: true }} render={({ field }) => (                        
                         <CustomDropdown
                          selected={field.value}
