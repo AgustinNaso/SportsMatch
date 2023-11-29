@@ -34,10 +34,10 @@ const FilterModal = ({ navigation }) => {
                     Object.entries(formValues).forEach(([fieldName, fieldValue]) => {
                         if (fieldValue !== undefined) {
                             if (fieldName === "date") {
-                                fieldValue = fieldValue !== "" ? new Date(fieldValue) : new Date();
+                                fieldValue = fieldValue !== "" ? new Date(fieldValue) : "";
                             }
                             console.log("SETIE", fieldName, fieldValue);
-                            setValue(fieldName, fieldValue, {shouldDirty : true});
+                            setValue(fieldName, fieldValue, { shouldDirty: true });
                         }
                     });
                 }
@@ -83,93 +83,96 @@ const FilterModal = ({ navigation }) => {
                 <Text style={[styles.bigText, { alignSelf: 'center' }]}>
                     Filtros de búsqueda
                 </Text>
-                <View>
-                    <Text style={styles.sectionTitle}>Ubicacion: </Text>
-                    <Controller control={control} rules={{ required: false }} render={({ field }) => {
-                        return (
-                            <CustomDropdown
-                                setSelected={field.onChange}
-                                selected={field.value}
-                                data={LOCATIONS}
-                                search={false}
-                                name="ubicacion"
-                                showLabel={false}
-                            />)
-                    }}
-                        name="location" />
-                </View>
-                <View>
-                    <Text style={styles.sectionTitle}>Nivel de juego: </Text>
-                    <Controller control={control} rules={{ required: false }} render={({ field }) => (
-                        <CustomDropdown
-                            setSelected={field.onChange}
-                            selected={field.value}
-                            data={EXPERTISE}
-                            name="Nivel"
-                            showLabel={false}
-                        />)}
-                        name="expertise" />
-                </View>
-                <View>
-                    <Text style={styles.sectionTitle}>Fecha:</Text>
-                    <Controller control={control} rules={{ required: false }} render={({ field }) => {
-                        return (
-                            Platform.OS === 'ios' ?
-                                <>
-                                    <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.dateTimeContainer}>
-                                        <Text>{ field.value == ""? "Elija una fecha" : formatDate(field.value)}</Text>
-                                    </TouchableOpacity>
-                                    <DateTimePickerModal
-                                        isVisible={modalVisible}
-                                        date={field.value == "" ? new Date() : field.value}
-                                        minimumDate={new Date()}
-                                        backdropStyleIOS={{backgroundColor: COLORS.primary10}}
-                                        style={{backgroundColor: COLORS.primary10}}
-                                        headerTextIOS="Selecciona una fecha"
-                                        onConfirm={(date) => {
-                                            setModalVisible(false); 
-                                            field.onChange(date);
-                                        }}
-                                        onCancel={() => setModalVisible(false)}
-                                    />
-                                </>
-                               
-                                :
-                                <TouchableOpacity onPress={() => showDatepicker(field)} style={styles.dateTimeContainer}>
-                                        <Text>{ field.value == "" ? "Elija una fecha" : formatDate(field.value)}</Text>
-                                </TouchableOpacity>
-
-                        )
-                    }} name="date" />
-                </View>
-                <View>
-                    <Text style={styles.sectionTitle}>Horario:</Text>
-                    <View style={{ flexDirection: 'row', gap: 12, justifyContent: 'center', marginVertical: 8 }}>
-                        <Controller control={control} rules={{ required: false }} defaultValue={[]} render={({ field }) =>
-                        (
-                            HORARIOS.map((horario, idx) => {
-                                const isSelected = field.value.includes(idx)
+                <View style={{flex: 1,flexDirection: 'column', gap: 30, justifyContent: 'center'}}>
+                        <View>
+                            <Text style={styles.sectionTitle}>Ubicacion: </Text>
+                            <Controller control={control} rules={{ required: false }} render={({ field }) => {
                                 return (
-                                    <Chip title={horario} buttonStyle={{ borderColor: COLORS.primary, borderWidth: 1 }}
-                                        titleStyle={{ color: !isSelected ? COLORS.primary : COLORS.white }} key={idx} color={COLORS.primary}
-                                        type={isSelected ? 'solid' : 'outline'} onPress={() => toggleChipSelection(idx, field.value, field.onChange)} />
-                                )
-                            })
-                        )
-                        }
-                            name="schedule" />
-                    </View>
+                                    <CustomDropdown
+                                        setSelected={field.onChange}
+                                        selected={field.value}
+                                        data={LOCATIONS}
+                                        search={false}
+                                        name="ubicacion"
+                                        showLabel={false}
+                                    />)
+                            }}
+                                name="location" />
+                        </View>
+                        <View>
+                            <Text style={styles.sectionTitle}>Nivel de juego: </Text>
+                            <Controller control={control} rules={{ required: false }} render={({ field }) => (
+                                <CustomDropdown
+                                    setSelected={field.onChange}
+                                    selected={field.value}
+                                    data={EXPERTISE}
+                                    name="Nivel"
+                                    showLabel={false}
+                                />)}
+                                name="expertise" />
+                        </View>
+                        <View>
+                            <Text style={styles.sectionTitle}>Fecha:</Text>
+                            <Controller control={control} rules={{ required: false }} render={({ field }) => {
+                                return (
+                                    Platform.OS === 'ios' ?
+                                        <>
+                                            <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.dateTimeContainer}>
+                                                <Text>{field.value == "" ? "Elija una fecha" : formatDate(field.value)}</Text>
+                                            </TouchableOpacity>
+                                            <DateTimePickerModal
+                                                isVisible={modalVisible}
+                                                date={field.value == "" ? new Date() : field.value}
+                                                minimumDate={new Date()}
+                                                backdropStyleIOS={{ backgroundColor: COLORS.primary10 }}
+                                                style={{ backgroundColor: COLORS.primary10 }}
+                                                headerTextIOS="Selecciona una fecha"
+                                                onConfirm={(date) => {
+                                                    setModalVisible(false);
+                                                    field.onChange(date);
+                                                }}
+                                                onCancel={() => setModalVisible(false)}
+                                            />
+                                        </>
 
+                                        :
+                                        <TouchableOpacity onPress={() => showDatepicker(field)} style={styles.dateTimeContainer}>
+                                            <Text>{field.value == "" ? "Elija una fecha" : formatDate(field.value)}</Text>
+                                        </TouchableOpacity>
+
+                                )
+                            }} name="date" />
+                        </View>
+                        <View>
+                            <Text style={styles.sectionTitle}>Horario:</Text>
+                            <View style={{ flexDirection: 'row', gap: 12, justifyContent: 'center', marginVertical: 8, paddingVertical: 14 }}>
+                                <Controller control={control} rules={{ required: false }} defaultValue={[]} render={({ field }) =>
+                                (
+                                    HORARIOS.map((horario, idx) => {
+                                        const isSelected = field.value.includes(idx)
+                                        return (
+                                            <Chip title={horario} buttonStyle={{ borderColor: COLORS.primary, borderWidth: 1 }}
+                                                titleStyle={{ color: !isSelected ? COLORS.primary : COLORS.white }} key={idx} color={COLORS.primary}
+                                                type={isSelected ? 'solid' : 'outline'} onPress={() => toggleChipSelection(idx, field.value, field.onChange)} />
+                                        )
+                                    })
+                                )
+                                }
+                                    name="schedule" />
+                            </View>
+
+                        </View>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <View style={{minWidth: '45%'}}>
-                    <CustomButton title={"Cancelar"} color='red' onPress={closeFilters} />
-                    </View>
-                    <View style={{minWidth: '45%'}}>
-                    <CustomButton title={"Guardar"} color={COLORS.primary} onPress={handleSubmit(onSubmit)} />
+                    {isDirty &&
+                        <View style={{ width: '45%'}}>
+                            <CustomButton title={"Limpiar"} color={COLORS.primary} onPress={cleanFilters} filled={false} />
+                        </View>
+                    }
+                    <View style={isDirty ? { width: '45%' }: {width: '100%'}}>
+                        <CustomButton title={"Guardar"} color={COLORS.primary} onPress={handleSubmit(onSubmit)} />
                     </View>
                 </View>
-                {isDirty && <CustomButton title={"Limpiar"} color={COLORS.primary} onPress={cleanFilters} filled={false} />}
 
             </View>
         </SafeAreaView>
@@ -178,10 +181,11 @@ const FilterModal = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     viewContainer: {
-        flex: 1,
+        height: '100%',
         flexDirection: 'column',
         paddingHorizontal: 24,
-        justifyContent: 'space-evenly',
+        paddingVertical: 42,
+        justifyContent: 'space-between',
         backgroundColor: COLORS.primary10
     },
     bigText: {
@@ -199,9 +203,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
         alignSelf: 'stretch',
+        justifyContent: 'space-between',
+        flexDirection: 'row'
     },
     sectionTitle: {
         fontSize: 16,

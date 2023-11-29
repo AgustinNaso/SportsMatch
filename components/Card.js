@@ -17,6 +17,7 @@ import { rateUser } from "../services/eventService";
 import DefaultProfile from "../assets/default-profile.png";
 import { fetchUserImage } from "../services/userService";
 import CustomButton from "./CustomButton";
+import { Spots } from "./Spots";
 
 const Card = ({ props }) => {
   const navigation = useNavigation();
@@ -137,11 +138,7 @@ const Card = ({ props }) => {
                   </View>
                 )
               ) : (
-                <Text style={{ ...styles.cardMidText, marginBottom: 2 }}>
-                  {props.remaining > 0
-                    ? "Faltan: " + props.remaining
-                    : "Completo"}
-                </Text>
+                <Spots qty={props.remaining}/>
               )}
             </View>
           </View>
@@ -166,7 +163,6 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     borderRadius: 8,
     flexDirection: "column",
-    padding: 10,
     borderWidth: 3,
     borderColor: COLORS.primary,
     maxHeight: 180,
@@ -178,7 +174,6 @@ const styles = StyleSheet.create({
 
   userSection: {
     paddingHorizontal: 12,
-    paddingVertical: 8,
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
@@ -189,7 +184,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: COLORS.primary,
-    margin: -10,
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
@@ -211,13 +205,13 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingTop: 6
   },
   verticalSection: {
     flex: 1,
     flexDirection: "column",
     justifyContent: 'space-between',
-    paddingVertical: 6,
     maxWidth: '45%',
     height: '100%',
   },

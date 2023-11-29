@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginHorizontal: 7,
-        minHeight: 37
+        minHeight: 37,
     },
     selectedPill : {
         backgroundColor: COLORS.primary

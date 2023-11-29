@@ -27,7 +27,7 @@ const FirstRoute = (myEvents, loading) => (
     <FlatList
       data={myEvents}
       renderItem={(data) => renderList(data)}
-      style={{ flex: 1 }}
+      style={{ flex: 1, marginBottom: 8 }}
       contentContainerStyle={ myEvents.length != 0 ? {flexGrow: 1} : styles.noContentContainer}
       keyExtractor={(item, index) => {
         return `${index}`;
@@ -111,7 +111,6 @@ const MyEvents = () => {
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}
-        initialLayout={{ width: 100 }}
         />
         </>
   );

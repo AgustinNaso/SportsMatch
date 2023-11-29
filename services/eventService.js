@@ -45,13 +45,14 @@ export const fetchEvents = async (userId, filters) => {
   console.log("FILTROS ", filters);
   let filterString;
   if (filters) {
-    if (filters.date) filters.date = filters.date.split("T")[0];
+    if (filters.date != "") filters.date = filters.date.split("T")[0];
     else delete filters.date;
-    if (filters.expertise)
+    if (filters.expertise != "")
       filters.expertise = EXPERTISE.indexOf(filters.expertise);
     else delete filters.expertise;
     if (!filters.schedule || filters.schedule.length == 0)
       delete filters.schedule;
+    if(filters.location == "") delete filters.location;
     filterString = Object.entries(filters)
       .map(([key, value]) => {
         console.log("KEY: " + key + " VALUE: " + value);
@@ -59,6 +60,7 @@ export const fetchEvents = async (userId, filters) => {
       })
       .join("");
   }
+
   return await fetch(
     `${API_URL}/events?userId=${userId}&filterOut=true${
       filterString ?? ""

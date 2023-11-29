@@ -82,6 +82,7 @@ const Home = ({ navigation, route }) => {
     if (selectedFilter == sport) {
       setSelectedFilter("");
       setFilteredEventList(eventsList);
+
     } else {
       setSelectedFilter(sport);
       //TODO: FIX this should be done in the backend

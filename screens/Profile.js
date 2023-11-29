@@ -10,12 +10,10 @@ import {
 import { COLORS } from "../constants";
 import { Avatar, Chip, Divider } from "@rneui/themed";
 import { Ionicons } from "@expo/vector-icons";
-import { fetchUserImage } from "../services/userService";
 import { SPORT } from "../constants/data";
 import DefaultProfile from "../assets/default-profile.png";
 import { NoContentMessage } from "../components/NoContentMessage";
 import { UserContext } from "../contexts/UserContext";
-import { StatusBar } from "expo-status-bar";
 
 const Profile = () => {
   const { currUser } = useContext(UserContext);
