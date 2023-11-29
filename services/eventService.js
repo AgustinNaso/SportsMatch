@@ -52,7 +52,7 @@ export const fetchEvents = async (userId, filters) => {
     if (filters.date != "") filters.date = filters.date.split("T")[0];
     else delete filters.date;
     if (filters.expertise != "")
-      filters.expertise = EXPERTISE.indexOf(filters.expertise);
+      filters.expertise = EXPERTISE.indexOf(filters.expertise) + 1;
     else delete filters.expertise;
     if (!filters.schedule || filters.schedule.length == 0)
       delete filters.schedule;
