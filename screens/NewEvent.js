@@ -35,6 +35,7 @@ const NewEvent = () => {
     const onSubmit = async (formData) => {
         const { sport, difficulty, location, date, time, description, players, duration } = formData;
         // setIsLoading(!isLoading);
+        console.log(difficulty);
         const data = {
             sportId: SPORT.indexOf(sport) + 1,
             expertise: EXPERTISE.indexOf(difficulty) + 1,

@@ -34,7 +34,7 @@ const EventStatus = ({ status }) => {
 
     return (
         <View style={[styles.container, getStatusStyle()]}>
-            <Text style={{color: 'white', fontWeight: 600}}>{getStatusText()}</Text>
+            <Text style={{color: 'white', fontWeight: 600, fontSize: 16}}>{getStatusText()}</Text>
         </View>
     );
 };
@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         alignItems: "center",
         justifyContent: "center",
-        height: 30,
     },
     recruiting: {
         backgroundColor: COLORS.secondary, // Yellow with 50% transparency

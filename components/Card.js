@@ -12,7 +12,7 @@ import { EXPERTISE, SPORT, MONTHS, EVENT_STATUS } from "../constants/data";
 import { COLORS, FONTS } from "../constants";
 import { Avatar } from "@rneui/themed";
 import { getDateComponents } from "../utils/datetime";
-import { AirbnbRating, Button } from "@rneui/base";
+import { AirbnbRating } from "@rneui/base";
 import { rateUser } from "../services/eventService";
 import DefaultProfile from "../assets/default-profile.png";
 import { fetchUserImage } from "../services/userService";
@@ -121,7 +121,7 @@ const Card = ({ props }) => {
                 {SPORT[props.sport_id - 1]}
               </Text>
               <Text style={[FONTS.body2, {fontWeight: 700, color: COLORS.darkgray}]}>
-                {EXPERTISE[props.expertise]}
+                {EXPERTISE[props.expertise - 1]}
               </Text>
               </View>
               {props.event_status === EVENT_STATUS.FINALIZED ? (
@@ -173,6 +173,7 @@ const styles = StyleSheet.create({
   },
 
   userSection: {
+    paddingTop: 4,
     paddingHorizontal: 12,
     flexDirection: "column",
     alignItems: "center",
@@ -183,6 +184,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: -1,
     backgroundColor: COLORS.primary,
     paddingHorizontal: 10,
     paddingVertical: 5,

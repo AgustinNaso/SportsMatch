@@ -50,11 +50,10 @@ const EditProfile = () => {
   } = useForm();
   const [selectedSports, setSelectedSports] = useState([]);
   const {currUser, setCurrUser} = useContext(UserContext);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [image, setImage] = useState(null);
   const [imageChanged, setImageChanged] = useState(false);
   const [error, setError] = useState();
   const phoneUtil = PhoneNumberUtil.getInstance();
@@ -72,25 +71,10 @@ const EditProfile = () => {
     };
   };
 
-  const fetchImage = async () => {
-    const response = await fetchUserImage(currUser.userid);
-    if (response.status == 200) {
-      setImage(response.imageURL);
-    }
-    setLoading(false);
-  };
+
 
   useEffect(() => {
-    if (currUser) {
-      try {
-        fetchImage();
-      } catch (err) {
-        console.error("ERROR fetching user image", err);
-      }
-    }
-  }, [currUser]);
-
-  useEffect(() => {
+      console.log(currUser);
       const { code, national_number } = parsePhoneNumber(currUser.phonenumber);
       setCurrUser({
         ...currUser,
@@ -135,7 +119,7 @@ const EditProfile = () => {
   const submit = async (data) => {
     setSubmitLoading(true);
     const formData = {
-      phone_number: data.phone,
+      phoneNumber: data.phone,
       locations: selectedLocations,
       sports: selectedSports,
     };
@@ -153,19 +137,16 @@ const EditProfile = () => {
       );
       if (imgUpdatedRes.status == 200) {
         const userImageUrlRes = await fetchUserImage(currUser.userid);
-        console.log("STATUS: ", userImageUrlRes);
         if(userImageUrlRes.status == 200) {
-          console.log("IMAGE URL: ", currUser);
-
           currUser.imageURL = userImageUrlRes.imageURL;
         }
-        setCurrUser({...currUser, ...formData, phonenumber: formData.phone_number})
+        setCurrUser({...currUser, ...formData, phonenumber: formData.phoneNumber})
 
         navigator.navigate("MyProfile");
       }
       setError(imgUpdatedRes.message);
     } else {
-      setCurrUser({...currUser, ...formData, phonenumber: formData.phone_number})
+      setCurrUser({...currUser, ...formData, phonenumber: formData.phoneNumber})
       navigator.navigate("MyProfile");
     }
     setSubmitLoading(false);
@@ -209,7 +190,6 @@ const EditProfile = () => {
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
       setSelectedImage(result.assets[0].base64);
       setImageChanged(true);
     }
@@ -225,7 +205,6 @@ const EditProfile = () => {
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
       setSelectedImage(result.assets[0].base64);
       setImageChanged(true);
     }
@@ -242,7 +221,7 @@ const EditProfile = () => {
             <Avatar
               size={108}
               rounded
-              source={image ? { uri: image } : DefaultProfile}
+              source={currUser.imageURL ? { uri: currUser.imageURL } : DefaultProfile}
             >
               <TouchableOpacity onPress={editProfileImage}>
                 <Ionicons
@@ -447,7 +426,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingBottom: 24,
     paddingTop: 20,
-    paddingHorizontal: 36,
+    paddingHorizontal: 24,
     gap: 12
   },
   input: {

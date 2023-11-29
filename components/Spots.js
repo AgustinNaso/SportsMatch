@@ -3,13 +3,13 @@ import { View , Text, StyleSheet} from "react-native";
 import { COLORS, FONTS } from "../constants";
 
 
-export const Spots = ({qty}) => {
+export const Spots = ({qty, alternative = false}) => {
     return (
-    <View style={styles.mainContainer}>
-        <Text style={[FONTS.body3, {fontWeight: 600, color: COLORS.primary}]}>Vacantes: </Text>
+    <View style={[styles.mainContainer, alternative ? {backgroundColor: COLORS.primary} : {}]}>
+        <Text style={[FONTS.body3, {fontWeight: 600, color: alternative ? COLORS.white : COLORS.primary}]}>Vacantes: </Text>
         <View style={styles.qtyContainer}>
-            <Ionicons name="person" style= {{paddingTop: 3}}size={16} color={COLORS.primary} />
-            <Text style={FONTS.body3}>{qty}</Text>
+            <Ionicons name="person" style= {{paddingTop: 0}}size={16} color={alternative ? COLORS.white : COLORS.primary} />
+            <Text style={[FONTS.body3, {color: alternative ? COLORS.white : COLORS.primary}]}> {qty}</Text>
         </View>
     </View>
     );
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         paddingVertical: 6,
         alignItems: 'center',
-        backgroundColor: COLORS.primary20
+        backgroundColor: COLORS.primary10
     },
     qtyContainer: {
         flexDirection: 'row',
