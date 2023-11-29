@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import {
   Linking,
   Modal,
-  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -119,7 +118,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
       <View style={styles.userMetadataContainer}>
         <Avatar
           rounded
-          size={62}
+          size={72}
           source={image ? { uri: image } : DefaultProfile}
           containerStyle={{ backgroundColor: COLORS.secondary }}
         />
@@ -158,7 +157,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
           </TouchableOpacity>
         </View>
       ) :
-      <View style={{paddingHorizontal: 12}}>
+      <View>
         {renderButton()}
       </View>
       }
@@ -172,20 +171,20 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
     alignSelf: "stretch",
-    height: 110,
-    marginVertical: 4,
+    paddingVertical: 8,
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 8,
+    
     borderWidth: 1,
     borderRadius: 5,
+
   },
   userMetadataContainer: {
     flexDirection: "row",
     padding: 8,
     justifyContent: "space-between",
     alignItems: "center",
-    maxWidth: "65%",
   },
   textContainer: {
     flexDirection: "column",
@@ -199,7 +198,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   userText: {
-    fontSize: 30,
+    fontSize: 22,
     fontWeight: 600,
   },
   centeredView: {

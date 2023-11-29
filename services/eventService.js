@@ -32,11 +32,15 @@ export const fetchUser = async (email) => {
   return json;
 };
 
-export const fetchParticipants = async (eventId) => {
+export const fetchParticipants = async (eventId, status) => {
+  let queryParams = "";
+  if(status == EVENT_STATUS.FINALIZED) queryParams = "?status=accepted";
+
   const response = await fetch(
-    API_URL + "/events/" + eventId + "/owner/participants"
+    API_URL + "/events/" + eventId + "/owner/participants" + queryParams
   );
   const json = await response.json();
+
   return json;
 };
 
@@ -79,10 +83,8 @@ export const fetchMyEvents = async (userId) => {
   const json = await events.json();
   const response = json;
   for (let i = 0; i < response.items.length; i++)
-    response.items[i].participants = await fetchParticipants(
-      response.items[i].event_id
-    );
-
+    response.items[i].participants = await fetchParticipants(response.items[i].event_id, response.items[i].event_status);
+  
   return response;
 };
 
