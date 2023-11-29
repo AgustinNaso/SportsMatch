@@ -122,7 +122,7 @@ const Home = ({ navigation, route }) => {
         <ActivityIndicator
           size="large"
           color={COLORS.primary}
-          style={{ alignSelf: "center", marginTop: "20%" }}
+          style={{ alignSelf: "center", marginTop: '70%' }}
         />
       ) : (
         <FlatList

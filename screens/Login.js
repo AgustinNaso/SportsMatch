@@ -49,7 +49,7 @@ const Login = () => {
         {loading ? <ActivityIndicator
           size="large"
           color={COLORS.primary}
-          style={{ alignSelf: "center", marginTop: "50%" }}
+          style={{ alignSelf: "center", marginTop: "10%" }}
         /> : 
         <>
         <View style={{ alignSelf: 'stretch', 
