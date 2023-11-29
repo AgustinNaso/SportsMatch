@@ -120,7 +120,7 @@ const Login = () => {
             style={{ marginTop: 10 }}
             onPress={() => navigation.navigate("Register")}
           >
-            <Text style={styles.referal}>Todavía no tenes una cuenta? Registrate</Text>
+            <Text style={styles.referal}>Todavía no tenes una cuenta?</Text>
           </TouchableOpacity>
         </>}
       </View>

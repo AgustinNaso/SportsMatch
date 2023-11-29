@@ -155,7 +155,7 @@ const Register = ({ navigation }) => {
             <Text style={styles.error}>Por favor ingrese un email válido</Text>
           )}
           {emailConflict && (
-            <Text style={styles.error}>El email ya esta en uso</Text>
+            <Text style={styles.error}>El email ya está en uso</Text>
           )}
           <View style={styles.inputContainer}>
             <Text style={styles.inputText}>Fecha de nacimiento</Text>
@@ -274,7 +274,7 @@ const Register = ({ navigation }) => {
             style={{ marginTop: 10 }}
             onPress={() => navigation.navigate("Login")}
           >
-            <Text style={styles.referal}>Ya tienes una cuenta? Inicia Sesión</Text>
+            <Text style={styles.referal}>Ya tenes una cuenta?</Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
