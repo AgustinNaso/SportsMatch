@@ -18,6 +18,7 @@ import { COLORS } from "../constants";
 import { EVENT_STATUS } from "../constants/data";
 import DefaultProfile from "../assets/default-profile.png";
 import { fetchUserImage } from "../services/userService";
+import CustomButton from "./CustomButton";
 
 const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) => {
   console.log("Props: ", props);
@@ -72,16 +73,12 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
 
   const renderButton = () => {
     if (eventStatus !== EVENT_STATUS.FINALIZED)
-      return <Button
-        color={COLORS.primary}
-        mode="contained"
+      return <CustomButton
         title="Contactar"
         onPress={sendMessage}
       />
     if (eventStatus === EVENT_STATUS.FINALIZED && props.is_rated === 0)
-      return <Button
-        color={COLORS.primary}
-        mode="contained"
+      return <CustomButton
         title="Puntuar"
         onPress={() => setModalVisible(true)}
       />
@@ -112,9 +109,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
                 onFinishRating={setUserRate}
               />
             </View>
-            <Button
-              color={COLORS.primary}
-              mode="contained"
+            <CustomButton
               title="Enviar puntuación"
               onPress={postUserRating}
             />
@@ -163,7 +158,9 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
           </TouchableOpacity>
         </View>
       ) :
-        renderButton()
+      <View style={{paddingHorizontal: 12}}>
+        {renderButton()}
+      </View>
       }
     </View>
   );

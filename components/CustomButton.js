@@ -16,9 +16,9 @@ export default CustomButton;
 
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     borderRadius: 5,
-    minWidth: '45%',
     alignSelf: 'stretch',
   },
   buttonText: {
@@ -28,6 +28,5 @@ const styles = StyleSheet.create({
   },
   notFilled: {
     backgroundColor: COLORS.transparent,
-    borderWidth: 1,
   }
 });

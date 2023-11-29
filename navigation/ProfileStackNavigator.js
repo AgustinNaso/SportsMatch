@@ -64,7 +64,7 @@ const ProfileStackNavigator = () => {
           component={Profile} />
         <Stack.Screen
           options={{
-            headerTintColor: COLORS.white, headerStyle: { backgroundColor: COLORS.primary },
+            headerTintColor: COLORS.white, statusBarColor:COLORS.primary, headerStyle: { backgroundColor: COLORS.primary },
             headerTitle: "Editar perfil"
           }}
           name="Edit Profile"

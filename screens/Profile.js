@@ -15,6 +15,7 @@ import { SPORT } from "../constants/data";
 import DefaultProfile from "../assets/default-profile.png";
 import { NoContentMessage } from "../components/NoContentMessage";
 import { UserContext } from "../contexts/UserContext";
+import { StatusBar } from "expo-status-bar";
 
 const Profile = () => {
   const { currUser } = useContext(UserContext);

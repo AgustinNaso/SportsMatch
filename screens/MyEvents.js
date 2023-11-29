@@ -11,6 +11,7 @@ import { useIsFocused } from "@react-navigation/native";
 import MyEventList from "../components/MyEventList";
 import { NoContentMessage } from "../components/NoContentMessage";
 import { UserContext } from "../contexts/UserContext";
+import { StatusBar } from "expo-status-bar";
 
 const renderList = (data) => {
   return <MyEventList data={data} />;
@@ -69,7 +70,6 @@ const MyEvents = () => {
   const isFocused = useIsFocused();
 
   const renderScene = ({ route }) => {
-    console.log(loading);
     switch (route.key) {
       case "first":
         return FirstRoute(myEvents, loading);
@@ -98,19 +98,22 @@ const MyEvents = () => {
   }, [isFocused]);
 
   return (
+    <>
+    <StatusBar style="light"  backgroundColor={COLORS.primary}/>
     <TabView
       renderTabBar={(props) => (
         <TabBar
-          {...props}
-          style={{ backgroundColor: COLORS.primary }}
-          indicatorStyle={{ backgroundColor: COLORS.secondary }}
+        {...props}
+        style={{ backgroundColor: COLORS.primary }}
+        indicatorStyle={{ backgroundColor: COLORS.secondary }}
         />
-      )}
-      navigationState={{ index, routes }}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={{ width: 100 }}
-    />
+        )}
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{ width: 100 }}
+        />
+        </>
   );
 };
 

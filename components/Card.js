@@ -129,10 +129,12 @@ const Card = ({ props }) => {
                     Finalizado
                   </Text>
                 ) : (
-                  <CustomButton
-                    title="Puntuar"
-                    onPress={() => setModalVisible(true)}
-                  />
+                  <View style={{width: '80%'}}>
+                    <CustomButton
+                      title="Puntuar"
+                      onPress={() => setModalVisible(true)}
+                    />
+                  </View>
                 )
               ) : (
                 <Text style={{ ...styles.cardMidText, marginBottom: 2 }}>

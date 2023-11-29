@@ -162,8 +162,12 @@ const FilterModal = ({ navigation }) => {
 
                 </View>
                 <View style={styles.buttonContainer}>
+                    <View style={{minWidth: '45%'}}>
                     <CustomButton title={"Cancelar"} color='red' onPress={closeFilters} />
+                    </View>
+                    <View style={{minWidth: '45%'}}>
                     <CustomButton title={"Guardar"} color={COLORS.primary} onPress={handleSubmit(onSubmit)} />
+                    </View>
                 </View>
                 {isDirty && <CustomButton title={"Limpiar"} color={COLORS.primary} onPress={cleanFilters} filled={false} />}
 
