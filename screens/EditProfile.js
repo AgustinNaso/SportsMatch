@@ -50,6 +50,7 @@ const EditProfile = () => {
   } = useForm();
   const [selectedSports, setSelectedSports] = useState([]);
   const {currUser, setCurrUser} = useContext(UserContext);
+  const [currImg, setCurrImg] = useState({"uri": currUser.imageURL});
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [selectedLocations, setSelectedLocations] = useState([]);
@@ -133,7 +134,7 @@ const EditProfile = () => {
     } else if (imageChanged) {
       const imgUpdatedRes = await updateUserImage(
         currUser.userid,
-        selectedImage
+        currImg.base64
       );
       if (imgUpdatedRes.status == 200) {
         const userImageUrlRes = await fetchUserImage(currUser.userid);
@@ -190,7 +191,10 @@ const EditProfile = () => {
     });
 
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].base64);
+      setCurrImg({
+        "uri": result.assets[0].uri,
+        "base64": result.assets[0].base64
+      });
       setImageChanged(true);
     }
   };
@@ -205,7 +209,10 @@ const EditProfile = () => {
     });
 
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].base64);
+      setCurrImg({
+        "uri": result.assets[0].uri,
+        "base64": result.assets[0].base64
+      });
       setImageChanged(true);
     }
   };
@@ -221,7 +228,7 @@ const EditProfile = () => {
             <Avatar
               size={108}
               rounded
-              source={currUser.imageURL ? { uri: currUser.imageURL } : DefaultProfile}
+              source={currImg?.uri ? { uri: currImg.uri } : DefaultProfile}
             >
               <TouchableOpacity onPress={editProfileImage}>
                 <Ionicons

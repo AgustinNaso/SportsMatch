@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     justifyContent: 'space-between',
-    maxWidth: '45%',
+    maxWidth: '48%',
     height: '100%',
   },
   centeredView: {
