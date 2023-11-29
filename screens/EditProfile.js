@@ -16,7 +16,7 @@ import { TextInput } from "react-native-gesture-handler";
 import { validateEmail } from "../utils/validations";
 import { useNavigation } from "@react-navigation/native";
 import Pill from "../components/Pill";
-import { SPORT } from "../constants/data";
+import { LOCATIONS, SPORT } from "../constants/data";
 import MultiSelect from "react-native-multiple-select";
 import {
   updateUser,
@@ -31,6 +31,7 @@ import { useActionSheet } from "@expo/react-native-action-sheet";
 import PhoneInput from "react-native-phone-number-input";
 import { PhoneNumberUtil } from "google-libphonenumber";
 import { UserContext } from "../contexts/UserContext";
+import { CustomMultiDropdown } from "../components/CustomMultiDropdown";
 
 const sports = [
   { key: 1, sportId: 1, title: SPORT[0] },
@@ -42,14 +43,16 @@ const sports = [
 
 const EditProfile = () => {
   const navigator = useNavigation();
+  const [selectedSports, setSelectedSports] = useState([]);
+  const {currUser, setCurrUser} = useContext(UserContext);
   const {
     control,
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm();
-  const [selectedSports, setSelectedSports] = useState([]);
-  const {currUser, setCurrUser} = useContext(UserContext);
+  } = useForm({defaultValues: {
+    locations: currUser.locations
+  }});
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [selectedLocations, setSelectedLocations] = useState([]);
@@ -70,8 +73,6 @@ const EditProfile = () => {
       national_number: national_number.toString(),
     };
   };
-
-
 
   useEffect(() => {
       console.log(currUser);
@@ -370,42 +371,10 @@ const EditProfile = () => {
               <Text style={styles.inputText}>Mis Ubicaciones</Text>
               <Controller
                 control={control}
-                render={({ field: { onChange } }) => (
-                  <ScrollView
-                    horizontal={true}
-                    scrollEnabled={false}
-                    contentContainerStyle={styles.nestedScroll}
-                  >
-                    <MultiSelect
-                      styleMainWrapper={styles.mainWrapper}
-                      items={[
-                        { id: "Belgrano" },
-                        { id: "Caballito" },
-                        { id: "Nuñez" },
-                      ]}
-                      uniqueKey="id"
-                      onSelectedItemsChange={(selectedItems) => {
-                        setSelectedLocations(selectedItems);
-                        onChange(selectedItems);
-                      }}
-                      selectedItems={selectedLocations}
-                      selectText="Elija las ubicaciones"
-                      searchInputPlaceholderText="Busque ubicaciones..."
-                      onChangeInput={(text) => console.log(text)}
-                      tagRemoveIconColor={COLORS.primary}
-                      tagBorderColor={COLORS.primary}
-                      tagTextColor={COLORS.primary}
-                      selectedItemTextColor={COLORS.primary}
-                      selectedItemIconColor={COLORS.primary}
-                      itemTextColor="#000"
-                      displayKey="id"
-                      submitButtonColor={COLORS.primary}
-                      submitButtonText="Confirmar"
-                    />
-                  </ScrollView>
+                render={({ field: { onChange, value } }) => (
+                  <CustomMultiDropdown data={LOCATIONS} onChangeItem={onChange} defaultValues={value}/>
                 )}
                 name="locations"
-                defaultValue={[]}
               />
             </View>
             {error && (
