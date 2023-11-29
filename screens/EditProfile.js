@@ -1,4 +1,4 @@
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, set } from "react-hook-form";
 import CustomButton from "../components/CustomButton";
 import {
   SafeAreaView,
@@ -8,6 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from "react-native";
 import { useState, useEffect, useContext } from "react";
 import { COLORS, FONTS } from "../constants";
@@ -50,6 +51,7 @@ const EditProfile = () => {
   const [selectedSports, setSelectedSports] = useState([]);
   const {currUser, setCurrUser} = useContext(UserContext);
   const [loading, setLoading] = useState(true);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [image, setImage] = useState(null);
@@ -131,6 +133,7 @@ const EditProfile = () => {
   }
 
   const submit = async (data) => {
+    setSubmitLoading(true);
     const formData = {
       phone_number: data.phone,
       locations: selectedLocations,
@@ -149,6 +152,13 @@ const EditProfile = () => {
         selectedImage
       );
       if (imgUpdatedRes.status == 200) {
+        const userImageUrlRes = await fetchUserImage(currUser.userid);
+        console.log("STATUS: ", userImageUrlRes);
+        if(userImageUrlRes.status == 200) {
+          console.log("IMAGE URL: ", currUser);
+
+          currUser.imageURL = userImageUrlRes.imageURL;
+        }
         setCurrUser({...currUser, ...formData, phonenumber: formData.phone_number})
 
         navigator.navigate("MyProfile");
@@ -158,6 +168,7 @@ const EditProfile = () => {
       setCurrUser({...currUser, ...formData, phonenumber: formData.phone_number})
       navigator.navigate("MyProfile");
     }
+    setSubmitLoading(false);
   };
 
   const editProfileImage = () => {
@@ -225,7 +236,8 @@ const EditProfile = () => {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        {!loading && (
+        {loading ? <ActivityIndicator size="large" color={COLORS.primary} style={{marginTop: '75%'}} /> 
+         : (
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             <Avatar
               size={108}
@@ -420,7 +432,7 @@ const EditProfile = () => {
             {error && (
               <Text style={{ color: "red", paddingTop: 15 }}>{error}</Text>
             )}
-            <CustomButton title="Guardar" onPress={handleSubmit(submit)}/>
+            <CustomButton title="Guardar" onPress={handleSubmit(submit)} isLoading={submitLoading} />
           </ScrollView>
         )}
       </KeyboardAvoidingView>

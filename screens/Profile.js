@@ -18,7 +18,6 @@ import { UserContext } from "../contexts/UserContext";
 
 const Profile = () => {
   const { currUser } = useContext(UserContext);
-  const [loading, setLoading] = useState(true);
   const [image, setImage] = useState(null);
 
   const formatPhoneNumber = (phoneNumberString) => {
@@ -30,36 +29,15 @@ const Profile = () => {
     return formatted;
   };
   
-  const fetchImage = async () => {
-    const response = await fetchUserImage(currUser.userid);
-    if (response.status == 200) {
-      setImage(response.imageURL);
-    }
-    setLoading(false);
-  };
-  
-  useEffect(() => {
-    if (currUser) {
-      try {
-        fetchImage();
-      } catch (err) {
-        console.error("ERROR fetching user image", err);
-      }
-    }
-  }, [currUser]);
-  
-
-
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {!loading && (
         <ScrollView contentContainerStyle={styles.mainContainer} showsVerticalScrollIndicator={false}>
           <View style={styles.profileHeader}>
             <Avatar
               size={108}
               rounded
-              source={ image ? { uri: image } : DefaultProfile}
+              source={ currUser.imageURL ? { uri: currUser.imageURL } : DefaultProfile}
               containerStyle={{ backgroundColor: COLORS.secondary }}
             />
             <View style={styles.profileTextContainer}>
@@ -148,7 +126,6 @@ const Profile = () => {
             </View>
           </View>
         </ScrollView>
-      )}
     </SafeAreaView>
   );
 };

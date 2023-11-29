@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "SportsMatch",
-    "slug": "SportsMatch",
+    "name": "sportsmatch",
+    "slug": "sportsmatch",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,14 +22,14 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.agustinnaso.SportsMatch"
+      "package": "com.agustinnaso.sportsmatch"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "5257f8ee-b6e6-40fb-9942-26c64925c1b6"
+        "projectId": "2faf05a5-d83f-4483-b4ac-6f2617123d80"
       }
     }
   }

@@ -1,10 +1,7 @@
-import { useCardAnimation } from "@react-navigation/stack";
 import React, { useEffect, useState } from "react";
-import { View, Text, Button, StyleSheet, Animated, useWindowDimensions, Platform, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Platform, TouchableOpacity } from "react-native";
 import { useForm, Controller } from "react-hook-form";
-import { SelectList } from "react-native-dropdown-select-list";
 import { EXPERTISE, HORARIOS, LOCATIONS } from "../constants/data";
-import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { formatDate, showDatepicker } from "../utils/datetime";
 import { Chip } from "@rneui/themed";
 import { COLORS } from "../constants";
@@ -39,7 +36,8 @@ const FilterModal = ({ navigation }) => {
                             if (fieldName === "date") {
                                 fieldValue = fieldValue !== "" ? new Date(fieldValue) : new Date();
                             }
-                            setValue(fieldName, fieldValue);
+                            console.log("SETIE", fieldName, fieldValue);
+                            setValue(fieldName, fieldValue, {shouldDirty : true});
                         }
                     });
                 }
@@ -100,14 +98,6 @@ const FilterModal = ({ navigation }) => {
                     }}
                         name="location" />
                 </View>
-                {/* <CustomDropdown
-                    selected={field.value}
-                    setSelected={field.onChange}
-                    data={LOCATIONS}
-                    label="Lugar"
-                    search={true}
-                    />
-                    )} */}
                 <View>
                     <Text style={styles.sectionTitle}>Nivel de juego: </Text>
                     <Controller control={control} rules={{ required: false }} render={({ field }) => (
@@ -191,7 +181,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.primary10
     },
     bigText: {
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
     },

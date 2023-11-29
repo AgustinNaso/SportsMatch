@@ -2,6 +2,7 @@
 import React, { useMemo, useReducer } from "react";
 import { login, register } from "../services/AuthService";
 import { save, clearUserData } from "../services/LocalStorageService";
+import { fetchUserImage } from "../services/userService";
 
 export const AuthContext = React.createContext();
 
@@ -42,8 +43,9 @@ export const useAuthContext = () => {
 
   const signIn = async data => {
     const [userToken, userData] = await login(data.email, data.password);
-    console.log("DAX" + JSON.stringify(userData));
     await save('userToken', userToken);
+    const userImageUrlRes = await fetchUserImage(userData.userid);
+    if(userImageUrlRes.status == 200) userData.imageURL = userImageUrlRes.imageURL;
     await save('userData', JSON.stringify(userData));
     dispatch({ type: 'SIGN_IN', token: userToken });
   };

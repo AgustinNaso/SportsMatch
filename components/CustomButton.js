@@ -4,8 +4,8 @@ import { COLORS } from '../constants';
 
 const CustomButton = ({ title, onPress, color, isLoading = false, enabled=true, filled=true }) => {
   return (
-    <TouchableOpacity onPress={onPress} 
-    style={[styles.button, filled ? {backgroundColor: color?? COLORS.primary} : styles.notFilled]} disabled={isLoading}>
+    <TouchableOpacity onPress={enabled ? onPress : () => {}} 
+    style={[styles.button, filled ? {backgroundColor: color ?? COLORS.primary} : styles.notFilled]} disabled={isLoading}>
       {isLoading ? <ActivityIndicator size="small" color="white" style={{paddingRight: 10}} />:
       <Text style={[styles.buttonText, {color: filled ? COLORS.white : COLORS.primary}]}>{title}</Text>}
     </TouchableOpacity>

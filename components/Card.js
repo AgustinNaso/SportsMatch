@@ -3,20 +3,20 @@ import {
   View,
   Text,
   StyleSheet,
-  Touchable,
   TouchableOpacity,
   Modal,
   Pressable,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { EXPERTISE, SPORT, MONTHS, EVENT_STATUS } from "../constants/data";
-import { COLORS } from "../constants";
+import { COLORS, FONTS } from "../constants";
 import { Avatar } from "@rneui/themed";
 import { getDateComponents } from "../utils/datetime";
 import { AirbnbRating, Button } from "@rneui/base";
 import { rateUser } from "../services/eventService";
 import DefaultProfile from "../assets/default-profile.png";
 import { fetchUserImage } from "../services/userService";
+import CustomButton from "./CustomButton";
 
 const Card = ({ props }) => {
   const navigation = useNavigation();
@@ -56,6 +56,22 @@ const Card = ({ props }) => {
     }
   }, []);
 
+  const renderRating = () => {
+    return (
+      <AirbnbRating
+        size={30}
+        reviewSize={25}
+        reviews={[
+          "Muy malo",
+          "Malo",
+          "Normal",
+          "Bueno",
+          "Muy bueno",
+        ]}
+        onFinishRating={setUserRate}
+      />);
+  }
+
   return (
     <>
       {!loading && (
@@ -79,22 +95,9 @@ const Card = ({ props }) => {
                   ¿Cómo fue jugar con este participante?
                 </Text>
                 <View style={{ marginBottom: 20 }}>
-                  <AirbnbRating
-                    size={30}
-                    reviewSize={25}
-                    reviews={[
-                      "Muy malo",
-                      "Malo",
-                      "Normal",
-                      "Bueno",
-                      "Muy bueno",
-                    ]}
-                    onFinishRating={setUserRate}
-                  />
+                  {renderRating()}
                 </View>
-                <Button
-                  color={COLORS.primary}
-                  mode="contained"
+                <CustomButton
                   title="Enviar puntuación"
                   onPress={postUserRating}
                 />
@@ -102,7 +105,7 @@ const Card = ({ props }) => {
             </Pressable>
           </Modal>
           <View style={styles.section}>
-            <View style={{ ...styles.verticalSection, marginLeft: 8 }}>
+            <View style={styles.userSection}>
               <Avatar
                 rounded
                 size={100}
@@ -111,24 +114,22 @@ const Card = ({ props }) => {
               />
               <Text style={styles.cardMidText}>{props.owner_firstname}</Text>
             </View>
-            <View
-              style={[styles.verticalSection, { alignItems: "flex-start" }]}
-            >
+            <View style={styles.verticalSection}>
+              <View>
               <Text style={styles.cardBigText}>
                 {SPORT[props.sport_id - 1]}
               </Text>
-              <Text style={{ ...styles.cardMidText, flex: 1 }}>
+              <Text style={[FONTS.body2, {fontWeight: 700, color: COLORS.darkgray}]}>
                 {EXPERTISE[props.expertise]}
               </Text>
+              </View>
               {props.event_status === EVENT_STATUS.FINALIZED ? (
-                props.is_rated === 1 ? (
+                props.is_rated === 0 ? (
                   <Text style={{ ...styles.cardMidText, marginBottom: 2 }}>
                     Finalizado
                   </Text>
                 ) : (
-                  <Button
-                    color={COLORS.primary}
-                    mode="contained"
+                  <CustomButton
                     title="Puntuar"
                     onPress={() => setModalVisible(true)}
                   />
@@ -142,17 +143,7 @@ const Card = ({ props }) => {
               )}
             </View>
           </View>
-          <View
-            style={[
-              styles.section,
-              {
-                backgroundColor: COLORS.primary,
-                margin: -10,
-                paddingHorizontal: 10,
-                paddingVertical: 4,
-              },
-            ]}
-          >
+          <View style={styles.bottomSection}>
             <Text style={[styles.cardSmText, { color: COLORS.white }]}>
               {day} de {MONTHS[month - 1]} {hours}:{minutes} hs
             </Text>
@@ -183,6 +174,23 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
 
+  userSection: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    },
+
+  bottomSection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: COLORS.primary,
+    margin: -10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
   cardBigText: {
     fontSize: 28,
     fontWeight: 700,
@@ -197,14 +205,19 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   section: {
+    flex: 1,
+    alignSelf: 'stretch',
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
   verticalSection: {
+    flex: 1,
     flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "center",
+    justifyContent: 'space-between',
+    paddingVertical: 6,
+    maxWidth: '45%',
+    height: '100%',
   },
   centeredView: {
     flex: 1,
