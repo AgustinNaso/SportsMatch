@@ -31,6 +31,7 @@ const Home = ({ navigation, route }) => {
   const {currUser} = useContext(UserContext);
 
   useEffect(() => {
+    setLoading(true);
     const getNearEvents = async () => {
       const mockData = await fetchNearEvents(currUser.userid, JSON.parse(route.params?.filters));
       setEventList(mockData.items);
@@ -41,6 +42,7 @@ const Home = ({ navigation, route }) => {
   }, [route.params?.filters]);
 
   useEffect(() => {
+    setLoading(true);
     const getNearEvents = async () => {
       const data = await fetchNearEvents(currUser.userid);
       setEventList(data.items);
@@ -107,7 +109,7 @@ const Home = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, minHeight: "100%"}}>
+        <SafeAreaView style={{ flex: 1, minHeight: "100%"}}>
       <FlatList
         data={filterData}
         renderItem={renderItemPill}
@@ -140,7 +142,7 @@ const Home = ({ navigation, route }) => {
         ></FlatList>
       )}
     </SafeAreaView>
-  );
+      );
 };
 
 export default Home;
