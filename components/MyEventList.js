@@ -14,11 +14,11 @@ const MyEventList = ({ data }) => {
     const [participantList, setParticipantsList] = useState(data.item.participants);
     const { hours, day, month, minutes } = getDateComponents(data.item.schedule);
 
-    const handleRemoveParticipant = async (eventId, participantEmail) => {
+    const handleRemoveParticipant = async (eventId, participantId) => {
         try {
-            removeParticipantAsOwner(eventId, participantEmail)
-            console.log("Removing participant: ", participantEmail, " from event: ", eventId);
-            setParticipantsList(participantList.filter((participant) => participant.email !== participantEmail));
+            await removeParticipantAsOwner(eventId, participantId)
+            console.log("Removing participant: ", participantId, " from event: ", eventId);
+            setParticipantsList(participantList.filter((participant) => participant.user_id !== participantId));
         } catch (error) {
             console.log(error)
         }

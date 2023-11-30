@@ -32,7 +32,6 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
     const fetchImage = async () => {
       const response = await fetchUserImage(props.user_id);
       if (response.status == 200) {
-        console.log("Response: ", response.imageURL);
         setImage(response.imageURL);
       }
     };
