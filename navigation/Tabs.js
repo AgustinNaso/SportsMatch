@@ -10,10 +10,14 @@ import { getCurrentUserData } from "../services/LocalStorageService";
 const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
-  const [currUser, setCurrUser] = useState();
+  const [currUser, setCurrUserAndPersist] = useState();
   const [loading, setLoading] = useState(true); 
 
-
+const setCurrUser = async (user) => {
+  setCurrUserAndPersist(user);
+  await save('userData', JSON.stringify(user));
+}
+  
   useEffect(() => {
     getCurrentUserData().then((user) => {
       setCurrUser(user);
