@@ -137,12 +137,9 @@ const EditProfile = () => {
       const imgUpdatedRes = await updateUserImage(
         currUser.userid,
         currImg.base64
-      );
+      ); 
       if (imgUpdatedRes.status == 200) {
-        const userImageUrlRes = await fetchUserImage(currUser.userid);
-        if(userImageUrlRes.status == 200) {
-          currUser.imageURL = userImageUrlRes.imageURL;
-        }
+        currUser.imageURL = currImg.uri;
         setCurrUser({...currUser, ...formData, phonenumber: formData.phoneNumber})
 
         navigator.navigate("MyProfile");
