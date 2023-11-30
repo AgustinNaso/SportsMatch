@@ -26,7 +26,7 @@ const Card = ({ props }) => {
   const [loading, setLoading] = React.useState(true);
 
   const handlePress = () => {
-    navigation.navigate("Evento", { props: props });
+    navigation.navigate("Evento", { props: props, userImgURL: image });
   };
 
   const postUserRating = async () => {

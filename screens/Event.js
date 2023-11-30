@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import CustomButton from "../components/CustomButton";
 import { EVENT_STATUS, EXPERTISE, SPORT, USER_STATUS } from "../constants/data";
@@ -17,29 +17,18 @@ import DefaultProfile from "../assets/default-profile.png";
 import { UserContext } from "../contexts/UserContext";
 
 const Event = ({ route }) => {
-  const { props } = route.params;
-  const [loading, setLoading] = useState(false);
+  const { props, userImgURL } = route.params;
+  const [loading, setLoading] = useState(true);
   const [eventParticipants, setEventParticipants] = useState([]);
   const [userStatus, setUserStatus] = useState(USER_STATUS.UNENROLLED);
   const { currUser, setCurrUser } = useContext(UserContext);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(userImgURL);
 
-  useEffect(() => {
-    const fetchImage = async () => {
-      const response = await fetchUserImage(props.owner_id);
-      if (response.status == 200) {
-        setImage(response.imageURL);
-      }
-    };
-    try {
-      fetchImage();
-    } catch (err) {
-      console.error("ERROR fetching user data", err);
-    }
-    fetchParticipants(props.event_id).then((data) => {
-      setEventParticipants(data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   fetchParticipants(props.event_id).then((data) => {
+  //     setEventParticipants(data);
+  //   });
+  // }, []);
 
   useEffect(() => {
     eventParticipants.forEach((participant) => {
@@ -51,6 +40,7 @@ const Event = ({ route }) => {
         }
       }
     });
+    setLoading(false);
   }, [eventParticipants, currUser]);
 
   const handleQuitEvent = async () => {
@@ -105,7 +95,7 @@ const Event = ({ route }) => {
       case USER_STATUS.UNENROLLED:
         return (
           <CustomButton
-            title={"Anotarme"} 
+            title={"Anotarme"}
             onPress={joinEvent}
             isLoading={loading} />
         );
@@ -125,6 +115,7 @@ const Event = ({ route }) => {
   const { day, month, hours, minutes } = getDateComponents(props?.schedule);
 
   return (
+    loading ? <ActivityIndicator size="large" color={COLORS.primary} /> :
     <View style={styles.eventContainer}>
       <View style={styles.eventHeader}>
         <Avatar
@@ -154,7 +145,7 @@ const Event = ({ route }) => {
           </Text>
         </View>
       </View>
-      <Divider width={4} style={{ width: "100%", marginBottom: -24}} />
+      <Divider width={4} style={{ width: "100%", marginBottom: -24 }} />
       <View style={styles.eventBody}>
         <View style={styles.bodySection}>
           <Text style={styles.bodyBigText}>Fecha:</Text>
@@ -177,7 +168,7 @@ const Event = ({ route }) => {
         <View style={{ ...styles.bodySection }}>
           <Text style={styles.bodyBigText}>Descripcion:</Text>
           <View style={{ width: 160 }}>
-            <ScrollView style={{maxHeight: 110}}>
+            <ScrollView style={{ maxHeight: 110 }}>
               <Text style={styles.bodyMidText}>{props.description}</Text>
             </ScrollView>
           </View>
