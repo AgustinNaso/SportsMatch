@@ -143,17 +143,12 @@ const EditProfile = () => {
       const imgUpdatedRes = await updateUserImage(
         currUser.userid,
         currImg.base64
-      );
+      ); 
       if (imgUpdatedRes.status == 200) {
-        currUser.imageURL = currImg.uri
-      }
-      else {
-        setError(imgUpdatedRes.message);
-        return;
+        currUser.imageURL = currImg.uri;
+        navigator.navigate("MyProfile");
       }
     }
-    console.log("CURR USER: ", { ...currUser, imageURL: "" });
-    console.log("CURR USER 2: ", { ...currUser, ...formData, imageURL: "" });
     setCurrUser({ ...currUser, ...formData })
     setSubmitLoading(false);
     navigator.navigate("MyProfile");
