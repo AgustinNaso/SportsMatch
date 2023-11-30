@@ -75,7 +75,6 @@ const Card = ({ props }) => {
 
   return (
     <>
-      {!loading && (
         <TouchableOpacity style={styles.card} onPress={handlePress}>
           <Modal
             animationType="slide"
@@ -151,7 +150,6 @@ const Card = ({ props }) => {
             </Text>
           </View>
         </TouchableOpacity>
-      )}
     </>
   );
 };
