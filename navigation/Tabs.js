@@ -6,7 +6,7 @@ import { COLORS } from "../constants";
 import { MyEvents } from "../screens";
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/UserContext";
-import { getCurrentUserData } from "../services/LocalStorageService";
+import { getCurrentUserData, save } from "../services/LocalStorageService";
 const Tab = createBottomTabNavigator();
 
 const Tabs = () => {

@@ -45,20 +45,22 @@ const EditProfile = () => {
   const navigator = useNavigation();
 
   const [selectedSports, setSelectedSports] = useState([]);
-  const {currUser, setCurrUser} = useContext(UserContext);
-  const [currImg, setCurrImg] = useState({"uri": currUser.imageURL});
+  const { currUser, setCurrUser } = useContext(UserContext);
+  const [currImg, setCurrImg] = useState({ "uri": currUser.imageURL });
   const {
     control,
     handleSubmit,
     formState: { errors },
-    watch,
-  } = useForm({defaultValues: {
-    locations: currUser.locations
-  }});
-  const [loading, setLoading] = useState(false);
+  } = useForm({
+    defaultValues: {
+      locations: currUser.locations,
+      phonenumber: currUser.phonenumber,
+      sports: currUser.sports,
+    }
+  });
+  const [loading, setLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [selectedLocations, setSelectedLocations] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
   const [imageChanged, setImageChanged] = useState(false);
   const [error, setError] = useState();
   const phoneUtil = PhoneNumberUtil.getInstance();
@@ -77,16 +79,16 @@ const EditProfile = () => {
   };
 
   useEffect(() => {
-      console.log(currUser);
-      const { code, national_number } = parsePhoneNumber(currUser.phonenumber);
-      setCurrUser({
-        ...currUser,
-        country_code: code,
-        national_number: national_number,
-      });
-      setSelectedSports(currUser.sports);
-      setSelectedLocations(currUser.locations);
-
+    console.log(currUser);
+    const { code, national_number } = parsePhoneNumber(currUser.phonenumber);
+    setCurrUser({
+      ...currUser,
+      country_code: code,
+      national_number: national_number,
+    });
+    setSelectedSports(currUser.sports);
+    setSelectedLocations(currUser.locations);
+    setLoading(false);
   }, []);
 
   const validatePhone = (phone) => {
@@ -121,38 +123,40 @@ const EditProfile = () => {
 
   const submit = async (data) => {
     setSubmitLoading(true);
+    console.log("DATA: ", data);
     const formData = {
-      phoneNumber: data.phone,
-      locations: selectedLocations,
+      phonenumber: data.phonenumber,
+      locations: data.locations,
       sports: selectedSports,
-    };
-    
+    }
+
+
     var userUpdatedRes;
-    if (dataChanged(data)) {
+    if (dataChanged) {
       userUpdatedRes = await updateUser(currUser.userid, formData);
     }
     if (userUpdatedRes && userUpdatedRes.status !== 200) {
       setError(userUpdatedRes.message);
-    } else if (imageChanged) {
+      return;
+    }
+    if (imageChanged) {
       const imgUpdatedRes = await updateUserImage(
         currUser.userid,
         currImg.base64
       );
       if (imgUpdatedRes.status == 200) {
-        const userImageUrlRes = await fetchUserImage(currUser.userid);
-        if(userImageUrlRes.status == 200) {
-          currUser.imageURL = userImageUrlRes.imageURL;
-        }
-        setCurrUser({...currUser, ...formData, phonenumber: formData.phoneNumber})
-
-        navigator.navigate("MyProfile");
+        currUser.imageURL = currImg.uri
       }
-      setError(imgUpdatedRes.message);
-    } else {
-      setCurrUser({...currUser, ...formData, phonenumber: formData.phoneNumber})
-      navigator.navigate("MyProfile");
+      else {
+        setError(imgUpdatedRes.message);
+        return;
+      }
     }
+    console.log("CURR USER: ", { ...currUser, imageURL: "" });
+    console.log("CURR USER 2: ", { ...currUser, ...formData, imageURL: "" });
+    setCurrUser({ ...currUser, ...formData })
     setSubmitLoading(false);
+    navigator.navigate("MyProfile");
   };
 
   const editProfileImage = () => {
@@ -222,175 +226,175 @@ const EditProfile = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView
+        style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        {loading ? <ActivityIndicator size="large" color={COLORS.primary} style={{marginTop: '75%'}} /> 
-         : (
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <Avatar
-              size={108}
-              rounded
-              source={currImg?.uri ? { uri: currImg.uri } : DefaultProfile}
-            >
-              <TouchableOpacity onPress={editProfileImage}>
-                <Ionicons
-                  name="ios-camera"
-                  size={25}
-                  style={{
-                    position: "absolute",
-                    color: COLORS.primary,
-                    bottom: 0,
-                    right: 0,
-                  }}
-                />
-              </TouchableOpacity>
-            </Avatar>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputText}>Nombre</Text>
-              <Controller
-                control={control}
-                rules={{
-                  required: true,
-                }}
-                defaultValue={currUser.firstname}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    editable={false}
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                  />
-                )}
-                name="name"
-              />
-            </View>
-            {errors.name && (
-              <Text style={styles.error}>Este campo no puede estar vacio</Text>
-            )}
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputText}>Apellido</Text>
-              <Controller
-                control={control}
-                rules={{
-                  required: true,
-                }}
-                defaultValue={currUser.lastname}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    editable={false}
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                  />
-                )}
-                name="lastName"
-              />
-            </View>
-            {errors.lastName && (
-              <Text style={styles.error}>Este campo no puede estar vacio</Text>
-            )}
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputText}>Email</Text>
-              <Controller
-                control={control}
-                rules={{
-                  required: true,
-                  pattern: {
-                    matchPattern: (mail) => validateEmail(mail),
-                    message: "Invalid email address",
-                  },
-                }}
-                defaultValue={currUser.email}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    editable={false}
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                  />
-                )}
-                name="email"
-              />
-            </View>
-            {errors.email && (
-              <Text style={styles.error}>
-                Por favor ingrese un email válido
-              </Text>
-            )}
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputText}>Número de teléfono</Text>
-              <Controller
-                defaultValue={currUser.phonenumber}
-                control={control}
-                rules={{
-                  required: true,
-                  validate: (phone) => {
-                    return validatePhone(phone);
-                  },
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <PhoneInput
-                    defaultValue={currUser.national_number}
-                    defaultCode={currUser.country_code}
-                    layout="first"
-                    containerStyle={styles.phoneContainer}
-                    textContainerStyle={styles.phoneContainer.input}
-                    flagButtonStyle={styles.phoneContainer.flag}
-                    onChangeFormattedText={(text) => {
-                      onChange(text);
+        {loading ? <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: '75%' }} />
+          : (
+            <View style={styles.scrollContainer}>
+              <Avatar
+                size={130}
+                rounded
+                source={currImg?.uri ? { uri: currImg.uri } : DefaultProfile}
+              >
+                <TouchableOpacity onPress={editProfileImage}>
+                  <Ionicons
+                    name="ios-camera"
+                    size={25}
+                    style={{
+                      position: "absolute",
+                      color: COLORS.primary,
+                      bottom: 0,
+                      right: 0,
                     }}
                   />
-                )}
-                name="phone"
-              />
-            </View>
-            {errors.phone && (
-              <Text style={styles.error}>
-                Por favor ingrese un número válido.
-              </Text>
-            )}
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputText}>Mis Deportes</Text>
-              <View style={styles.sportsContainer}>
-                {sports.map((sport, index) => {
-                  return (
-                    <Controller
-                      key={index}
-                      control={control}
-                      render={() => (
-                        <Pill
-                          customStyle={styles.pillStyle}
-                          props={sport}
-                          handlePress={() => handleSportsSelect(sport)}
-                          currentFilter={isSelected(sport)}
-                        />
-                      )}
-                      name={`sports[${index}]`}
-                      defaultValue={false}
+                </TouchableOpacity>
+              </Avatar>
+              {/* <View style={styles.inputContainer}>
+                <Text style={styles.inputText}>Nombre</Text>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  defaultValue={currUser.firstname}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      editable={false}
+                      style={styles.input}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
                     />
-                  );
-                })}
+                  )}
+                  name="name"
+                />
               </View>
+              {errors.name && (
+                <Text style={styles.error}>Este campo no puede estar vacio</Text>
+              )}
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputText}>Apellido</Text>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  defaultValue={currUser.lastname}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      editable={false}
+                      style={styles.input}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                  )}
+                  name="lastName"
+                />
+              </View>
+              {errors.lastName && (
+                <Text style={styles.error}>Este campo no puede estar vacio</Text>
+              )}
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputText}>Email</Text>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                    pattern: {
+                      matchPattern: (mail) => validateEmail(mail),
+                      message: "Invalid email address",
+                    },
+                  }}
+                  defaultValue={currUser.email}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      editable={false}
+                      style={styles.input}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                  )}
+                  name="email"
+                />
+              </View>
+              {errors.email && (
+                <Text style={styles.error}>
+                  Por favor ingrese un email válido
+                </Text>
+              )} */}
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputText}>Número de teléfono</Text>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                    validate: (phone) => {
+                      return validatePhone(phone);
+                    },
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <PhoneInput
+                      defaultValue={currUser.national_number}
+                      defaultCode={currUser.country_code}
+                      layout="first"
+                      containerStyle={styles.phoneContainer}
+                      textContainerStyle={styles.phoneContainer.input}
+                      flagButtonStyle={styles.phoneContainer.flag}
+                      onChangeFormattedText={(text) => {
+                        onChange(text);
+                      }}
+                    />
+                  )}
+                  name="phonenumber"
+                />
+              </View>
+              {errors.phone && (
+                <Text style={styles.error}>
+                  Por favor ingrese un número válido.
+                </Text>
+              )}
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputText}>Mis Deportes</Text>
+                <View style={styles.sportsContainer}>
+                  {sports.map((sport, index) => {
+                    return (
+                      <Controller
+                        key={index}
+                        control={control}
+                        render={() => (
+                          <Pill
+                            customStyle={styles.pillStyle}
+                            props={sport}
+                            handlePress={() => handleSportsSelect(sport)}
+                            currentFilter={isSelected(sport)}
+                          />
+                        )}
+                        name={`sports[${index}]`}
+                        defaultValue={false}
+                      />
+                    );
+                  })}
+                </View>
+              </View>
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputText}>Mis Ubicaciones</Text>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <CustomMultiDropdown data={LOCATIONS} onChangeItem={onChange} defaultValues={value} />
+                  )}
+                  name="locations"
+                />
+              </View>
+              {error && (
+                <Text style={{ color: "red", paddingTop: 15 }}>{error}</Text>
+              )}
+              <CustomButton title="Guardar" onPress={handleSubmit(submit)} isLoading={submitLoading} />
             </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputText}>Mis Ubicaciones</Text>
-              <Controller
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <CustomMultiDropdown data={LOCATIONS} onChangeItem={onChange} defaultValues={value}/>
-                )}
-                name="locations"
-              />
-            </View>
-            {error && (
-              <Text style={{ color: "red", paddingTop: 15 }}>{error}</Text>
-            )}
-            <CustomButton title="Guardar" onPress={handleSubmit(submit)} isLoading={submitLoading} />
-          </ScrollView>
-        )}
+          )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -398,9 +402,10 @@ const EditProfile = () => {
 
 const styles = StyleSheet.create({
   scrollContainer: {
-    flexGrow: 1,
+    flex: 1,
+    flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-evenly",
     paddingBottom: 24,
     paddingTop: 20,
     paddingHorizontal: 24,
@@ -441,7 +446,7 @@ const styles = StyleSheet.create({
     input: {
       backgroundColor: COLORS.transparent,
       paddingVertical: 12
-     
+
     },
   },
   sportsContainer: {
@@ -449,6 +454,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "center",
     gap: 7,
+    marginTop: 8,
   },
   pillStyle: {
     padding: 8,

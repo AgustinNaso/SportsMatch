@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { COLORS, FONTS } from "../constants";
 import { TextInput } from "react-native-gesture-handler";
-import { getEmailValidator, validateEmail } from "../utils/validations";
+import { validateEmail } from "../utils/validations";
 import { AuthContext } from "../contexts/authContext";
 import PhoneInput from "react-native-phone-number-input";
 import { PhoneNumberUtil } from "google-libphonenumber";

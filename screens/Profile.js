@@ -17,7 +17,6 @@ import { UserContext } from "../contexts/UserContext";
 
 const Profile = () => {
   const { currUser } = useContext(UserContext);
-  const [image, setImage] = useState(null);
 
   const formatPhoneNumber = (phoneNumberString) => {
     if (!phoneNumberString) return;
