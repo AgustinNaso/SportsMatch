@@ -118,7 +118,7 @@ const Profile = () => {
                     );
                   })
                 ) : (
-                  <NoContentMessage message="No elegiste ninguna ubicacion"/>
+                  <NoContentMessage message="No elegiste ninguna ubicación"/>
                 )}
               </View>
             </View>

@@ -181,12 +181,12 @@ const Event = ({ route }) => {
         </View>
         <Divider width={1} />
         <View style={styles.bodySection}>
-          <Text style={styles.bodyBigText}>Ubicacion:</Text>
+          <Text style={styles.bodyBigText}>Ubicación:</Text>
           <Text style={styles.bodyMidText}>{eventData.location}</Text>
         </View>
         <Divider width={1} />
         <View style={{ ...styles.bodySection }}>
-          <Text style={styles.bodyBigText}>Descripcion:</Text>
+          <Text style={styles.bodyBigText}>Descripción:</Text>
           <View style={{ width: 160 }}>
             <ScrollView style={{ maxHeight: 110 }}>
               <Text style={styles.bodyMidText}>
