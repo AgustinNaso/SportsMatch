@@ -93,7 +93,7 @@ const FilterModal = ({ navigation }) => {
                                         selected={field.value}
                                         data={LOCATIONS}
                                         search={false}
-                                        name="ubicacion"
+                                        name="ubicación"
                                         showLabel={false}
                                     />)
                             }}
@@ -106,7 +106,7 @@ const FilterModal = ({ navigation }) => {
                                     setSelected={field.onChange}
                                     selected={field.value}
                                     data={EXPERTISE}
-                                    name="Nivel"
+                                    name="nivel"
                                     showLabel={false}
                                 />)}
                                 name="expertise" />
