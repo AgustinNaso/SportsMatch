@@ -25,7 +25,7 @@ const FirstRoute = (myEvents, loading) => (
   <SafeAreaView style={{ flex: 1 }}>
     {loading ? <ActivityIndicator size="large" color={COLORS.primary} style={{ alignSelf: "center", marginTop: "50%" }} /> : 
     <FlatList
-      data={myEvents}
+      data={myEvents.slice().reverse()}
       renderItem={(data) => renderList(data)}
       style={{ flex: 1, marginBottom: 8 }}
       contentContainerStyle={ myEvents.length != 0 ? {flexGrow: 1} : styles.noContentContainer}
@@ -40,7 +40,7 @@ const FirstRoute = (myEvents, loading) => (
 const SecondRoute = (joinedEvents) => (
   <SafeAreaView style={{ flex: 1 }}>
     <FlatList
-      data={joinedEvents}
+      data={joinedEvents.slice().reverse()}
       renderItem={renderJoinedItem}
       style={{ flex: 1 }}
       contentContainerStyle={
