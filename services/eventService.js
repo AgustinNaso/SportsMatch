@@ -144,7 +144,7 @@ export const acceptParticipant = async (eventId, userId) => {
 //Endpoint should be /rating for it to be RESTful
 export const rateUser = async (eventId, rating, participantId) => {
   console.log("RATING USER: " + participantId + " WITH RATING: " + rating + " FOR EVENT: " + eventId);
-  await authenticatedFetch(`/users/${participantId}/rate`, {
+  await authenticatedFetch(`/users/${participantId}/rating`, {
     method: "POST",
     body: JSON.stringify({ eventId: eventId, rating: rating }),
     headers: {
