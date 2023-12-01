@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Linking,
   Modal,
@@ -20,13 +20,14 @@ import { fetchUserImage } from "../services/userService";
 import CustomButton from "./CustomButton";
 
 const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) => {
-  console.log("Props: ", props);
-  const [userAccepted, setUserAccepted] = React.useState(
+  console.log("Props my event card: ", props);
+  const [userAccepted, setUserAccepted] = useState(
     props.participant_status
   );
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [userRate, setUserRate] = React.useState(3);
-  const [image, setImage] = React.useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [userRate, setUserRate] = useState(3);
+  const [image, setImage] = useState(null);
+  const [isRated, setIsRated] = useState(props.is_rated === 1 ? true : false);
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -46,6 +47,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
     try {
       await rateUser(eventId, userRate, props.user_id);
       setModalVisible(false);
+      setIsRated(true);
     } catch (error) {
       console.log(error);
       //TODO: send user feedback of this error
@@ -75,7 +77,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
         title="Contactar"
         onPress={sendMessage}
       />
-    if (eventStatus === EVENT_STATUS.FINALIZED && props.is_rated === 0)
+    if (eventStatus === EVENT_STATUS.FINALIZED && !isRated)
       return <CustomButton
         title="Puntuar"
         onPress={() => setModalVisible(true)}

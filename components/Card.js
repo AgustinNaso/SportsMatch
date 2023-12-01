@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -20,10 +20,12 @@ import CustomButton from "./CustomButton";
 import { Spots } from "./Spots";
 
 const Card = ({ props }) => {
+  console.log("Props card: ", props);
   const navigation = useNavigation();
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [userRate, setUserRate] = React.useState(3);
-  const [loading, setLoading] = React.useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [userRate, setUserRate] = useState(3);
+  const [loading, setLoading] = useState(true);
+  const [isRated, setIsRated] = useState(props.is_rated === 1 ? true : false);
 
   const handlePress = () => {
     navigation.navigate("Evento", { eventId: props.event_id, userImgURL: image, ownerRating : { rating: props.rating, rateCount: props.rate_count}});
@@ -33,6 +35,7 @@ const Card = ({ props }) => {
     try {
       await rateUser(props.event_id, userRate, props.owner_id);
       setModalVisible(false);
+      setIsRated(true);
     } catch (error) {
       console.log(error);
       //TODO: send user feedback of this error
@@ -124,7 +127,7 @@ const Card = ({ props }) => {
               </Text>
               </View>
               {props.event_status === EVENT_STATUS.FINALIZED ? (
-                props.is_rated === 0 ? (
+                isRated ? (
                   <Text style={{ ...styles.cardMidText, marginBottom: 2 }}>
                     Finalizado
                   </Text>
