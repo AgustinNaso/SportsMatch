@@ -12,6 +12,7 @@ import { Spots } from './Spots';
 
 const MyEventList = ({ data }) => {
     const [participantList, setParticipantsList] = useState(data.item.participants);
+    const [remaining, setRemaining] = useState(data.item.remaining);
     const { hours, day, month, minutes } = getDateComponents(data.item.schedule);
 
     const handleRemoveParticipant = async (eventId, participantId) => {
@@ -19,14 +20,11 @@ const MyEventList = ({ data }) => {
             await removeParticipantAsOwner(eventId, participantId)
             console.log("Removing participant: ", participantId, " from event: ", eventId);
             setParticipantsList(participantList.filter((participant) => participant.user_id !== participantId));
+            setRemaining(remaining + 1);
         } catch (error) {
             console.log(error)
         }
     }
-
-    useEffect(() => {
-        setParticipantsList(data.item.participants);
-    }, [data.item.participants])
 
     return (
         <View style={{minWidth: '100%', paddingHorizontal: 24, paddingTop: 8}}>
@@ -41,7 +39,7 @@ const MyEventList = ({ data }) => {
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <Text style={{ fontSize: 18, fontWeight: 600, color: COLORS.darkgray}}>{EXPERTISE[data.item.expertise - 1]}</Text>
-                    <Spots qty={data.item.remaining} alternative />
+                    <Spots qty={remaining} alternative />
                 </View>
             </View>
             <FlatList
