@@ -39,6 +39,7 @@ const sports = [
   { key: 3, sportId: 3, title: SPORT[2] },
   { key: 4, sportId: 4, title: SPORT[3] },
   { key: 5, sportId: 5, title: SPORT[4] },
+  { key: 6, sportId: 6, title: SPORT[5]}
 ];
 
 const EditProfile = () => {

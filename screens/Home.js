@@ -21,6 +21,7 @@ const filterData = [
   { key: 3, sportId: 3, sport: SPORT[2] },
   { key: 4, sportId: 4, sport: SPORT[3] },
   { key: 5, sportId: 5, sport: SPORT[4] },
+  { key: 6, sportId: 6, sport: SPORT[5]}
 ];
 
 const Home = ({ navigation, route }) => {
