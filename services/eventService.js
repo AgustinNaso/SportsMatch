@@ -37,7 +37,7 @@ export const fetchParticipants = async (eventId, status) => {
   if(status == EVENT_STATUS.FINALIZED) queryParams = "?status=accepted";
 
   const response = await fetch(
-    API_URL + "/events/" + eventId + "/owner/participants" + queryParams
+    API_URL + "/events/" + eventId + "/participants/owner" + queryParams
   );
   const json = await response.json();
 
@@ -83,7 +83,7 @@ export const fetchMyEvents = async (userId) => {
   const json = await events.json();
   const response = json;
   for (let i = 0; i < response.items.length; i++)
-    response.items[i].participants = await fetchParticipants(response.items[i].event_id, response.items[i].event_status);
+    response.items[i].participants = await fetchParticipants(response.items[i].id, response.items[i].eventStatus);
   
   return response;
 };
@@ -94,7 +94,7 @@ export const fetchNearEvents = async (userId, filters = undefined) => {
     let jsonRes = await response.json();
     jsonRes.items = jsonRes.items?.filter(
       (event) =>
-        event.remaining > 0 && event.event_status !== EVENT_STATUS.FINALIZED
+        event.remaining > 0 && event.eventStatus !== EVENT_STATUS.FINALIZED
     );
     return jsonRes;
   } catch (err) {
@@ -133,7 +133,7 @@ export const joinNewEvent = async (eventId, userId) => {
 };
 
 export const acceptParticipant = async (eventId, userId) => {
-  await authenticatedFetch("/events/" + eventId + "/owner/participants", {
+  await authenticatedFetch("/events/" + eventId + "/participants/owner", {
     method: "PUT",
     body: JSON.stringify({ participantId: userId.toString() }),
     headers: {
@@ -166,7 +166,7 @@ export const quitEvent = async (eventId) => {
 
 export const removeParticipantAsOwner = async (eventId, userId) => {
   console.log("REMOVING PARTICIPANT FROM EVENT: " + eventId);
-  await authenticatedFetch("/events/" + eventId + "/owner/participants", {
+  await authenticatedFetch("/events/" + eventId + "/participants/owner", {
     method: "DELETE",
     body: JSON.stringify({ participantId: userId.toString() }),
     headers: {
