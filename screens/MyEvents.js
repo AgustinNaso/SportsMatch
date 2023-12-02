@@ -45,7 +45,7 @@ const SecondRoute = (joinedEvents) => (
       style={{ flex: 1 }}
       contentContainerStyle={
         joinedEvents.length != 0 ? styles.contentContainer : styles.noContentContainer}
-      keyExtractor={(item, index) => `${item.event_id}-${index}`}
+      keyExtractor={(item, index) => `${item.id}-${index}`}
       ListEmptyComponent={renderEmptyList}
     ></FlatList>
   </SafeAreaView>
@@ -83,12 +83,12 @@ const MyEvents = () => {
   useEffect(() => {
     setLoading(true);
     const getMyEvents = async () => {
-      const data = await fetchMyEvents(currUser.userid);
+      const data = await fetchMyEvents(currUser.id);
       setMyEvents(data.items);
     };
 
     const getJoinedEvents = async () => {
-      const mockData = await fetchJoinedEvents(currUser.userid);
+      const mockData = await fetchJoinedEvents(currUser.id);
       setJoinedEvents(mockData.items);
     };
     if (currUser && isFocused) {

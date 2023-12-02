@@ -12,14 +12,14 @@ import { Spots } from './Spots';
 
 const MyEventList = ({ data }) => {
     const [participantList, setParticipantsList] = useState(data.item.participants);
-    const [remaining, setRemaining] = useState(data.item.remaining);
+    const [remaining, setRemaining] = useState(+data.item.remaining);
     const { hours, day, month, minutes } = getDateComponents(data.item.schedule);
 
     const handleRemoveParticipant = async (eventId, participantId) => {
         try {
             await removeParticipantAsOwner(eventId, participantId)
             console.log("Removing participant: ", participantId, " from event: ", eventId);
-            setParticipantsList(participantList.filter((participant) => participant.user_id !== participantId));
+            setParticipantsList(participantList.filter((participant) => participant.userId !== participantId));
             setRemaining(remaining + 1);
         } catch (error) {
             console.log(error)
@@ -30,8 +30,8 @@ const MyEventList = ({ data }) => {
         <View style={{minWidth: '100%', paddingHorizontal: 24, paddingTop: 8}}>
             <View style={{ flexDirection: 'column', justifyContent: 'center', marginVertical: 8, gap: 8, backgroundColor: COLORS.primary20, padding: 8, borderRadius: 8}}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                    <Text style={{ fontSize: 24, fontWeight: 600 }}>{SPORT[data.item.sport_id - 1]}</Text>
-                    <EventStatus status={data.item.event_status} />
+                    <Text style={{ fontSize: 24, fontWeight: 600 }}>{SPORT[data.item.sportId - 1]}</Text>
+                    <EventStatus status={data.item.eventStatus} />
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <Text style={{ fontSize: 18, fontWeight: 600 }}>{data.item.location}</Text>
@@ -43,9 +43,9 @@ const MyEventList = ({ data }) => {
                 </View>
             </View>
             <FlatList
-                data={participantList} renderItem={(listData) => renderItem(listData.item, data.item.event_id, handleRemoveParticipant, data.item.event_status)}
-                style={{ flex: 1 }} keyExtractor={(item, index) => { return `${item.userid} + ${index} + ${item.event_id}}` }}
-                ListEmptyComponent={data.item.event_status !== EVENT_STATUS.FINALIZED && <Text style={{ fontSize: 20, alignSelf: 'center', marginVertical: 8 }}>Aún no hay participantes</Text>}
+                data={participantList} renderItem={(listData) => renderItem(listData.item, data.item.id, handleRemoveParticipant, data.item.eventStatus)}
+                style={{ flex: 1 }} keyExtractor={(item, index) => { return `${item.userId} + ${index} + ${item.id}}` }}
+                ListEmptyComponent={data.item.eventStatus !== EVENT_STATUS.FINALIZED && <Text style={{ fontSize: 20, alignSelf: 'center', marginVertical: 8 }}>Aún no hay participantes</Text>}
             >
             </FlatList>
             <Divider width={3} style={{ width: '100%', marginTop: 10, alignSelf: 'center' }} />

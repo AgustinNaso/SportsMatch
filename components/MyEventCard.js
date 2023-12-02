@@ -22,16 +22,16 @@ import CustomButton from "./CustomButton";
 const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) => {
   console.log("Props my event card: ", props);
   const [userAccepted, setUserAccepted] = useState(
-    props.participant_status
+    props.participantStatus
   );
   const [modalVisible, setModalVisible] = useState(false);
   const [userRate, setUserRate] = useState(3);
   const [image, setImage] = useState(null);
-  const [isRated, setIsRated] = useState(props.is_rated === 1 ? true : false);
+  const [isRated, setIsRated] = useState(props.isRated);
 
   useEffect(() => {
     const fetchImage = async () => {
-      const response = await fetchUserImage(props.user_id);
+      const response = await fetchUserImage(props.userId);
       if (response.status == 200) {
         setImage(response.imageURL);
       }
@@ -45,7 +45,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
 
   const postUserRating = async () => {
     try {
-      await rateUser(eventId, userRate, props.user_id);
+      await rateUser(eventId, userRate, props.userId);
       setModalVisible(false);
       setIsRated(true);
     } catch (error) {
@@ -57,7 +57,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
   const acceptUser = async () => {
     console.log(props);
     try {
-      await acceptParticipant(eventId, props.user_id);
+      await acceptParticipant(eventId, props.userId);
       setUserAccepted(true);
     } catch (error) {
       console.log(error);
@@ -66,7 +66,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
 
   const sendMessage = () => {
     Linking.openURL(
-      `whatsapp://send?phone=${+props.phone_number}&text=Hola ${props.firstname
+      `whatsapp://send?phone=${+props.phoneNumber}&text=Hola ${props.firstname
       }. Nos vemos en el partido!`
     );
   };
@@ -134,7 +134,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
             }}
           >
             <Ionicons name="star" size={16} color={COLORS.secondary} />
-            <Text style={styles.profileTextAge}> {Number(props.rating).toFixed(1)} / 5</Text>
+            <Text style={styles.profileTextAge}> {Number(props.rating.rate).toFixed(1)} / 5</Text>
           </View>
         </View>
       </View>
@@ -145,7 +145,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
               name="close"
               size={40}
               color="red"
-              onPress={() => handleRemoveParticipant(eventId, props.user_id)}
+              onPress={() => handleRemoveParticipant(eventId, props.userId)}
             />
           </TouchableOpacity>
           <TouchableOpacity>

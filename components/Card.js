@@ -25,15 +25,15 @@ const Card = ({ props }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [userRate, setUserRate] = useState(3);
   const [loading, setLoading] = useState(true);
-  const [isRated, setIsRated] = useState(props.is_rated === 1 ? true : false);
+  const [isRated, setIsRated] = useState(props.isRated);
 
   const handlePress = () => {
-    navigation.navigate("Evento", { eventId: props.event_id, userImgURL: image, ownerRating : { rating: props.rating, rateCount: props.rate_count}});
+    navigation.navigate("Evento", { eventId: props.id, userImgURL: image, ownerRating : { rating: props.rating.rate, rateCount: props.rating.count}});
   };
 
   const postUserRating = async () => {
     try {
-      await rateUser(props.event_id, userRate, props.owner_id);
+      await rateUser(props.id, userRate, props.owner.id);
       setModalVisible(false);
       setIsRated(true);
     } catch (error) {
@@ -47,7 +47,7 @@ const Card = ({ props }) => {
 
   useEffect(() => {
     const fetchImage = async () => {
-      const response = await fetchUserImage(props.owner_id);
+      const response = await fetchUserImage(props.owner.id);
       if (response.status == 200) {
         setImage(response.imageURL);
       }
@@ -115,18 +115,18 @@ const Card = ({ props }) => {
                 source={image ? { uri: image } : DefaultProfile}
                 containerStyle={{ backgroundColor: COLORS.secondary }}
               />
-              <Text style={styles.cardMidText}>{props.owner_firstname}</Text>
+              <Text style={styles.cardMidText}>{props.owner.firstName}</Text>
             </View>
             <View style={styles.verticalSection}>
               <View>
               <Text style={styles.cardBigText}>
-                {SPORT[props.sport_id - 1]}
+                {SPORT[props.sportId - 1]}
               </Text>
               <Text style={[FONTS.body2, {fontWeight: 700, color: COLORS.darkgray}]}>
                 {EXPERTISE[props.expertise - 1]}
               </Text>
               </View>
-              {props.event_status === EVENT_STATUS.FINALIZED ? (
+              {props.eventStatus === EVENT_STATUS.FINALIZED ? (
                 isRated ? (
                   <Text style={{ ...styles.cardMidText, marginBottom: 2 }}>
                     Finalizado
