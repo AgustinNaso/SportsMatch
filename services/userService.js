@@ -5,12 +5,9 @@ export const API_URL =
   "http://sportsmatch-lb-700737557.us-east-1.elb.amazonaws.com";
 
 export const updateUser = async (userId, userData) => {
-  let copy = JSON.parse(JSON.stringify(userData));
-  copy.phoneNumber = copy.phonenumber;
-  delete copy.phonenumber;
   const response = await authenticatedFetch("/users/" + userId, {
     method: "PUT",
-    body: JSON.stringify(copy),
+    body: userData,
     headers: {
       "Content-Type": "application/json",
     },
