@@ -41,17 +41,17 @@ const Event = ({ route }) => {
 
   useEffect(() => {
     if(eventData)
-      fetchParticipants(eventId).then((data) => {
+          fetchParticipants(eventId).then((data) => {
         setEventParticipants(data);
       });
   }, [eventData]);
 
   useEffect(() => {
     if (eventParticipants) {
-      eventParticipants.length > 0 &&
+            eventParticipants.length > 0 &&
       eventParticipants.forEach((participant) => {
-        if (participant.user_id == currUser.userid) {
-          if (participant.participant_status === true) {
+        if (participant.userId == currUser.id) {
+          if (participant.participantStatus === true) {
             setUserStatus(USER_STATUS.ENROLLED);
           } else {
             setUserStatus(USER_STATUS.REQUESTING);
@@ -66,7 +66,7 @@ const Event = ({ route }) => {
     setSubmitLoading(true);
 
     try {
-      const res = await quitEvent(eventData.event_id);
+      await quitEvent(eventData.id);
       setUserStatus(USER_STATUS.UNENROLLED);
     } catch (error) {
       console.log("Error quitting event. ", error);
@@ -79,7 +79,7 @@ const Event = ({ route }) => {
     setSubmitLoading(true);
     console.log("Joining event", currUser);
     try {
-      await joinNewEvent(eventId, currUser.userid);
+      await joinNewEvent(eventId, currUser.id);
       setUserStatus(USER_STATUS.REQUESTING);
     } catch (error) {
       console.log(error);
@@ -88,7 +88,7 @@ const Event = ({ route }) => {
   };
 
   const renderParticipantStatusMessage = () => {
-    if (eventData.event_status === EVENT_STATUS.FINALIZED)
+    if (eventData.eventStatus === EVENT_STATUS.FINALIZED)
       return (
         <Text style={styles.participantStatusText}>Evento finalizado!</Text>
       );
@@ -111,7 +111,7 @@ const Event = ({ route }) => {
   };
 
   const renderEventButton = (loading) => {
-    if (eventData.event_status === EVENT_STATUS.FINALIZED) return null;
+    if (eventData.eventStatus === EVENT_STATUS.FINALIZED) return null;
     switch (userStatus) {
       case USER_STATUS.UNENROLLED:
         return (
@@ -148,7 +148,7 @@ const Event = ({ route }) => {
           containerStyle={{ backgroundColor: COLORS.secondary }}
         />
         <View style={styles.headerData}>
-          <Text style={styles.bigText}>{eventData.owner?.firstname}</Text>
+          <Text style={styles.bigText}>{eventData.owner?.firstName}</Text>
           <View style={{ flexDirection: "row", alignSelf: "center" }}>
             <Ionicons name="star" size={18} color={COLORS.secondary} />
             <Text> {Number(ownerRating?.rating).toFixed(1)} / 5 </Text>
@@ -160,7 +160,7 @@ const Event = ({ route }) => {
           </View>
           <Text style={{ ...styles.mediumText, alignSelf: "center" }}>
             {" "}
-            {SPORT[eventData.sport_id - 1]}
+            {SPORT[eventData.sportId - 1]}
           </Text>
         </View>
       </View>

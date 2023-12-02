@@ -25,7 +25,7 @@ const filterData = [
 ];
 
 const Home = ({ navigation, route }) => {
-  const [eventsList, setEventList] = useState(null);
+  const [eventsList, setEventsList] = useState(null);
   const [filteredEventsList, setFilteredEventList] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState("");
   const [loading, setLoading] = useState(true);
@@ -33,8 +33,8 @@ const Home = ({ navigation, route }) => {
 
   useEffect(() => {
     const getNearEvents = async () => {
-      const mockData = await fetchNearEvents(currUser.userid, JSON.parse(route.params?.filters));
-      setEventList(mockData.items);
+      const mockData = await fetchNearEvents(currUser.id, JSON.parse(route.params?.filters));
+      setEventsList(mockData.items);
       setFilteredEventList(mockData.items);
       setLoading(false);
     };
@@ -43,8 +43,8 @@ const Home = ({ navigation, route }) => {
 
   useEffect(() => {
     const getNearEvents = async () => {
-      const data = await fetchNearEvents(currUser.userid);
-      setEventList(data.items);
+      const data = await fetchNearEvents(currUser.id);
+      setEventsList(data.items);
       setFilteredEventList(data.items);
       setLoading(false);
     };
@@ -87,7 +87,7 @@ const Home = ({ navigation, route }) => {
     } else {
       setSelectedFilter(sport);
       //TODO: FIX this should be done in the backend
-      const filteredList  = eventsList?.filter((e) => SPORT[e.sport_id - 1] == sport);
+      const filteredList  = eventsList?.filter((e) => SPORT[e.sportId - 1] == sport);
       setFilteredEventList(filteredList);
     }
     setLoading(false);
@@ -98,8 +98,8 @@ const Home = ({ navigation, route }) => {
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      const jsonData = await fetchNearEvents(currUser.userid);
-      setEventList(jsonData.items);
+      const jsonData = await fetchNearEvents(currUser.id);
+      setEventsList(jsonData.items);
       setFilteredEventList(jsonData.items);
     } catch (error) {
       console.error(error);
@@ -135,7 +135,7 @@ const Home = ({ navigation, route }) => {
           style={{flex: 1}}
           contentContainerStyle={filteredEventsList?.length == 0 ?  [styles.noContentContainer, {paddingHorizontal: 24}] : styles.contentContainer}
           keyExtractor={(item) => {
-            return item.event_id.toString();
+            return item.id.toString();
           }}
           ListEmptyComponent={renderEmptyList}
         ></FlatList>
