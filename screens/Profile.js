@@ -40,7 +40,7 @@ const Profile = () => {
             />
             <View style={styles.profileTextContainer}>
               <Text style={styles.profileTextName}>
-                {currUser?.firstname} {currUser?.lastname}
+                {currUser?.firstName} {currUser?.lastName}
               </Text>
               <View
                 style={{
@@ -51,10 +51,10 @@ const Profile = () => {
                 }}
               >
                 <Ionicons name="star" size={18} color={COLORS.secondary} />
-                <Text style={styles.profileTextAge}> {Number(currUser?.rating).toFixed(1)}</Text>
+                <Text style={styles.profileTextAge}> {Number(currUser?.rating.rate).toFixed(1)}</Text>
               </View>
               <Text style={styles.profileTextLocation}>
-                {currUser?.count} partidos
+                {currUser?.rating.count} {currUser?.rating.count === 1 ? "partido" : "partidos"}
               </Text>
             </View>
           </View>
@@ -76,13 +76,13 @@ const Profile = () => {
               <View style={styles.userDataContainer}>
                 <Ionicons name="call" size={24} color={COLORS.primary} />
                 <View style={styles.userDataDisplay}>
-                  <Text style={styles.itemText}>{formatPhoneNumber(currUser?.phonenumber)}</Text>
+                  <Text style={styles.itemText}>{formatPhoneNumber(currUser?.phoneNumber)}</Text>
                 </View>
               </View>
               <View style={styles.userDataContainer}>
                 <Ionicons name="calendar" size={24} color={COLORS.primary} />
                 <View style={styles.userDataDisplay}>
-                  <Text style={styles.itemText}>{currUser?.birthdate}</Text>
+                  <Text style={styles.itemText}>{currUser?.birthDate}</Text>
                 </View>
               </View>
             </View>
@@ -118,7 +118,7 @@ const Profile = () => {
                     );
                   })
                 ) : (
-                  <NoContentMessage message="No elegiste ninguna ubicacion"/>
+                  <NoContentMessage message="No elegiste ninguna ubicación"/>
                 )}
               </View>
             </View>

@@ -21,7 +21,7 @@ export const CustomMultiDropdown = ({data, onChangeItem, defaultValues}) => {
         data={data.map((item) => ({ label: item, value: item }))}
         labelField="label"
         valueField="value"
-        placeholder="Seleccione una ubicacion"
+        placeholder="Seleccione una ubicación"
         searchPlaceholder="Buscar..."
         value={selected}
         onChange={items => {

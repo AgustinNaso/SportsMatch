@@ -25,7 +25,7 @@ const FirstRoute = (myEvents, loading) => (
   <SafeAreaView style={{ flex: 1 }}>
     {loading ? <ActivityIndicator size="large" color={COLORS.primary} style={{ alignSelf: "center", marginTop: "50%" }} /> : 
     <FlatList
-      data={myEvents}
+      data={myEvents.slice().reverse()}
       renderItem={(data) => renderList(data)}
       style={{ flex: 1, marginBottom: 8 }}
       contentContainerStyle={ myEvents.length != 0 ? {flexGrow: 1} : styles.noContentContainer}
@@ -40,12 +40,12 @@ const FirstRoute = (myEvents, loading) => (
 const SecondRoute = (joinedEvents) => (
   <SafeAreaView style={{ flex: 1 }}>
     <FlatList
-      data={joinedEvents}
+      data={joinedEvents.slice().reverse()}
       renderItem={renderJoinedItem}
       style={{ flex: 1 }}
       contentContainerStyle={
         joinedEvents.length != 0 ? styles.contentContainer : styles.noContentContainer}
-      keyExtractor={(item, index) => `${item.event_id}-${index}`}
+      keyExtractor={(item, index) => `${item.id}-${index}`}
       ListEmptyComponent={renderEmptyList}
     ></FlatList>
   </SafeAreaView>
@@ -83,12 +83,12 @@ const MyEvents = () => {
   useEffect(() => {
     setLoading(true);
     const getMyEvents = async () => {
-      const data = await fetchMyEvents(currUser.userid);
+      const data = await fetchMyEvents(currUser.id);
       setMyEvents(data.items);
     };
 
     const getJoinedEvents = async () => {
-      const mockData = await fetchJoinedEvents(currUser.userid);
+      const mockData = await fetchJoinedEvents(currUser.id);
       setJoinedEvents(mockData.items);
     };
     if (currUser && isFocused) {

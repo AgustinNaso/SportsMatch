@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Linking,
   Modal,
@@ -20,19 +20,19 @@ import { fetchUserImage } from "../services/userService";
 import CustomButton from "./CustomButton";
 
 const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) => {
-  console.log("Props: ", props);
-  const [userAccepted, setUserAccepted] = React.useState(
-    props.participant_status
+  console.log("Props my event card: ", props);
+  const [userAccepted, setUserAccepted] = useState(
+    props.participantStatus
   );
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [userRate, setUserRate] = React.useState(3);
-  const [image, setImage] = React.useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [userRate, setUserRate] = useState(3);
+  const [image, setImage] = useState(null);
+  const [isRated, setIsRated] = useState(props.isRated);
 
   useEffect(() => {
     const fetchImage = async () => {
-      const response = await fetchUserImage(props.user_id);
+      const response = await fetchUserImage(props.userId);
       if (response.status == 200) {
-        console.log("Response: ", response.imageURL);
         setImage(response.imageURL);
       }
     };
@@ -45,8 +45,9 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
 
   const postUserRating = async () => {
     try {
-      await rateUser(eventId, userRate, props.user_id);
+      await rateUser(eventId, userRate, props.userId);
       setModalVisible(false);
+      setIsRated(true);
     } catch (error) {
       console.log(error);
       //TODO: send user feedback of this error
@@ -56,7 +57,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
   const acceptUser = async () => {
     console.log(props);
     try {
-      await acceptParticipant(eventId, props.user_id);
+      await acceptParticipant(eventId, props.userId);
       setUserAccepted(true);
     } catch (error) {
       console.log(error);
@@ -65,7 +66,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
 
   const sendMessage = () => {
     Linking.openURL(
-      `whatsapp://send?phone=${+props.phone_number}&text=Hola ${props.firstname
+      `whatsapp://send?phone=${+props.phoneNumber}&text=Hola ${props.firstname
       }. Nos vemos en el partido!`
     );
   };
@@ -76,7 +77,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
         title="Contactar"
         onPress={sendMessage}
       />
-    if (eventStatus === EVENT_STATUS.FINALIZED && props.is_rated === 0)
+    if (eventStatus === EVENT_STATUS.FINALIZED && !isRated)
       return <CustomButton
         title="Puntuar"
         onPress={() => setModalVisible(true)}
@@ -133,7 +134,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
             }}
           >
             <Ionicons name="star" size={16} color={COLORS.secondary} />
-            <Text style={styles.profileTextAge}> {Number(props.rating).toFixed(1)} / 5</Text>
+            <Text style={styles.profileTextAge}> {Number(props.rating.rate).toFixed(1)} / 5</Text>
           </View>
         </View>
       </View>
@@ -144,7 +145,7 @@ const MyEventCard = ({ props, eventId, handleRemoveParticipant, eventStatus }) =
               name="close"
               size={40}
               color="red"
-              onPress={() => handleRemoveParticipant(eventId, props.user_id)}
+              onPress={() => handleRemoveParticipant(eventId, props.userId)}
             />
           </TouchableOpacity>
           <TouchableOpacity>

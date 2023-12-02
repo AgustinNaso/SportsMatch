@@ -1,9 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import CustomButton from "../components/CustomButton";
 import { EVENT_STATUS, EXPERTISE, SPORT, USER_STATUS } from "../constants/data";
 import {
+  fetchEventById,
   fetchParticipants,
   joinNewEvent,
   quitEvent,
@@ -12,64 +19,75 @@ import { Avatar, Divider } from "@rneui/themed";
 import { COLORS } from "../constants";
 import { MONTHS } from "../constants/data";
 import { getDateComponents } from "../utils/datetime";
-import { fetchUserImage } from "../services/userService";
 import DefaultProfile from "../assets/default-profile.png";
 import { UserContext } from "../contexts/UserContext";
 
 const Event = ({ route }) => {
-  const { props, userImgURL } = route.params;
+  const { eventId, userImgURL, ownerRating } = route.params;
   const [loading, setLoading] = useState(true);
-  const [eventParticipants, setEventParticipants] = useState([]);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [eventParticipants, setEventParticipants] = useState(null);
   const [userStatus, setUserStatus] = useState(USER_STATUS.UNENROLLED);
-  const { currUser, setCurrUser } = useContext(UserContext);
-  const [image, setImage] = useState(userImgURL);
-
-  // useEffect(() => {
-  //   fetchParticipants(props.event_id).then((data) => {
-  //     setEventParticipants(data);
-  //   });
-  // }, []);
+  const { currUser } = useContext(UserContext);
+  const [eventData, setEventData] = useState(null);
 
   useEffect(() => {
-    eventParticipants.forEach((participant) => {
-      if (participant.user_id == currUser.userid) {
-        if (participant.participant_status === true) {
-          setUserStatus(USER_STATUS.ENROLLED);
-        } else {
-          setUserStatus(USER_STATUS.REQUESTING);
-        }
-      }
+    fetchEventById(eventId).then((data) => {
+      setEventData(data);
     });
-    setLoading(false);
-  }, [eventParticipants, currUser]);
+  }, []);
+
+  useEffect(() => {
+    if (eventData)
+      fetchParticipants(eventId).then((data) => {
+        setEventParticipants(data);
+      });
+  }, [eventData]);
+
+  useEffect(() => {
+    if (eventParticipants) {
+      eventParticipants.length > 0 &&
+        eventParticipants.forEach((participant) => {
+          if (participant.userId == currUser.id) {
+            if (participant.participantStatus === true) {
+              setUserStatus(USER_STATUS.ENROLLED);
+            } else {
+              setUserStatus(USER_STATUS.REQUESTING);
+            }
+          }
+        });
+      setLoading(false);
+    }
+  }, [eventParticipants]);
 
   const handleQuitEvent = async () => {
+    setSubmitLoading(true);
+
     try {
-      const res = await quitEvent(props.event_id);
+      await quitEvent(eventData.id);
       setUserStatus(USER_STATUS.UNENROLLED);
     } catch (error) {
       console.log("Error quitting event. ", error);
     }
+    setSubmitLoading(false);
   };
 
   const joinEvent = async () => {
+    setSubmitLoading(true);
     console.log("Joining event", currUser);
     try {
-      setLoading(true);
-      await joinNewEvent(props.event_id, currUser.userid);
+      await joinNewEvent(eventId, currUser.id);
       setUserStatus(USER_STATUS.REQUESTING);
     } catch (error) {
       console.log(error);
     }
-    setLoading(false);
+    setSubmitLoading(false);
   };
 
   const renderParticipantStatusMessage = () => {
-    if (props.event_status === EVENT_STATUS.FINALIZED)
+    if (eventData.status === EVENT_STATUS.FINALIZED)
       return (
-        <Text style={styles.participantStatusText}>
-          Evento finalizado!
-        </Text>
+        <Text style={styles.participantStatusText}>Evento finalizado!</Text>
       );
     switch (userStatus) {
       case USER_STATUS.UNENROLLED:
@@ -90,14 +108,15 @@ const Event = ({ route }) => {
   };
 
   const renderEventButton = (loading) => {
-    if (props.event_status === EVENT_STATUS.FINALIZED) return null;
+    if (eventData.status === EVENT_STATUS.FINALIZED) return null;
     switch (userStatus) {
       case USER_STATUS.UNENROLLED:
         return (
           <CustomButton
             title={"Anotarme"}
             onPress={joinEvent}
-            isLoading={loading} />
+            isLoading={loading}
+          />
         );
       case USER_STATUS.REQUESTING:
       case USER_STATUS.ENROLLED:
@@ -112,36 +131,37 @@ const Event = ({ route }) => {
     }
   };
 
-  const { day, month, hours, minutes } = getDateComponents(props?.schedule);
+  const { day, month, hours, minutes } = getDateComponents(eventData?.schedule);
 
-  return (
-    loading ? <ActivityIndicator size="large" color={COLORS.primary} /> :
+  return loading ? (
+    <ActivityIndicator
+      size="large"
+      color={COLORS.primary}
+      style={{ marginTop: "70%" }}
+    />
+  ) : (
     <View style={styles.eventContainer}>
       <View style={styles.eventHeader}>
         <Avatar
           rounded
           size={110}
-          source={image ? { uri: image } : DefaultProfile}
+          source={userImgURL ? { uri: userImgURL } : DefaultProfile}
           containerStyle={{ backgroundColor: COLORS.secondary }}
         />
         <View style={styles.headerData}>
-          <Text style={styles.bigText}>{props.owner_firstname}</Text>
+          <Text style={styles.bigText}>{eventData.owner?.firstName}</Text>
           <View style={{ flexDirection: "row", alignSelf: "center" }}>
             <Ionicons name="star" size={18} color={COLORS.secondary} />
+            <Text> {Number(ownerRating?.rating).toFixed(1)} / 5 </Text>
             <Text>
               {" "}
-              {Number(props.rating).toFixed(1)} /
-              5{" "}
-            </Text>
-            <Text>
-              {" "}
-              | {props.rate_count}{" "}
-              {props.rate_count !== 1 ? "partidos" : "partido"}
+              | {ownerRating?.rateCount}{" "}
+              {ownerRating?.rateCount !== 1 ? "partidos" : "partido"}
             </Text>
           </View>
           <Text style={{ ...styles.mediumText, alignSelf: "center" }}>
             {" "}
-            {SPORT[props.sport_id - 1]}
+            {SPORT[eventData.sportId - 1]}
           </Text>
         </View>
       </View>
@@ -149,34 +169,41 @@ const Event = ({ route }) => {
       <View style={styles.eventBody}>
         <View style={styles.bodySection}>
           <Text style={styles.bodyBigText}>Fecha:</Text>
-          <Text style={styles.bodyMidText}>{`${day} de ${MONTHS[month - 1]
-            } ${hours}:${minutes} hs`}</Text>
+          <Text style={styles.bodyMidText}>{`${day} de ${
+            MONTHS[month - 1]
+          } ${hours}:${minutes} hs`}</Text>
         </View>
         <Divider width={1} />
         <View style={styles.bodySection}>
           <Text style={styles.bodyBigText}>Nivel:</Text>
           <Text style={styles.bodyMidText}>
-            {EXPERTISE[props.expertise - 1]}
+            {EXPERTISE[eventData.expertise - 1]}
           </Text>
         </View>
         <Divider width={1} />
         <View style={styles.bodySection}>
-          <Text style={styles.bodyBigText}>Ubicacion:</Text>
-          <Text style={styles.bodyMidText}>{props.location}</Text>
+          <Text style={styles.bodyBigText}>Ubicación:</Text>
+          <Text style={styles.bodyMidText}>{eventData.location}</Text>
         </View>
         <Divider width={1} />
         <View style={{ ...styles.bodySection }}>
-          <Text style={styles.bodyBigText}>Descripcion:</Text>
+          <Text style={styles.bodyBigText}>Descripción:</Text>
           <View style={{ width: 160 }}>
             <ScrollView style={{ maxHeight: 110 }}>
-              <Text style={styles.bodyMidText}>{props.description}</Text>
+              <Text style={styles.bodyMidText}>
+                {eventData.description == ""
+                  ? "No hay descripcion"
+                  : eventData.description}
+              </Text>
             </ScrollView>
           </View>
         </View>
         <Divider width={1} />
         {renderParticipantStatusMessage()}
       </View>
-      <View style={{ alignSelf: "stretch" }}>{renderEventButton(loading)}</View>
+      <View style={{ alignSelf: "stretch" }}>
+        {renderEventButton(submitLoading)}
+      </View>
     </View>
   );
 };
@@ -188,14 +215,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 24
+    paddingVertical: 24,
   },
   eventContainer: {
     flexDirection: "column",
     alignItems: "center",
     flex: 1,
     paddingHorizontal: 24,
-    justifyContent: 'space-evenly'
+    justifyContent: "space-evenly",
   },
   eventHeader: {
     flexDirection: "row",
@@ -242,6 +269,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "center",
     marginTop: 16,
-    textAlign: 'center'
+    textAlign: "center",
   },
 });

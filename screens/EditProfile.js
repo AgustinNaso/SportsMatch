@@ -39,6 +39,7 @@ const sports = [
   { key: 3, sportId: 3, title: SPORT[2] },
   { key: 4, sportId: 4, title: SPORT[3] },
   { key: 5, sportId: 5, title: SPORT[4] },
+  { key: 6, sportId: 6, title: SPORT[5]}
 ];
 
 const EditProfile = () => {
@@ -54,7 +55,7 @@ const EditProfile = () => {
   } = useForm({
     defaultValues: {
       locations: currUser.locations,
-      phonenumber: currUser.phonenumber,
+      phonenumber: currUser.phoneNumber,
       sports: currUser.sports,
     }
   });
@@ -79,8 +80,7 @@ const EditProfile = () => {
   };
 
   useEffect(() => {
-    console.log(currUser);
-    const { code, national_number } = parsePhoneNumber(currUser.phonenumber);
+    const { code, national_number } = parsePhoneNumber(currUser.phoneNumber);
     setCurrUser({
       ...currUser,
       country_code: code,
@@ -114,7 +114,7 @@ const EditProfile = () => {
   };
 
   const dataChanged = (data) => {
-    const phoneChanged = data.phone !== currUser.phonenumber;
+    const phoneChanged = data.phone !== currUser.phoneNumber;
     const sportsChanged = currUser.sports !== selectedSports;
     const locChanged = currUser.locations !== selectedLocations;
 
@@ -125,15 +125,14 @@ const EditProfile = () => {
     setSubmitLoading(true);
     console.log("DATA: ", data);
     const formData = {
-      phonenumber: data.phonenumber,
+      phoneNumber: data.phonenumber,
       locations: data.locations,
       sports: selectedSports,
     }
 
-
     var userUpdatedRes;
     if (dataChanged) {
-      userUpdatedRes = await updateUser(currUser.userid, formData);
+      userUpdatedRes = await updateUser(currUser.id, formData);
     }
     if (userUpdatedRes && userUpdatedRes.status !== 200) {
       setError(userUpdatedRes.message);
@@ -141,7 +140,7 @@ const EditProfile = () => {
     }
     if (imageChanged) {
       const imgUpdatedRes = await updateUserImage(
-        currUser.userid,
+        currUser.id,
         currImg.base64
       ); 
       if (imgUpdatedRes.status == 200) {
