@@ -54,7 +54,7 @@ const Profile = () => {
                 <Text style={styles.profileTextAge}> {Number(currUser?.rating.rate).toFixed(1)}</Text>
               </View>
               <Text style={styles.profileTextLocation}>
-                {currUser?.rating.count} partidos
+                {currUser?.rating.count} {currUser?.rating.count === 1 ? "partido" : "partidos"}
               </Text>
             </View>
           </View>
