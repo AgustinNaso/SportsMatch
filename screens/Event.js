@@ -29,35 +29,33 @@ const Event = ({ route }) => {
   const [eventParticipants, setEventParticipants] = useState(null);
   const [userStatus, setUserStatus] = useState(USER_STATUS.UNENROLLED);
   const { currUser } = useContext(UserContext);
-  const [image, setImage] = useState(userImgURL);
   const [eventData, setEventData] = useState(null);
 
   useEffect(() => {
     fetchEventById(eventId).then((data) => {
       setEventData(data);
-    })
-    },[]);
-  
+    });
+  }, []);
 
   useEffect(() => {
-    if(eventData)
-          fetchParticipants(eventId).then((data) => {
+    if (eventData)
+      fetchParticipants(eventId).then((data) => {
         setEventParticipants(data);
       });
   }, [eventData]);
 
   useEffect(() => {
     if (eventParticipants) {
-            eventParticipants.length > 0 &&
-      eventParticipants.forEach((participant) => {
-        if (participant.userId == currUser.id) {
-          if (participant.participantStatus === true) {
-            setUserStatus(USER_STATUS.ENROLLED);
-          } else {
-            setUserStatus(USER_STATUS.REQUESTING);
+      eventParticipants.length > 0 &&
+        eventParticipants.forEach((participant) => {
+          if (participant.userId == currUser.id) {
+            if (participant.participantStatus === true) {
+              setUserStatus(USER_STATUS.ENROLLED);
+            } else {
+              setUserStatus(USER_STATUS.REQUESTING);
+            }
           }
-        }
-      });
+        });
       setLoading(false);
     }
   }, [eventParticipants]);
@@ -72,7 +70,6 @@ const Event = ({ route }) => {
       console.log("Error quitting event. ", error);
     }
     setSubmitLoading(false);
-
   };
 
   const joinEvent = async () => {
@@ -137,14 +134,18 @@ const Event = ({ route }) => {
   const { day, month, hours, minutes } = getDateComponents(eventData?.schedule);
 
   return loading ? (
-    <ActivityIndicator size="large" color={COLORS.primary} style={{marginTop: '70%'}} />
+    <ActivityIndicator
+      size="large"
+      color={COLORS.primary}
+      style={{ marginTop: "70%" }}
+    />
   ) : (
     <View style={styles.eventContainer}>
       <View style={styles.eventHeader}>
         <Avatar
           rounded
           size={110}
-          source={image ? { uri: image } : DefaultProfile}
+          source={userImgURL ? { uri: userImgURL } : DefaultProfile}
           containerStyle={{ backgroundColor: COLORS.secondary }}
         />
         <View style={styles.headerData}>
@@ -200,7 +201,9 @@ const Event = ({ route }) => {
         <Divider width={1} />
         {renderParticipantStatusMessage()}
       </View>
-      <View style={{ alignSelf: "stretch" }}>{renderEventButton(submitLoading)}</View>
+      <View style={{ alignSelf: "stretch" }}>
+        {renderEventButton(submitLoading)}
+      </View>
     </View>
   );
 };
