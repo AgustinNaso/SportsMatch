@@ -88,7 +88,7 @@ const Event = ({ route }) => {
   };
 
   const renderParticipantStatusMessage = () => {
-    if (eventData.eventStatus === EVENT_STATUS.FINALIZED)
+    if (eventData.status === EVENT_STATUS.FINALIZED)
       return (
         <Text style={styles.participantStatusText}>Evento finalizado!</Text>
       );
@@ -111,7 +111,7 @@ const Event = ({ route }) => {
   };
 
   const renderEventButton = (loading) => {
-    if (eventData.eventStatus === EVENT_STATUS.FINALIZED) return null;
+    if (eventData.status === EVENT_STATUS.FINALIZED) return null;
     switch (userStatus) {
       case USER_STATUS.UNENROLLED:
         return (
