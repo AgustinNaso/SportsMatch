@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { COLORS, FONTS } from "../constants";
 import { TextInput } from "react-native-gesture-handler";
-import { validateEmail } from "../utils/validations";
+import { validateEmail, validatePassword } from "../utils/validations";
 import { AuthContext } from "../contexts/authContext";
 import PhoneInput from "react-native-phone-number-input";
 import { PhoneNumberUtil } from "google-libphonenumber";
@@ -31,6 +31,8 @@ const Register = ({ navigation }) => {
   const [signUpError, setSignUpError] = useState(false);
   const [phoneConflict, setPhoneConflict] = useState(false);
   const [emailConflict, setEmailConflict] = useState(false);
+  const [passError, setPassError] = useState("");
+  const [confPassError, setConfPassError] = useState("");
 
   const parsePhoneNumber = (phone) => {
     const parsedNumber = phoneUtil.parse(phone, "");
@@ -68,7 +70,9 @@ const Register = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={Platform.OS !== "ios"? {paddingTop: 40} : {flex: 1}}>
+    <SafeAreaView
+      style={Platform.OS !== "ios" ? { paddingTop: 40 } : { flex: 1 }}
+    >
       <StatusBar backgroundColor={COLORS.primary} style="light" />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -138,7 +142,8 @@ const Register = ({ navigation }) => {
                 required: true,
                 pattern: {
                   matchPattern: (mail) => validateEmail(mail),
-                  message: "Dirección de correo inválida",                },
+                  message: "Dirección de correo inválida",
+                },
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
@@ -183,33 +188,35 @@ const Register = ({ navigation }) => {
           )}
           <View style={styles.inputContainer}>
             <Text style={styles.inputText}>Telefono</Text>
-              <Controller
-                control={control}
-                rules={{
-                  required: true,
-                  validate: (phone) => {
-                    return validatePhone(phone);
-                  },
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <PhoneInput
-                    defaultValue={""}
-                    defaultCode="AR"
-                    layout="first"
-                    placeholder="Numero de telefono"
-                    containerStyle={styles.phoneContainer}
-                    textContainerStyle={styles.phoneContainer.input}
-                    flagButtonStyle={styles.phoneContainer.flag}
-                    onChangeFormattedText={(text) => {
-                      onChange(text);
-                    }}
-                  />
-                )}
-                name="phoneNumber"
-              />
-            </View>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+                validate: (phone) => {
+                  return validatePhone(phone);
+                },
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <PhoneInput
+                  defaultValue={""}
+                  defaultCode="AR"
+                  layout="first"
+                  placeholder="Numero de telefono"
+                  containerStyle={styles.phoneContainer}
+                  textContainerStyle={styles.phoneContainer.input}
+                  flagButtonStyle={styles.phoneContainer.flag}
+                  onChangeFormattedText={(text) => {
+                    onChange(text);
+                  }}
+                />
+              )}
+              name="phoneNumber"
+            />
+          </View>
           {errors.phoneNumber && (
-            <Text style={styles.error}>Por favor ingrese un número de teléfono válido</Text>
+            <Text style={styles.error}>
+              Por favor ingrese un número de teléfono válido
+            </Text>
           )}
           {phoneConflict && (
             <Text style={styles.error}>
@@ -223,12 +230,40 @@ const Register = ({ navigation }) => {
               rules={{
                 required: true,
                 minLength: 8,
+                pattern: {
+                  matchPattern: (password) => validatePassword(password),
+                  message: "Contraseña inválida",
+                },
               }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   style={styles.input}
                   onBlur={onBlur}
-                  onChangeText={onChange}
+                  onChangeText={(text) => {
+                    let errorMessage = "";
+
+                    if (!/[a-z]/.test(text)) {
+                      errorMessage +=
+                        "Se requiere al menos una letra minúscula\n";
+                    }
+
+                    if (!/[A-Z]/.test(text)) {
+                      errorMessage +=
+                        "Se requiere al menos una letra mayúscula\n";
+                    }
+
+                    if (!/\d/.test(text)) {
+                      errorMessage += "Se requiere al menos un dígito\n";
+                    }
+
+                    if (!/\W/.test(text)) {
+                      errorMessage +=
+                        "Se requiere al menos un caracter especial\n";
+                    }
+
+                    setPassError(errorMessage);
+                    onChange(text);
+                  }}
                   value={value}
                   secureTextEntry={true}
                 />
@@ -236,10 +271,13 @@ const Register = ({ navigation }) => {
               name="password"
             />
           </View>
+          {<Text style={styles.error}>{passError}</Text>}
           {errors.password && (
-            <Text style={styles.error}>Ingrese una contraseña válida</Text>
+            <Text style={styles.error}>
+              Por favor ingrese una contraseña válida
+            </Text>
           )}
-          <View style={[styles.inputContainer, {marginBottom: 10}]}>
+          <View style={[styles.inputContainer, { marginBottom: 10 }]}>
             <Text style={styles.inputText}>Confirmar contraseña</Text>
             <Controller
               control={control}
@@ -252,7 +290,13 @@ const Register = ({ navigation }) => {
                 <TextInput
                   style={styles.input}
                   onBlur={onBlur}
-                  onChangeText={onChange}
+                  onChangeText={(text) => {
+                    setConfPassError("");
+                    if (text !== watch('password')) {
+                      setConfPassError("Las contraseñas deben coincidir");
+                    }
+                    onChange(text);
+                  }}
                   value={value}
                   secureTextEntry={true}
                 />
@@ -260,10 +304,10 @@ const Register = ({ navigation }) => {
               name="confPassword"
             />
           </View>
+          {<Text style={styles.error}>{confPassError}</Text>}
           {errors.confPassword && (
             <Text style={styles.error}>Las contraseñas no son iguales</Text>
           )}
-
           <CustomButton title="Registrarse" onPress={handleSubmit(submit)} />
           {signUpError && (
             <Text style={styles.error}>
@@ -289,7 +333,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingBottom: 100,
     paddingHorizontal: 24,
-    gap: 14
+    gap: 14,
   },
   input: {
     paddingHorizontal: 20,
@@ -298,10 +342,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: COLORS.primary,
     color: COLORS.primary,
-    fontSize: 16
+    fontSize: 16,
   },
   inputContainer: {
-    alignSelf: 'stretch',
+    alignSelf: "stretch",
     gap: 5,
   },
   inputText: {
@@ -321,12 +365,11 @@ const styles = StyleSheet.create({
 
     flag: {
       width: 55,
-      marginLeft: 10
+      marginLeft: 10,
     },
     input: {
       backgroundColor: COLORS.transparent,
-      paddingVertical: 12
-     
+      paddingVertical: 12,
     },
   },
   referal: {
@@ -337,6 +380,12 @@ const styles = StyleSheet.create({
     ...FONTS.body3,
     color: "#F00",
     fontWeight: "700",
+  },
+  errorList: {
+    ...FONTS.body3,
+    color: "#F00",
+    fontWeight: "700",
+    fontSize: 11,
   },
 });
 
