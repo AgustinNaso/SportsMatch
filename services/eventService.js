@@ -18,6 +18,12 @@ export const authenticatedFetch = async (url, options = {}) => {
       if (response.status === 401 && body.internalStatus === "TOKEN_EXPIRED") {
         // await refreshSession();
         // return await authenticatedFetch(url, options);
+      } else if (response.status === 409) {
+        return {
+          failed: true,
+          message: body.message,
+          internalStatus: body.internalStatus
+        }
       } else throw new Error("Bad response from server: " +  JSON.stringify(body));
     }
     return response;

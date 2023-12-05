@@ -7,16 +7,13 @@ export const API_URL =
 export const updateUser = async (userId, userData) => {
   const response = await authenticatedFetch("/users/" + userId, {
     method: "PUT",
-    body: userData,
+    body: JSON.stringify(userData),
     headers: {
       "Content-Type": "application/json",
     },
   });
 
-  return {
-    status: response.status,
-    message: response.ok ? "Update succesful" : "Failed to upload user data",
-  };
+  return response;
 };
 
 export const updateUserImage = async (userId, base64Img) => {

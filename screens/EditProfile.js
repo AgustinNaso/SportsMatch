@@ -56,6 +56,7 @@ const EditProfile = () => {
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [imageChanged, setImageChanged] = useState(false);
   const [error, setError] = useState();
+  const [phoneConflictError, setPhoneConflictError] = useState(null);
   const phoneUtil = PhoneNumberUtil.getInstance();
   const { showActionSheetWithOptions } = useActionSheet();
 
@@ -115,6 +116,7 @@ const EditProfile = () => {
 
   const submit = async (data) => {
     setSubmitLoading(true);
+    setPhoneConflictError(null);
     console.log("DATA: ", data);
     const formData = {
       phoneNumber: data.phonenumber,
@@ -126,8 +128,13 @@ const EditProfile = () => {
     if (dataChanged) {
       userUpdatedRes = await updateUser(currUser.id, formData);
     }
-    if (userUpdatedRes && userUpdatedRes.status !== 200) {
-      setError(userUpdatedRes.message);
+    if (userUpdatedRes && userUpdatedRes.failed) {
+      if (userUpdatedRes.internalStatus === "CONFLICT") {
+        setPhoneConflictError("Este número ya fue registrado.");
+      } else {
+        setError(userUpdatedRes.message);
+      }
+      setSubmitLoading(false);
       return;
     }
     if (imageChanged) {
@@ -137,6 +144,7 @@ const EditProfile = () => {
         navigator.navigate("MyProfile");
       } else {
         setError(imgUpdatedRes.message);
+        setSubmitLoading(false);
         return;
       }
     }
@@ -342,6 +350,7 @@ const EditProfile = () => {
                 name="phonenumber"
               />
             </View>
+            {<Text style={styles.error}>{phoneConflictError}</Text>}
             {errors.phonenumber && (
               <Text style={styles.error}>
                 Por favor ingrese un número válido.
@@ -378,7 +387,7 @@ const EditProfile = () => {
                   <CustomMultiDropdown
                     data={LOCATIONS}
                     onChangeItem={onChange}
-                    defaultValues={value}
+                    defaultValues={currUser.locations}
                   />
                 )}
                 name="locations"
