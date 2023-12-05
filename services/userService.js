@@ -38,6 +38,9 @@ export const updateUserImage = async (userId, base64Img) => {
   var requestOptions = {
     method: "PUT",
     body: buffer,
+    headers: {
+      'Content-Type': ""
+    }
   };
 
   const response = await fetch(presignedUrl.presignedPutUrl, requestOptions);
