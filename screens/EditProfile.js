@@ -1,28 +1,20 @@
-import { useForm, Controller, set } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import CustomButton from "../components/CustomButton";
 import {
   SafeAreaView,
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
   KeyboardAvoidingView,
   ActivityIndicator,
 } from "react-native";
 import { useState, useEffect, useContext } from "react";
 import { COLORS, FONTS } from "../constants";
-import { TextInput } from "react-native-gesture-handler";
-import { validateEmail } from "../utils/validations";
 import { useNavigation } from "@react-navigation/native";
 import Pill from "../components/Pill";
 import { LOCATIONS, SPORT } from "../constants/data";
-import MultiSelect from "react-native-multiple-select";
-import {
-  updateUser,
-  updateUserImage,
-  fetchUserImage,
-} from "../services/userService";
+import { updateUser, updateUserImage } from "../services/userService";
 import * as ImagePicker from "expo-image-picker";
 import DefaultProfile from "../assets/default-profile.png";
 import { Avatar } from "@rneui/themed";
