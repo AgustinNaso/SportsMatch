@@ -22,7 +22,7 @@
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.agustinnaso.sportsmatch"
+      "package": "com.programsh.sportsmatch"
     },
     "web": {
       "favicon": "./assets/favicon.png"
