@@ -106,6 +106,9 @@ const NewEvent = () => {
     if (errors.duration) {
       errorMsg += "duración, ";
     }
+    if (errors.description) {
+        errorMsg += "descripción, ";
+    }
     if (errorMsg) {
       return "Por favor ingrese: " + errorMsg.trim().replace(/,$/, "");
     }
@@ -342,7 +345,7 @@ const NewEvent = () => {
         </View>
         <Controller
           control={control}
-          rules={{ required: false }}
+          rules={{ required: true }}
           render={({ field }) => (
             <TextInput
               placeholder="El partido es en el club a las ..."
