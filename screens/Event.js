@@ -64,7 +64,7 @@ const Event = ({ route }) => {
     setSubmitLoading(true);
 
     try {
-      await quitEvent(eventData.id);
+      await quitEvent(eventData.id, currUser.id);
       setUserStatus(USER_STATUS.UNENROLLED);
     } catch (error) {
       console.log("Error quitting event. ", error);

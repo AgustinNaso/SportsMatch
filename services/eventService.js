@@ -43,7 +43,7 @@ export const fetchParticipants = async (eventId, status) => {
   if(status == EVENT_STATUS.FINALIZED) queryParams = "?status=accepted";
 
   const response = await fetch(
-    API_URL + "/events/" + eventId + "/participants/owner" + queryParams
+    API_URL + "/events/" + eventId + "/participants" + queryParams
   );
   const json = await response.json();
 
@@ -130,7 +130,7 @@ export const fetchEventById = async (eventId) => {
 
 export const joinNewEvent = async (eventId, userId) => {
   await authenticatedFetch("/events/" + eventId + "/participants", {
-    method: "PUT",
+    method: "POST",
     body: JSON.stringify({ userId: userId }),
     headers: {
       "Content-Type": "application/json",
@@ -139,9 +139,9 @@ export const joinNewEvent = async (eventId, userId) => {
 };
 
 export const acceptParticipant = async (eventId, userId) => {
-  await authenticatedFetch("/events/" + eventId + "/participants/owner", {
+  await authenticatedFetch("/events/" + eventId + "/participants/" + userId, {
     method: "PUT",
-    body: JSON.stringify({ participantId: userId.toString() }),
+    body: JSON.stringify({ status: true }),
     headers: {
       "Content-Type": "application/json",
     },
@@ -159,9 +159,9 @@ export const rateUser = async (eventId, rating, participantId) => {
   });
 };
 
-export const quitEvent = async (eventId) => {
+export const quitEvent = async (eventId, userId) => {
   console.log("REMOVING MYSELF FROM EVENT: " + eventId);
-  const res = await authenticatedFetch("/events/" + eventId + "/participants", {
+  const res = await authenticatedFetch("/events/" + eventId + "/participants/" + userId, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -172,9 +172,8 @@ export const quitEvent = async (eventId) => {
 
 export const removeParticipantAsOwner = async (eventId, userId) => {
   console.log("REMOVING PARTICIPANT FROM EVENT: " + eventId);
-  await authenticatedFetch("/events/" + eventId + "/participants/owner", {
+  await authenticatedFetch("/events/" + eventId + "/participants/" + userId, {
     method: "DELETE",
-    body: JSON.stringify({ participantId: userId.toString() }),
     headers: {
       "Content-Type": "application/json",
     },
