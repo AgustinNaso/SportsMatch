@@ -21,21 +21,39 @@ import { MONTHS } from "../constants/data";
 import { getDateComponents } from "../utils/datetime";
 import DefaultProfile from "../assets/default-profile.png";
 import { UserContext } from "../contexts/UserContext";
+import { fetchUserImage } from "../services/userService";
 
 const Event = ({ route }) => {
-  const { eventId, userImgURL, ownerRating } = route.params;
+  const { eventId, userImgURL, ownerRating, ownerId } = route.params;
   const [loading, setLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [eventParticipants, setEventParticipants] = useState(null);
   const [userStatus, setUserStatus] = useState(USER_STATUS.UNENROLLED);
+  const [imageURL, setImageURL] = useState(userImgURL);
   const { currUser } = useContext(UserContext);
   const [eventData, setEventData] = useState(null);
 
   useEffect(() => {
+    setLoading(true);
     fetchEventById(eventId).then((data) => {
       setEventData(data);
     });
-  }, []);
+
+    if (!route.params.userImgURL) {
+      const fetchImage = async () => {
+        const response = await fetchUserImage(ownerId);
+        if (response.status == 200) {
+          setImageURL(response.imageURL);
+        }
+        setLoading(false);
+      };
+      try {
+        fetchImage();
+      } catch (err) {
+        console.error("ERROR fetching user data", err);
+      }
+    }
+  }, [eventId, userImgURL, ownerId]);
 
   useEffect(() => {
     if (eventData)
@@ -145,7 +163,7 @@ const Event = ({ route }) => {
         <Avatar
           rounded
           size={110}
-          source={userImgURL ? { uri: userImgURL } : DefaultProfile}
+          source={imageURL ? { uri: imageURL } : DefaultProfile}
           containerStyle={{ backgroundColor: COLORS.secondary }}
         />
         <View style={styles.headerData}>
@@ -199,11 +217,13 @@ const Event = ({ route }) => {
           </View>
         </View>
         <Divider width={1} />
-        {renderParticipantStatusMessage()}
+        {!ownerId && renderParticipantStatusMessage()}
       </View>
-      <View style={{ alignSelf: "stretch" }}>
-        {renderEventButton(submitLoading)}
-      </View>
+      {!ownerId && (
+        <View style={{ alignSelf: "stretch" }}>
+          {renderEventButton(submitLoading)}
+        </View>
+      )}
     </View>
   );
 };
