@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import HomeStackNavigator from "./HomeStackNavigator";
 import ProfileStackNavigator from "./ProfileStackNavigator";
+import { MyEventsStackNavigator } from "./MyEventsStackNavigator";
 import { COLORS } from "../constants";
 import { MyEvents } from "../screens";
 import React, { useContext, useEffect, useState } from "react";
@@ -41,7 +42,7 @@ const setCurrUser = async (user) => {
             iconName = "home";
           } else if (route.name === "Perfil") {
             iconName = "person";
-          } else if (route.name === "Mis Eventos") {
+          } else if (route.name === "MisEventosNavigator") {
             iconName = "calendar";
           }
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -56,9 +57,10 @@ const setCurrUser = async (user) => {
         name="HomeNavigator"
         component={HomeStackNavigator}
       />
-      <Tab.Screen name="Mis Eventos" component={MyEvents} options={{
-        headerTintColor: COLORS.white, headerStyle: {backgroundColor: COLORS.primary }
-      }} />
+      <Tab.Screen name="MisEventosNavigator" component={MyEventsStackNavigator} options={{
+          headerShown: false,
+          title: "Mis Eventos",
+        }} />
       <Tab.Screen
         options={{
           headerShown: false

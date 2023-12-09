@@ -41,7 +41,7 @@ const MyEventList = ({ data }) => {
   };
 
   const renderMyEvent = () => {
-    navigation.navigate("Evento", {
+    navigation.navigate("Evento-MisEventos", {
       eventId: data.item.id,
       ownerRating: {
         rating: data.item.rating.rate,

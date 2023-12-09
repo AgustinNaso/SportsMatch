@@ -20,7 +20,6 @@ import CustomButton from "./CustomButton";
 import { Spots } from "./Spots";
 
 const Card = ({ props }) => {
-  console.log("Props card: ", props);
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [userRate, setUserRate] = useState(3);
@@ -28,7 +27,8 @@ const Card = ({ props }) => {
   const [isRated, setIsRated] = useState(props.isRated);
 
   const handlePress = () => {
-    navigation.navigate("Evento", { eventId: props.id, userImgURL: image, ownerRating : { rating: props.rating.rate, rateCount: props.rating.count}});
+    const routeName = `Evento${navigation.getId() === "MyEventsStackNavigator" ? "-MisEventos" : ""}`;
+    navigation.navigate(routeName, { eventId: props.id, userImgURL: image, ownerRating : { rating: props.rating.rate, rateCount: props.rating.count}});
   };
 
   const postUserRating = async () => {
