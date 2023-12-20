@@ -107,7 +107,7 @@ const NewEvent = () => {
       errorMsg += "duración, ";
     }
     if (errors.description) {
-        errorMsg += "descripción, ";
+      errorMsg += "descripción, ";
     }
     if (errorMsg) {
       return "Por favor ingrese: " + errorMsg.trim().replace(/,$/, "");
@@ -345,7 +345,7 @@ const NewEvent = () => {
         </View>
         <Controller
           control={control}
-          rules={{ required: true }}
+          rules={{ required: true, maxLength: 100 }}
           render={({ field }) => (
             <TextInput
               placeholder="El partido es en el club a las ..."
@@ -361,6 +361,11 @@ const NewEvent = () => {
           )}
           name="description"
         />
+        {errors.description && errors.description.type === "maxLength" && (
+          <Text style={styles.error}>
+            La descripción no debe tener más de 50 caracteres
+          </Text>
+        )}
         <CustomButton
           title="Crear"
           isLoading={isLoading}

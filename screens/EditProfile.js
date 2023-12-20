@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   ActivityIndicator,
+  TouchableWithoutFeedback,
+  Keyboard
 } from "react-native";
 import { useState, useEffect, useContext } from "react";
 import { COLORS, FONTS } from "../constants";
@@ -219,6 +221,8 @@ const EditProfile = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -404,6 +408,7 @@ const EditProfile = () => {
           </View>
         )}
       </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 };
